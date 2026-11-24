@@ -39,7 +39,7 @@
     "@capacitor/splash-screen": "^8.0.2",
     "@capacitor/toast": "^8.0.0",
     "@capawesome/capacitor-android-edge-to-edge-support": "^8.0.8",
-    "@ionic/angular": "^8.8.19",
+    "@ionic/angular": "^8.8.21",
     "rxjs": "^7.8.2",
     "tslib": "^2.9.1",
     "zone.js": "^0.15.1"
