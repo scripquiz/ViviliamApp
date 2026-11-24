@@ -1,0 +1,82 @@
+<ion-card class="card">
+  <!-- Loading Spinner -->
+  @if (isLoading) {
+  <div class="verse-loading">
+    <ion-spinner name="circles"></ion-spinner>
+  </div>
+  }
+
+  <!-- Content - Only shown when not loading -->
+  @if (!isLoading) {
+  <div class="card-item-daily-items" style="min-height: 100px">
+    <h4 class="title card-item-daiy-header">
+      Daily Bible Verse
+      <ion-icon
+        name="ellipsis-horizontal"
+        class="verse-menu-icon"
+        style="
+          font-size: 24px;
+          float: right;
+          margin-top: -2px;
+          right: 20px;
+          cursor: pointer;
+          color: var(--app-text-primary);
+        "
+        (click)="showSettings()"
+      ></ion-icon>
+      <!--       <div class="versettingMenu {{ showDailyVerseSetting }}" (click)="hideSettingsMenu()">
+        <div class="popover {{ showDailyVerseSetting }} pop-over-shadow">
+          <ion-list style="padding:0px">
+            <ion-item no-padding style="border-bottom: 1px solid rgba(0,0,0,.3);height:47px;--padding-start: 10px;"
+              (click)="setLanguage()">
+              <ion-avatar slot="start" style="margin-inline:unset;">
+                <ion-icon name="language-outline" style="font-size:24px; position:relative;top:3px">
+                </ion-icon>
+              </ion-avatar>
+              <ion-label style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-5px">{{
+              dailyVerseLanguageAlternate }}</ion-label>
+            </ion-item>
+            <ion-item no-padding style="border-bottom: 1px solid rgba(0,0,0,.3);height:47px;--padding-start: 10px;"
+              (click)="shareContent('COPY')">
+              <ion-avatar slot="start" style="margin-inline:unset;">
+                <ion-icon name="copy-outline" style="font-size:24px; position:relative;top:3px">
+                </ion-icon>
+              </ion-avatar>
+              <ion-label
+              style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-5px">Copy</ion-label>
+            </ion-item>
+            <ion-item no-padding style="height:47px;--padding-start: 10px;display: block;"
+              (click)="shareContent('SHARE')">
+              <ion-avatar slot="start" style="margin-inline:unset;">
+                <ion-icon name="share-social-outline" style="font-size:24px;position:relative; top:6px;">
+                </ion-icon>
+              </ion-avatar>
+              <ion-label
+              style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-2px">Share</ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+      </div> -->
+    </h4>
+    <div class="card-item-daily-items-padding">
+      <div
+        class="home-dynamic-content"
+        [ngStyle]="{ display: dailyVerse_top != '' ? 'block' : 'none' }"
+        [innerHTML]="dailyVerse_top"
+      ></div>
+      <div style="width: 100%; text-align: center">
+        <div class="verseoftheday" [innerHTML]="verseoftheday"></div>
+        <div
+          class="verseofthedayreference"
+          [innerHTML]="verseoftheday_reference"
+        ></div>
+      </div>
+      <div
+        class="home-dynamic-content"
+        [ngStyle]="{ display: dailyVerse_bottom != '' ? 'block' : 'none' }"
+        [innerHTML]="dailyVerse_bottom"
+      ></div>
+    </div>
+  </div>
+  }
+</ion-card>
