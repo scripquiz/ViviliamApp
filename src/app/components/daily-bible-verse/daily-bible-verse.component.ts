@@ -398,67 +398,10 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
       // Font sizes based on ratio
       const { mainFontSize, referenceFontSize } = layout;
 
-      // Set font with better fallback system and weight specification
-      if (containsTamil) {
-        // Try multiple Tamil font variations with semibold weight (600)
-        const tamilFonts = [
-          `600 ${mainFontSize}px "Anek Tamil"`,
-          `bold ${mainFontSize}px "Anek Tamil"`,
-          `600 ${mainFontSize}px Anek Tamil`,
-          `${mainFontSize}px "Anek Tamil"`,
-          `600 ${mainFontSize}px "Noto Sans Tamil"`,
-          `600 ${mainFontSize}px sans-serif`,
-        ];
-
-        let fontSet = false;
-        for (const fontFamily of tamilFonts) {
-          try {
-            ctx.font = fontFamily;
-            // Test the font with Tamil text
-            const testWidth = ctx.measureText('தமிழ் பைபிள்').width;
-
-            if (testWidth > 0) {
-              fontSet = true;
-              break;
-            }
-          } catch {
-            // try the next font
-          }
-        }
-
-        if (!fontSet) {
-          ctx.font = `600 ${mainFontSize}px sans-serif`;
-        }
-      } else {
-        // Try multiple English font variations with semibold weight (600)
-        const englishFonts = [
-          `600 ${mainFontSize}px "Bricolage Grotesque"`,
-          `bold ${mainFontSize}px "Bricolage Grotesque"`,
-          `${mainFontSize}px "Bricolage Grotesque"`,
-          `600 ${mainFontSize}px Georgia`,
-          `600 ${mainFontSize}px serif`,
-        ];
-
-        let fontSet = false;
-        for (const fontFamily of englishFonts) {
-          try {
-            ctx.font = fontFamily;
-            // Test the font with English text
-            const testWidth = ctx.measureText('Bible Verse').width;
-
-            if (testWidth > 0) {
-              fontSet = true;
-              break;
-            }
-          } catch {
-            // try the next font
-          }
-        }
-
-        if (!fontSet) {
-          ctx.font = `600 ${mainFontSize}px serif`;
-        }
-      }
+      // The canvas falls back along each font list by itself
+      ctx.font = containsTamil
+        ? `600 ${mainFontSize}px "Anek Tamil", "Noto Sans Tamil", sans-serif`
+        : `600 ${mainFontSize}px "Bricolage Grotesque", Georgia, serif`;
 
       // Calculate the total height of the verse text to center it properly
       const maxWidth = canvas.width - 100;
@@ -470,70 +413,15 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
       const verseStartY =
         (canvas.height - totalTextHeight) / 2 + layout.textOffsetY;
 
-      this.wrapTextCentered(
-        ctx,
-        verseText,
-        canvas.width / 2,
-        verseStartY,
-        maxWidth,
-        lineHeight
+      lines.forEach((line, index) =>
+        ctx.fillText(line, canvas.width / 2, verseStartY + index * lineHeight)
       );
 
       // Add reference with appropriate font and weight
       ctx.fillStyle = referenceColor;
-      if (containsTamil) {
-        // Try Tamil reference fonts with semibold weight
-        const tamilRefFonts = [
-          `600 ${referenceFontSize}px "Anek Tamil"`,
-          `bold ${referenceFontSize}px "Anek Tamil"`,
-          `${referenceFontSize}px "Anek Tamil"`,
-          `600 ${referenceFontSize}px sans-serif`,
-        ];
-
-        let refFontSet = false;
-        for (const font of tamilRefFonts) {
-          try {
-            ctx.font = font;
-            const testWidth = ctx.measureText('வசனம்').width;
-            if (testWidth > 0) {
-              refFontSet = true;
-              break;
-            }
-          } catch {
-            // try the next font
-          }
-        }
-
-        if (!refFontSet) {
-          ctx.font = `600 ${referenceFontSize}px sans-serif`;
-        }
-      } else {
-        // Try English reference fonts
-        const englishRefFonts = [
-          `600 ${referenceFontSize}px "Bricolage Grotesque"`,
-          `bold ${referenceFontSize}px "Bricolage Grotesque"`,
-          `${referenceFontSize}px "Bricolage Grotesque"`,
-          `600 ${referenceFontSize}px serif`,
-        ];
-
-        let refFontSet = false;
-        for (const font of englishRefFonts) {
-          try {
-            ctx.font = font;
-            const testWidth = ctx.measureText('Reference').width;
-            if (testWidth > 0) {
-              refFontSet = true;
-              break;
-            }
-          } catch {
-            // try the next font
-          }
-        }
-
-        if (!refFontSet) {
-          ctx.font = `600 ${referenceFontSize}px serif`;
-        }
-      }
+      ctx.font = containsTamil
+        ? `600 ${referenceFontSize}px "Anek Tamil", sans-serif`
+        : `600 ${referenceFontSize}px "Bricolage Grotesque", serif`;
 
       const referenceY = verseStartY + totalTextHeight + 25;
       ctx.fillText(
@@ -666,52 +554,33 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
     this.showRatioSelectionMenu();
   }
 
-  // Updated logo method with better error handling
+  // Draws the logo centered at (x, y), or the site address if it cannot load
   private async addLogoToCanvas(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number
   ): Promise<void> {
-    return new Promise((resolve) => {
-      const img = new Image();
+    const logoWidth = 240;
+    const logoHeight = 36;
+    const img = new Image();
 
-      // Handle CORS if loading from external URL
-      img.crossOrigin = 'anonymous';
+    // Handle CORS if loading from external URL
+    img.crossOrigin = 'anonymous';
+    img.src = 'assets/images/vl50.png';
 
-      img.onload = () => {
-        try {
-          // Calculate logo dimensions (adjust as needed)
-          const logoWidth = 240; // Adjust width as needed
-          const logoHeight = 36; // Adjust height as needed
-
-          // Draw the logo centered at the specified position
-          ctx.drawImage(
-            img,
-            x - logoWidth / 2, // Center horizontally
-            y - logoHeight / 2, // Center vertically
-            logoWidth,
-            logoHeight
-          );
-
-          resolve();
-        } catch (error) {
-          console.error('Error drawing logo:', error);
-          // Fallback to text if logo fails
-          this.addFallbackText(ctx, x, y);
-          resolve();
-        }
-      };
-
-      img.onerror = () => {
-        console.error('Failed to load logo');
-        // Fallback to text if logo fails to load
-        this.addFallbackText(ctx, x, y);
-        resolve();
-      };
-
-      // Set the logo source - make sure this file exists
-      img.src = 'assets/images/vl50.png';
-    });
+    try {
+      await img.decode();
+      ctx.drawImage(
+        img,
+        x - logoWidth / 2,
+        y - logoHeight / 2,
+        logoWidth,
+        logoHeight
+      );
+    } catch (error) {
+      console.error('Error drawing logo:', error);
+      this.addFallbackText(ctx, x, y);
+    }
   }
 
   // Fallback method to add text if logo fails
@@ -722,73 +591,17 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
     ctx.fillText('app.viviliam.com', x, y);
   }
 
-  // Enhanced font loading method specifically for canvas
+  // Load the fonts before drawing text on the canvas
   private async ensureFontLoaded(): Promise<void> {
-    return new Promise((resolve) => {
-      // Load both fonts with specific weights
-      if ('fonts' in document && (document as any).fonts.load) {
-        const fontPromises = [
-          // Anek Tamil with weight 600 (changed from 500)
-          (document as any).fonts.load('600 40px "Anek Tamil"', 'தமிழ் பைபிள்'),
-          (document as any).fonts.load('600 30px "Anek Tamil"', 'வசனம்'),
-          // Bricolage Grotesque with weight 600
-          (document as any).fonts.load(
-            '600 40px "Bricolage Grotesque"',
-            'Bible Verse'
-          ),
-          (document as any).fonts.load(
-            '600 30px "Bricolage Grotesque"',
-            'Reference'
-          ),
-        ];
+    await Promise.allSettled([
+      document.fonts.load('600 40px "Anek Tamil"', 'தமிழ் பைபிள்'),
+      document.fonts.load('600 30px "Anek Tamil"', 'வசனம்'),
+      document.fonts.load('600 40px "Bricolage Grotesque"', 'Bible Verse'),
+      document.fonts.load('600 30px "Bricolage Grotesque"', 'Reference'),
+    ]);
 
-        Promise.allSettled(fontPromises).then(() => {
-          // Additional wait for font to be fully available
-          setTimeout(() => {
-            resolve();
-          }, 500);
-        });
-      } else {
-        // Fallback method
-        this.loadFontViaElement().then(() => {
-          resolve();
-        });
-      }
-    });
-  }
-
-  // Improved font loading via element
-  private async loadFontViaElement(): Promise<void> {
-    return new Promise((resolve) => {
-      // Create multiple test elements with different weights
-      const testTexts = ['தமிழ்', 'பைபிள்', 'வசனம்'];
-      const elements: HTMLElement[] = [];
-
-      testTexts.forEach((text, index) => {
-        const testElement = document.createElement('div');
-        testElement.style.fontFamily = '"Anek Tamil", sans-serif';
-        testElement.style.fontSize = '40px';
-        testElement.style.position = 'absolute';
-        testElement.style.left = '-9999px';
-        testElement.style.opacity = '0';
-        testElement.style.pointerEvents = 'none';
-        testElement.innerHTML = text;
-
-        document.body.appendChild(testElement);
-        elements.push(testElement);
-      });
-
-      // Wait longer for font to load
-      setTimeout(() => {
-        elements.forEach((element) => {
-          if (element.parentNode) {
-            document.body.removeChild(element);
-          }
-        });
-
-        resolve();
-      }, 800); // Increased timeout to 800ms
-    });
+    // Additional wait for font to be fully available
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
   // Helper method to calculate wrapped lines (for centering)
@@ -817,36 +630,5 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
       lines.push(line.trim());
     }
     return lines;
-  }
-
-  // Updated helper method for text wrapping with proper vertical centering
-  private wrapTextCentered(
-    ctx: CanvasRenderingContext2D,
-    text: string,
-    x: number,
-    startY: number,
-    maxWidth: number,
-    lineHeight: number
-  ) {
-    const words = text.split(' ');
-    let line = '';
-    let currentY = startY;
-
-    for (let n = 0; n < words.length; n++) {
-      const testLine = line + words[n] + ' ';
-      const metrics = ctx.measureText(testLine);
-      const testWidth = metrics.width;
-
-      if (testWidth > maxWidth && n > 0) {
-        ctx.fillText(line.trim(), x, currentY);
-        line = words[n] + ' ';
-        currentY += lineHeight;
-      } else {
-        line = testLine;
-      }
-    }
-    if (line.trim()) {
-      ctx.fillText(line.trim(), x, currentY);
-    }
   }
 }
