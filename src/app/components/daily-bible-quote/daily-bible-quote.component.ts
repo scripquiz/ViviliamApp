@@ -425,7 +425,19 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
         cursor: pointer;
         transition: all 0.3s ease;
       ">
-        Square (1:1) - 800x800
+        Square (1:1) - 720x720
+      </button>
+      <button class="ratio-btn" data-ratio="3:4" style="
+        padding: 12px 20px;
+        border: 2px solid #555;
+        background: #555;
+        color: white;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      ">
+        Portrait (3:4) - 720x960
       </button>
       <button class="ratio-btn" data-ratio="9:16" style="
         padding: 12px 20px;
@@ -496,6 +508,13 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
       .querySelector('[data-ratio="1:1"]')
       ?.addEventListener('click', () => {
         this.createImageWithRatio('1:1');
+        this.removeRatioMenu();
+      });
+
+    dialog
+      .querySelector('[data-ratio="3:4"]')
+      ?.addEventListener('click', () => {
+        this.createImageWithRatio('3:4');
         this.removeRatioMenu();
       });
 
@@ -643,7 +662,7 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges(); // Trigger change detection
   }
 
-  async createImageWithRatio(ratio: '1:1' | '9:16') {
+  async createImageWithRatio(ratio: '1:1' | '3:4' | '9:16') {
     try {
       // Show loading message
       await Toast.show({
@@ -664,14 +683,15 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
         throw new Error('Could not get canvas context');
       }
 
-      // Set canvas dimensions based on ratio
-      if (ratio === '1:1') {
-        canvas.width = 800;
-        canvas.height = 800;
-      } else if (ratio === '9:16') {
-        canvas.width = 720;
-        canvas.height = 1280;
-      }
+      // Canvas size and text layout for each ratio
+      const layout = {
+        '1:1': { width: 720, height: 720, mainFontSize: 36, referenceFontSize: 27, lineHeight: 63, textOffsetY: 18, logoBottom: 72 },
+        '3:4': { width: 720, height: 960, mainFontSize: 36, referenceFontSize: 26, lineHeight: 60, textOffsetY: -20, logoBottom: 100 },
+        '9:16': { width: 720, height: 1280, mainFontSize: 36, referenceFontSize: 26, lineHeight: 60, textOffsetY: -50, logoBottom: 150 },
+      }[ratio];
+
+      canvas.width = layout.width;
+      canvas.height = layout.height;
 
       // Add quote text with increased font size and Anek Tamil as default for Tamil
       const verseText = this.quoteoftheday.replace(/<[^>]*>/g, ''); // Remove HTML tags
@@ -708,9 +728,8 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
-      // Adjust font sizes based on ratio
-      const mainFontSize = ratio === '9:16' ? 36 : 40; // Slightly smaller for story format
-      const referenceFontSize = ratio === '9:16' ? 26 : 30;
+      // Font sizes based on ratio
+      const { mainFontSize, referenceFontSize } = layout;
 
       // Set font with better fallback system and weight specification
       if (containsTamil) {
@@ -786,15 +805,13 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
 
       // Calculate the total height of the verse text to center it properly
       const maxWidth = canvas.width - 100;
-      const lineHeight = ratio === '9:16' ? 60 : 70; // Adjust line height for story format
+      const lineHeight = layout.lineHeight;
       const lines = this.calculateWrappedLines(ctx, verseText, maxWidth);
       const totalTextHeight = lines.length * lineHeight;
 
       // Adjust vertical positioning based on ratio
       const verseStartY =
-        ratio === '9:16'
-          ? (canvas.height - totalTextHeight) / 2 - 50 // Move up a bit for story format
-          : (canvas.height - totalTextHeight) / 2 + 20;
+        (canvas.height - totalTextHeight) / 2 + layout.textOffsetY;
 
       this.wrapTextCentered(
         ctx,
@@ -871,7 +888,7 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
       );
 
       // Add logo with adjusted position for different ratios
-      const logoY = ratio === '9:16' ? canvas.height - 150 : canvas.height - 80;
+      const logoY = canvas.height - layout.logoBottom;
       await this.addLogoToCanvas(ctx, canvas.width / 2, logoY);
 
       // Convert canvas to base64
