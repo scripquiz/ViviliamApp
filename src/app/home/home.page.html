@@ -142,15 +142,16 @@
                 <span class="audio-subtitle">Hear God Every Day</span>
               </div>
 
-              <div class="audio-right-control">
+              <div
+                class="audio-right-control"
+                [class.repeat-on]="repeat_state_all > 0"
+              >
                 <ion-icon
                   class="audio-control-button2"
                   name="sync-outline"
-                  [style.color]="repeat_state_all === '0' ? (isDarkMode ? 'var(--app-text-secondary)' : '#999') : (!isDarkMode ? '#333' : 'var(--app-text-primary)')"
-                  [style.opacity]="repeat_state_all === '0' ? '0.5' : '1'"
                   (click)="setRepeatStateAll()"
                 ></ion-icon>
-                @if (repeat_state_all !== '0' && repeat_state_all > 0) {
+                @if (repeat_state_all > 0) {
                 <span class="repeat-badge audio-repeat-badge">
                   {{repeat_state_all}}
                 </span>
@@ -218,16 +219,16 @@
                           </div>
                         </td>
                         <td>
-                          <div class="audio-track-repeat">
+                          <div
+                            class="audio-track-repeat"
+                            [class.repeat-on]="audioItem.repeat_state > 0"
+                          >
                             <ion-icon
                               class="repeat-icon"
                               name="sync-outline"
-                              [style.color]="audioItem.repeat_state === '0' ? (isDarkMode ? 'var(--app-text-secondary)' : '#999') : (!isDarkMode ? '#333' : 'var(--app-text-primary)')"
-                              [style.opacity]="audioItem.repeat_state === '0' ? '0.5' : '1'"
                               (click)="setRepeatStateDirect(i, audioItem.repeat_state)"
                             ></ion-icon>
-                            @if (audioItem.repeat_state !== '0' &&
-                            audioItem.repeat_state > 0) {
+                            @if (audioItem.repeat_state > 0) {
                             <span class="repeat-badge audio-repeat-badge">
                               {{audioItem.repeat_state}}
                             </span>

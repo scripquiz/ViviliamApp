@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { timeout } from 'rxjs';
 import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { Component, ViewChild } from '@angular/core';
 import {
@@ -271,7 +272,10 @@ export class HomePage {
   }
 
   setRepeatStateDirect(i, repeat_state) {
-    this.stopAudioDirect(this.currentAudioIndex);
+    // A track repeat replaces Play All; a single track keeps playing.
+    if (this.playAll) {
+      this.stopAudioDirect(this.currentAudioIndex);
+    }
     const currentRepeatState =
       Number(this.todayAudioFiles[i].repeat_state) || 0;
     const nextRepeatState =
@@ -301,6 +305,11 @@ export class HomePage {
         item.state = 'pause';
       });
     }
+
+    this.wakeLockService
+      .allowSleepAgain()
+      .then(() => this.logger.log('Wake lock released'))
+      .catch(() => this.logger.log('Wake lock release failed'));
   }
 
   async openURLWeb(url: string) {
@@ -347,15 +356,6 @@ export class HomePage {
   ionViewWillLeave() {
     this.removeNetworkListeners();
     this.stopHomeAudioPlayback();
-    this.audioFocusService.releaseFocus('home');
-
-    // Release wake lock when leaving the page
-    if (this.wakeLockService.isActive()) {
-      this.wakeLockService
-        .allowSleepAgain()
-        .then(() => this.logger.log('Wake lock released on page leave'))
-        .catch(() => this.logger.log('Wake lock release failed on page leave'));
-    }
   }
 
   ionViewDidEnter() {
@@ -595,6 +595,7 @@ export class HomePage {
           this.stopAudioDirect(this.currentAudioIndex);
           this.playAll = false;
           this.playAllText = 'Play All';
+          this.repeat_state_all = 0;
           this.repeat_played_count_all = 0;
         }
       }
@@ -1033,23 +1034,11 @@ export class HomePage {
     this.audioLoadError = false;
     this.logger.log('Starting audio loading process...');
 
-    // Set timeout for loading
-    const audioLoadTimeout = setTimeout(() => {
-      if (this.isAudioLoading) {
-        this.logger.log('Audio loading timed out');
-        this.isAudioLoading = false;
-        this.audioLoadError = !this.todayAudioFiles.length;
-        this.audioLoadInProgress = false;
-        this.setStableErrorState(true, this.authservice.serverDownMessage);
-      }
-    }, 15000);
-
     const apiUrl = `https://api.viviliam.com/api/audio?date=${dateStr}`;
 
-    // Make API request
-    this.http.get(apiUrl).subscribe(
+    // Make API request; timeout() cancels it and raises an error after 15s
+    this.http.get(apiUrl).pipe(timeout(15000)).subscribe(
       (data: any) => {
-        clearTimeout(audioLoadTimeout);
         this.audioLoadInProgress = false;
         this.logger.log('Received audio data from API');
         try {
@@ -1069,7 +1058,6 @@ export class HomePage {
         }
       },
       (error) => {
-        clearTimeout(audioLoadTimeout);
         this.audioLoadInProgress = false;
         this.logger.error('HTTP error:', error);
         this.isAudioLoading = false;

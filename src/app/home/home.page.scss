@@ -1682,3 +1682,28 @@ body.dark-theme .daily-audio-card .audio-repeat-badge {
   border-color: #2a2825;
   color: #163321;
 }
+
+/* Repeat buttons: grey when off, card accent when on */
+.daily-audio-card .audio-control-button2,
+.daily-audio-card .repeat-icon {
+  color: #9a948d;
+}
+
+body.dark-theme .daily-audio-card .audio-control-button2,
+body.dark-theme .daily-audio-card .repeat-icon {
+  color: #77716a;
+}
+
+.daily-audio-card .repeat-on .audio-control-button2,
+.daily-audio-card .repeat-on .repeat-icon,
+body.dark-theme .daily-audio-card .repeat-on .audio-control-button2,
+body.dark-theme .daily-audio-card .repeat-on .repeat-icon {
+  color: var(--daily-audio-accent);
+}
+
+.daily-audio-card .audio-right-control.repeat-on,
+.daily-audio-card .audio-track-repeat.repeat-on,
+body.dark-theme .daily-audio-card .audio-right-control.repeat-on,
+body.dark-theme .daily-audio-card .audio-track-repeat.repeat-on {
+  background: var(--daily-audio-accent-soft);
+}
