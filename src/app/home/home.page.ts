@@ -75,6 +75,8 @@ export class HomePage {
   private isActivelyTesting: boolean = false;
   private _skipNetworkCheck: boolean = false;
   private audioLoadInProgress: boolean = false;
+  // Date (YYYY-MM-DD) that todayAudioFiles was loaded for
+  private loadedAudioDate: string = '';
   public get isServerError(): boolean {
     return this.APIMessage === this.authservice.serverDownMessage;
   }
@@ -132,7 +134,7 @@ export class HomePage {
               );
               this.setStableErrorState(false, '');
               if (!this.audioPlaying) {
-                if (this.audioLoadError || !this.todayAudioFiles.length) {
+                if (this.needsAudioLoad()) {
                   this.loadAudioDirectly();
                 }
               }
@@ -739,10 +741,7 @@ export class HomePage {
               this.setStableErrorState(false, '');
 
               // Load audio if needed
-              if (
-                this.isTodayTabActive() &&
-                (this.audioLoadError || !this.todayAudioFiles?.length)
-              ) {
+              if (this.isTodayTabActive() && this.needsAudioLoad()) {
                 this.logger.network('Network restored - loading audio content');
                 this.loadAudioDirectly();
               }
@@ -924,12 +923,24 @@ export class HomePage {
       priority: true,
     });
   }
+  // Local date as YYYY-MM-DD
+  private getTodayDateString(): string {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
+      2,
+      '0'
+    )}-${String(today.getDate()).padStart(2, '0')}`;
+  }
+  private needsAudioLoad(): boolean {
+    return (
+      this.audioLoadError ||
+      !this.todayAudioFiles.length ||
+      this.loadedAudioDate !== this.getTodayDateString()
+    );
+  }
   tryLoadFromCache() {
     this.logger.log('Attempting to load audio from cache...');
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}-${String(
-      today.getMonth() + 1
-    ).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const dateStr = this.getTodayDateString();
     const cachedData = localStorage.getItem('todayAudioCache');
     const cacheDate = localStorage.getItem('todayAudioCacheDate');
     if (cachedData && cacheDate === dateStr) {
@@ -966,7 +977,6 @@ export class HomePage {
     }
   }
   loadAudioDirectly() {
-    // Skip if audio already loaded
     if (this.audioLoadInProgress) {
       this.logger.log(
         'Audio load already in progress - skipping duplicate request'
@@ -974,7 +984,12 @@ export class HomePage {
       return;
     }
 
-    if (this.todayAudioFiles && this.todayAudioFiles.length > 0) {
+    // Reload a list from an earlier day, but never swap it during playback
+    const dateStr = this.getTodayDateString();
+    if (
+      this.todayAudioFiles.length &&
+      (this.loadedAudioDate === dateStr || this.audioPlaying)
+    ) {
       this.logger.log('Audio already loaded - skipping reload');
       return;
     }
@@ -996,11 +1011,6 @@ export class HomePage {
       }
     }, 15000);
 
-    // Prepare date for API request
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}-${String(
-      today.getMonth() + 1
-    ).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const apiUrl = `https://api.viviliam.com/api/audio?date=${dateStr}`;
 
     // Make API request
@@ -1061,19 +1071,19 @@ export class HomePage {
             repeat_played_count: 0,
           });
         });
-        if (todaysAudio.length > 0) {
-          this.todayAudioFiles = todaysAudio;
-          this.notificationsHomeCount = this.todayAudioFiles.length;
-          this.isAudioLoading = false;
-          this.audioLoadError = false;
-          this.logger.log(
-            `Successfully loaded ${todaysAudio.length} audio files from new API`
-          );
-        } else {
-          this.logger.log('No audio items found in API response');
-          this.isAudioLoading = false;
-          this.audioLoadError = false;
+        // A late response can arrive while an earlier day's list is in use
+        if (this.todayAudioFiles.length && this.loadedAudioDate !== dateStr) {
+          this.stopAllAudioDirect();
         }
+        // An empty list also replaces the old one, to show "No audio today"
+        this.todayAudioFiles = todaysAudio;
+        this.loadedAudioDate = dateStr;
+        this.notificationsHomeCount = todaysAudio.length;
+        this.isAudioLoading = false;
+        this.audioLoadError = false;
+        this.logger.log(
+          `Loaded ${todaysAudio.length} audio files from new API`
+        );
         return true;
       } else {
         this.logger.log('Invalid API response format');
@@ -1095,7 +1105,7 @@ export class HomePage {
       this.setStableErrorState(false, '');
 
       // Load audio if requested and needed
-      if (loadAudio && (this.audioLoadError || !this.todayAudioFiles?.length)) {
+      if (loadAudio && this.needsAudioLoad()) {
         this.logger.network('Network available - loading audio content');
         this.loadAudioDirectly();
       }
