@@ -306,7 +306,8 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
       box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
     }
   `;
-    document.head.appendChild(style);
+    // Kept inside the overlay so removeRatioMenu() removes it too
+    overlay.appendChild(style);
 
     // Add event listeners for color palettes
     const palettes = dialog.querySelectorAll('.color-palette');
