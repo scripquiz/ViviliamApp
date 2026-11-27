@@ -72,4 +72,12 @@
       </ion-list>
     </ng-template>
   </ion-popover>
+
+  @if (showRatioDialog) {
+    <app-ratio-dialog
+      [(selectedTheme)]="selectedColorTheme"
+      (ratioSelected)="createImageWithRatio($event)"
+      (closed)="showRatioDialog = false"
+    />
+  }
 </ion-card>

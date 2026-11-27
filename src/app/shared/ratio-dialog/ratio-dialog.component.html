@@ -1,0 +1,24 @@
+<div class="dialog" (click)="$event.stopPropagation()">
+  <h3>Select Color &amp; Size</h3>
+
+  <div class="palettes">
+    @for (theme of themes; track theme.name; let i = $index) {
+      <div
+        class="color-palette"
+        [class.selected]="i === selectedTheme()"
+        [style.background]="'linear-gradient(135deg, ' + theme.colors[0] + ', ' + theme.colors[1] + ')'"
+        [title]="theme.name"
+        (click)="selectedTheme.set(i)"
+      ></div>
+    }
+  </div>
+
+  <div class="buttons">
+    @for (ratio of ratios; track ratio.value) {
+      <button type="button" class="ratio-btn" (click)="ratioSelected.emit(ratio.value)">
+        {{ ratio.label }}
+      </button>
+    }
+    <button type="button" class="cancel-btn" (click)="closed.emit()">Cancel</button>
+  </div>
+</div>

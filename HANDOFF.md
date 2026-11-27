@@ -5,67 +5,43 @@ Goal: reduce the number of lines in these two files.
 - `src/app/components/daily-bible-verse/daily-bible-verse.component.ts`
 - `src/app/components/daily-bible-quote/daily-bible-quote.component.ts`
 
-| File  | Start | After step 1 | After step 4 |
-| ----- | ----- | ------------ | ------------ |
-| verse | 995   | 852          | 634          |
-| quote | 975   | 921          | 703          |
+| File  | Start | Step 1 | Step 4 | Step 5 | Step 2 | Step 3 |
+| ----- | ----- | ------ | ------ | ------ | ------ | ------ |
+| verse | 995   | 852    | 634    | 629    | 385    | 174    |
+| quote | 975   | 921    | 703    | 650    | 406    | 196    |
+
+**All planned steps are done. Only device testing and one open decision remain.**
 
 ## Done
 
-### Step 1: remove dead code
-Committed as `0e77da9`.
+- Step 1, remove dead code: committed as `0e77da9`.
+- Step 4, simplify canvas font, logo and wrapping code: committed as `81461ef`.
+- Step 5, simplify language switching: **not committed.**
+- Step 2, shared `src/app/services/verse-image.service.ts`: **not committed.**
+- Step 3, shared `src/app/shared/ratio-dialog/` (`app-ratio-dialog`): **not committed.**
 
-### Step 4: simplify canvas font, logo and wrapping code
-**Not committed yet.** Applied to both files:
+Behavior changes:
 
-- `ctx.font` is now one string with a fallback list, replacing the font loops.
-- Text is drawn from the lines returned by `calculateWrappedLines`; `wrapTextCentered` is removed.
-- `addLogoToCanvas` is async and uses `await img.decode()`, with `addFallbackText` on error.
-- `ensureFontLoaded` uses `Promise.allSettled` over `document.fonts.load`, then waits 500 ms; `loadFontViaElement` is removed.
+- Switching language no longer queries the database again. It will not pick up a new day's content after midnight, and no longer retries a failed or empty load.
+- The image text and color theme are read when the ratio is tapped, not after the fonts load.
 
-Checks: `npx tsc --noEmit -p tsconfig.app.json` and `npx ng build` passed.
-`npm run lint` and `npm test` were not run.
+Checks after step 3: `npx tsc --noEmit -p tsconfig.app.json` and `npx ng build` passed, and all 46 unit tests passed.
+`npm run lint` fails across the project (404 problems). The changed component files have the same 10 as their committed versions; the new files have none.
 
-Still to test on a device (`npx cap sync android`, then `ionic cap run android`):
+## Still to test
 
+Nothing has been checked visually. On a device (`npx cap sync android`, then `ionic cap run android`):
+
+- [ ] Ratio dialog on both cards: opens above the page, color selection, Cancel, tap outside to close
 - [ ] Verse and quote images, in Tamil and English
 - [ ] Ratios 1:1, 3:4 and 9:16
 - [ ] Fonts, line wrapping and logo (only a device can confirm that removing `loadFontViaElement` is safe)
+- [ ] Language switching on both cards, including with no data
 
-## Remaining
+## Open decision: menu language is not remembered
 
-Suggested order: **5, then 2, then 3**.
-
-### Step 5 (next): simplify language switching
-
-- Quote: have `setLanguage` swap the already loaded `tamilQuote` / `englishQuote`, and remove `updateQuoteContent`, which repeats the query in `getQuoteOfTheDay`.
-  - In the no-data and error states both strings are `''`. Do not overwrite the message with an empty string.
-  - Behavior change: switching language would no longer re-query, so it would not pick up a new day's quote after midnight.
-- Verse: add one `applyLanguage()` shared by `ngOnInit`, `getVerseOfTheDay` and `setLanguage`. `setLanguage` then no longer needs to query the database again (same midnight caveat).
-
-### Step 2: shared image service
-
-- New file, for example `src/app/services/verse-image.service.ts`, with `createImage({ text, reference, filePrefix, theme, ratio })`.
-- Move `createImageWithRatio`, `addLogoToCanvas`, `addFallbackText`, `ensureFontLoaded` and `calculateWrappedLines` into it.
-- The two `createImageWithRatio` methods differ only in the text, the reference/author line and the filename prefix (`daily-verse-`, `daily-quote-`).
-- `colorThemes` is identical in both components, so share it too.
-
-### Step 3: shared ratio dialog
-
-- Replace the DOM-built `showRatioSelectionMenu` / `removeRatioMenu` in both components with one standalone component (`inject()`, signals, `@if` / `@for`).
-- The element ids differ today: `ratio-selection-menu` and `quote-ratio-selection-menu`.
-
-## Separate issue to decide on: menu language is not remembered
-
-Found by reading the code, not tested in the app. Fixing it changes behavior, so it is not part of step 5 unless you choose to include it.
+Found by reading the code, not tested in the app. Not changed, because fixing it changes behavior.
 
 - Verse: `setLanguage` writes `bibleVerseLanguage` to localStorage, but nothing reads it. `ngOnInit` reads `authservice.dailyVerse`.
 - Quote: `ngOnInit` reads `authservice.dailyQuote` before the `quoteLanguage` localStorage value. `dailyQuote` defaults to `'TAMIL'`, so the saved value is likely never used.
 - `authservice.dailyVerse` / `dailyQuote` are also set in `settings.page.ts`, `read.page.ts` and `getstarted.page.ts`.
-
-## Notes for the next session
-
-- Keep each component's existing patterns: standalone, `OnPush` with `cdr.detectChanges()`, `IonicModule` from `@ionic/angular`.
-- Do not bring back the font loops. Setting `ctx.font` never throws, so they always stopped at the first entry.
-- After each step, build and compare the generated images in all three ratios, Tamil and English.
-- Next files to edit: the two component `.ts` files, starting with step 5.
