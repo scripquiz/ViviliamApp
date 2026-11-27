@@ -101,7 +101,6 @@ export class AuthserviceProvider {
   public userFirsletter: any;
   public showsign: any = 0;
   public userId_ForgotPassword: any = '';
-  public promoslide: any = 0;
   public loginRedirected: any = 1;
   public compareBibleId: any = 0;
   public actualDefaultBibleId: any = 0;

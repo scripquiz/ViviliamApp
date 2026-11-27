@@ -38,13 +38,6 @@ export class HomePage {
   private networkDebounceTimer: any = null;
   private lastReportedNetworkState: boolean | null = null;
 
-  public slideOpts = {
-    initialSlide: 0,
-    speed: 300,
-    effect: 'flip',
-    autoplay: { delay: 5000 },
-    allowTouchMove: false,
-  };
   public APIMessage: any = '';
   public todayDate: any = '';
   public database: DatabaseConnection;
@@ -64,7 +57,6 @@ export class HomePage {
   public notificationUpdateIndex: any = 0;
   public appversionText: any = '';
   public resumeListener: any;
-  public pauseListener: any;
   public repeat_state_all: any = 0;
   public repeat_played_count_all: any = 0;
   public showNetworkOrAPIErrorMessage: any = 0;
@@ -75,7 +67,6 @@ export class HomePage {
   public errorStateTimer: any = null;
   public stableErrorDetected: boolean = false;
   private isActivelyTesting: boolean = false;
-  private _skipNetworkCheck: boolean = false;
   private audioLoadInProgress: boolean = false;
   // Date (YYYY-MM-DD) that todayAudioFiles was loaded for
   private loadedAudioDate: string = '';
@@ -155,7 +146,6 @@ export class HomePage {
             this.authservice.orientation = this.orientation;
           }
         });
-        this.pauseListener = this.platform.pause.subscribe(() => { });
         this.orientation = this.authservice.orientation;
         this.orientationSubscription = this.screenorientation
           .onChange()
@@ -312,44 +302,8 @@ export class HomePage {
       .catch(() => this.logger.log('Wake lock release failed'));
   }
 
-  async openURLWeb(url: string) {
-    try {
-      await Browser.open({
-        url: url,
-        toolbarColor: '#c94b18',
-        presentationStyle: 'popover',
-      });
-    } catch (error) {
-      this.logger.error('Error opening URL:', error);
-      this.authservice.showAlert(
-        'Error',
-        '',
-        'Failed to open the page. Please check your connection.'
-      );
-    }
-  }
-  ngAfterViewInit() {
-    this.logger.log('Audio Debug Info:');
-    this.logger.log('isAudioLoading:', this.isAudioLoading);
-    this.logger.log('audioLoadError:', this.audioLoadError);
-    this.logger.log('todayAudioFiles length:', this.todayAudioFiles.length);
-    this.logger.log('todayAudioFiles:', this.todayAudioFiles);
-    this.logger.log('segmentSelected:', this.segmentSelected);
-    this.logger.log('tabRowitemSelected:', this.tabRowitemSelected);
-  }
   ionViewWillEnter() {
     this.menuCtrl.enable(false);
-    setTimeout(() => {
-      const rowTabElement = document.querySelector(
-        '.row-tab-home'
-      ) as HTMLElement;
-      if (rowTabElement) {
-        rowTabElement.style.position = 'fixed';
-        rowTabElement.style.zIndex = '999';
-        rowTabElement.style.top = '56px';
-        rowTabElement.style.backgroundColor = '#fff';
-      }
-    }, 100);
     this.setupNetworkListeners();
   }
 
@@ -381,16 +335,6 @@ export class HomePage {
       }
     });
     this.authservice.currentPage = 'HOME';
-    var slideIndex = this.authservice.promoslide;
-    this.slideOpts = {
-      initialSlide: slideIndex,
-      speed: 300,
-      effect: 'flip',
-      autoplay: { delay: 5000 },
-      allowTouchMove: false,
-    };
-    this.authservice.promoslide++;
-    if (this.authservice.promoslide == 4) this.authservice.promoslide = 0;
     this.authservice.showsign = 1;
     this.notificationUpdateIndex = 0;
     this.authservice.currentPage = 'HOME';
@@ -465,17 +409,9 @@ export class HomePage {
     if (this.resumeListener) {
       this.resumeListener.unsubscribe();
     }
-    if (this.pauseListener) {
-      this.pauseListener.unsubscribe();
-    }
     if (this.darkModeSubscription) {
       this.darkModeSubscription.unsubscribe();
     }
-  }
-  padLeadingZeros(num: number, size: number): string {
-    let s = num + '';
-    while (s.length < size) s = '0' + s;
-    return s;
   }
   setRepeatStateAll() {
     this.repeat_state_all = (Number(this.repeat_state_all) || 0) + 1;
@@ -487,19 +423,7 @@ export class HomePage {
 
     this.logger.log(`Repeat all set to ${this.repeat_state_all}`);
   }
-  init_loadNotifications(flag) {
-    if (flag == 1) this.ionLoaderService.simpleLoader('Please wait...');
-    let type = this.network.connectionType;
-    if (type == 'unknown' || type == 'none' || type == undefined) {
-      this.isNetworkAvailable = 0;
-      this.APIMessage = this.authservice.noNetWorkMessage;
-      this.showNetworkOrAPIErrorMessage = 1;
-    } else {
-      this.isNetworkAvailable = '1';
-    }
-    this.ionLoaderService.dismissLoader();
-  }
-  playAudioDirect(idx, caption, state) {
+  playAudioDirect(idx) {
     var tempdta;
     this.wakeLockService.keepAwake().then(
       () => (tempdta = ''),
@@ -508,10 +432,6 @@ export class HomePage {
     this.playAll = false;
     this.playAllText = 'Play All';
     this.startAudioDirect(idx);
-    localStorage.setItem(
-      `audio_played_${this.todayAudioFiles[idx].id}`,
-      'true'
-    );
   }
   startAudioDirect(idx) {
     this.audioFocusService.requestFocus('home');
@@ -779,11 +699,6 @@ export class HomePage {
                 this.logger.network('Network restored - loading audio content');
                 this.loadAudioDirectly();
               }
-
-              // Reload notifications after a delay
-              setTimeout(() => {
-                this.init_loadNotifications(0);
-              }, 1000);
             } else {
               this.logger.network('Stable network connectivity lost');
               if (this.isTodayTabActive()) {
@@ -854,14 +769,6 @@ export class HomePage {
         `Network check already in progress (${source}) - using cached state`
       );
       return Promise.resolve(this.network.isConnected);
-    }
-
-    // Skip if explicitly configured to do so (for testing)
-    if (this._skipNetworkCheck) {
-      this.logger.network(
-        `Network check skipped per configuration (${source})`
-      );
-      return Promise.resolve(true);
     }
 
     // Show loader if requested
