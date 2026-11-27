@@ -56,6 +56,7 @@ export class HomePage {
   public selectedAudioSource: any = '';
   public currentAudioIndex: any = 0;
   public audioPlaying: any;
+  public isSeeking = false;
   public playAll: any = false;
   public playAllText: any = 'Play All';
   public notificationUpdateIndex: any = 0;
@@ -131,7 +132,7 @@ export class HomePage {
               );
               this.setStableErrorState(false, '');
               if (!this.audioPlaying) {
-                if (this.audioLoadError) {
+                if (this.audioLoadError || !this.todayAudioFiles.length) {
                   this.loadAudioDirectly();
                 }
               }
@@ -174,43 +175,6 @@ export class HomePage {
           })
           .then((db: DatabaseConnection) => {
             this.database = db;
-            setInterval(() => {
-              if (this.audioPlaying) {
-                const activeAudioArray = this.todayAudioFiles;
-                if (
-                  activeAudioArray &&
-                  activeAudioArray.length > 0 &&
-                  this.currentAudioIndex < activeAudioArray.length
-                ) {
-                  if (
-                    this.audio.nativeElement.currentTime >=
-                    activeAudioArray[this.currentAudioIndex].duration - 0.5
-                  ) {
-                    this.logger.log('End of audio detected by time comparison');
-                    this.handleAudioEnded();
-                  } else {
-                    activeAudioArray[this.currentAudioIndex].ctime = parseInt(
-                      this.audio.nativeElement.currentTime.toString()
-                    );
-                    activeAudioArray[this.currentAudioIndex].ctimeintime =
-                      this.convertHMS(
-                        parseInt(
-                          this.audio.nativeElement.currentTime.toString()
-                        )
-                      );
-                    activeAudioArray[this.currentAudioIndex].durationintime =
-                      this.convertHMS(
-                        parseInt(
-                          activeAudioArray[this.currentAudioIndex].duration
-                        ) -
-                        parseInt(
-                          this.audio.nativeElement.currentTime.toString()
-                        )
-                      );
-                  }
-                }
-              }
-            }, 1000);
           })
           .catch((error) => {
             this.logger.error('Database creation error:', error);
@@ -224,7 +188,7 @@ export class HomePage {
   handleLoadingError(message) {
     this.logger.error('Audio loading error:', message);
     this.isAudioLoading = false;
-    this.audioLoadError = true;
+    this.audioLoadError = !this.todayAudioFiles.length;
     this.audioLoadInProgress = false;
     const connectionType = this.network.connectionType;
     if (connectionType !== 'none' && connectionType !== 'unknown') {
@@ -233,7 +197,6 @@ export class HomePage {
     } else {
       this.setStableErrorState(true, this.authservice.noNetWorkMessage);
     }
-    this.logger.log('Falling back to database audio loading');
   }
   playAllAudiosDirect() {
     if (this.playAll) {
@@ -576,12 +539,26 @@ export class HomePage {
     this.audioPlaying = true;
     // Reset wake lock activity timer on audio play
     this.wakeLockService.resetActivity();
-    audioElement.onended = () => {
-      this.handleAudioEnded();
-    };
   }
+  // Bound to the <audio> element's timeupdate event
+  onTimeUpdate(): void {
+    const track = this.todayAudioFiles[this.currentAudioIndex];
+    if (!this.audioPlaying || this.isSeeking || !track) {
+      return;
+    }
+    const currentTime = this.audio.nativeElement.currentTime;
+    track.ctime = currentTime;
+    track.ctimeintime = this.convertHMS(currentTime);
+    track.durationintime = this.convertHMS(
+      Math.max(0, Math.floor(track.duration) - Math.floor(currentTime))
+    );
+  }
+  // Bound to the <audio> element's ended event
   handleAudioEnded() {
     const activeAudioArray = this.todayAudioFiles;
+    if (!activeAudioArray[this.currentAudioIndex]) {
+      return;
+    }
     activeAudioArray[this.currentAudioIndex].ctime = 0;
     activeAudioArray[this.currentAudioIndex].ctimeintime = '0:00';
     activeAudioArray[this.currentAudioIndex].durationintime = this.convertHMS(
@@ -785,9 +762,7 @@ export class HomePage {
 
               // Try loading from cache if on audio tab
               if (this.isTodayTabActive()) {
-                this.isAudioLoading = false;
-                this.audioLoadError = true;
-                this.tryLoadFromCache();
+                this.showCachedAudioIfEmpty();
               }
             }
           }
@@ -961,7 +936,9 @@ export class HomePage {
       try {
         this.logger.log('Found valid cached audio data for today');
         const data = JSON.parse(cachedData);
-        this.processNewAudioData(data, dateStr);
+        if (!this.processNewAudioData(data, dateStr)) {
+          return false;
+        }
         this.setStableErrorState(
           true,
           'Using cached data - no internet connection'
@@ -974,6 +951,18 @@ export class HomePage {
     } else {
       this.logger.log('No valid cache found for today');
       return false;
+    }
+  }
+  // Used when offline: never replaces or hides a list that is already loaded.
+  private showCachedAudioIfEmpty(): void {
+    if (this.todayAudioFiles.length || this.tryLoadFromCache()) {
+      return;
+    }
+    // A request still in flight reports its own result. Only the initial,
+    // never-loaded state needs to become an error here.
+    if (!this.audioLoadInProgress && this.isAudioLoading) {
+      this.isAudioLoading = false;
+      this.audioLoadError = true;
     }
   }
   loadAudioDirectly() {
@@ -1001,7 +990,7 @@ export class HomePage {
       if (this.isAudioLoading) {
         this.logger.log('Audio loading timed out');
         this.isAudioLoading = false;
-        this.audioLoadError = true;
+        this.audioLoadError = !this.todayAudioFiles.length;
         this.audioLoadInProgress = false;
         this.setStableErrorState(true, this.authservice.serverDownMessage);
       }
@@ -1021,15 +1010,19 @@ export class HomePage {
         this.audioLoadInProgress = false;
         this.logger.log('Received audio data from API');
         try {
-          localStorage.setItem('todayAudioCache', JSON.stringify(data));
-          localStorage.setItem('todayAudioCacheDate', dateStr);
-          this.processNewAudioData(data, dateStr);
+          if (!this.processNewAudioData(data, dateStr)) {
+            this.tryLoadFromCache();
+            return;
+          }
           this.setStableErrorState(false, '');
+          // Cache only a validated, non-empty response
+          if (data.audio.length) {
+            localStorage.setItem('todayAudioCache', JSON.stringify(data));
+            localStorage.setItem('todayAudioCacheDate', dateStr);
+          }
         } catch (error) {
-          this.logger.error('Error processing API response:', error);
-          this.isAudioLoading = false;
-          this.audioLoadError = true;
-          this.setStableErrorState(true, this.authservice.serverDownMessage);
+          // The list is already processed; only the cache write can fail here
+          this.logger.error('Error caching API response:', error);
         }
       },
       (error) => {
@@ -1037,13 +1030,14 @@ export class HomePage {
         this.audioLoadInProgress = false;
         this.logger.error('HTTP error:', error);
         this.isAudioLoading = false;
-        this.audioLoadError = true;
+        this.audioLoadError = !this.todayAudioFiles.length;
         this.setStableErrorState(true, this.authservice.serverDownMessage);
         this.tryLoadFromCache();
       }
     );
   }
-  processNewAudioData(data, dateStr) {
+  // Returns false when the data is invalid; an empty list is a valid result.
+  processNewAudioData(data, dateStr): boolean {
     this.logger.log(`Processing new API audio data for date: ${dateStr}`);
     try {
       const todaysAudio = [];
@@ -1077,15 +1071,19 @@ export class HomePage {
           );
         } else {
           this.logger.log('No audio items found in API response');
-          this.handleLoadingError('No audio found for today');
+          this.isAudioLoading = false;
+          this.audioLoadError = false;
         }
+        return true;
       } else {
         this.logger.log('Invalid API response format');
         this.handleLoadingError('Invalid API response');
+        return false;
       }
     } catch (error) {
       this.logger.error('Error processing new API data:', error);
       this.handleLoadingError('API processing error');
+      return false;
     }
   }
 
@@ -1109,9 +1107,7 @@ export class HomePage {
 
       // Try loading from cache if audio was requested
       if (loadAudio) {
-        this.isAudioLoading = false;
-        this.audioLoadError = true;
-        this.tryLoadFromCache();
+        this.showCachedAudioIfEmpty();
       }
     }
   }

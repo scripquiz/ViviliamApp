@@ -60,6 +60,28 @@
         </div>
         }
 
+        <!-- Error case - loading failed and there is nothing to show -->
+        @if (!isAudioLoading && audioLoadError) {
+        <div class="audio-error">
+          <ion-card class="card">
+            <div class="card-item-header">
+              <span
+                class="title"
+                style="padding-left: 10px; display: inline-block"
+                >{{ APIMessage || 'Unable to load audio' }}</span
+              >
+              <ion-button
+                (click)="loadAudioDirectly()"
+                fill="clear"
+                class="button-normal retry"
+              >
+                Retry
+              </ion-button>
+            </div>
+          </ion-card>
+        </div>
+        }
+
         <!-- No audio content case -->
         @if (!isAudioLoading && !audioLoadError && todayAudioFiles.length === 0)
         {
@@ -87,7 +109,13 @@
         <div
           [ngStyle]="{'display': !isAudioLoading && !audioLoadError && todayAudioFiles.length > 0 ? 'block' : 'none'}"
         >
-          <audio #audioPlayer preload="auto" playsinline>
+          <audio
+            #audioPlayer
+            preload="auto"
+            playsinline
+            (timeupdate)="onTimeUpdate()"
+            (ended)="handleAudioEnded()"
+          >
             <source src="{{selectedAudioSource}}" />
           </audio>
           <ion-card class="card daily-audio-card">
@@ -173,7 +201,9 @@
                                 ticks="false"
                                 step="0.1"
                                 value="{{audioItem.ctime}}"
-                                (touchend)="onChangePlayTimeDirect(i,$event)"
+                                (touchstart)="isSeeking = true"
+                                (touchend)="isSeeking = false; onChangePlayTimeDirect(i,$event)"
+                                (touchcancel)="isSeeking = false"
                               >
                               </ion-range>
                               <div class="audio-time-container">
