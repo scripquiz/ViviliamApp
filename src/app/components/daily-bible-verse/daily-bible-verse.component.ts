@@ -41,7 +41,8 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
   public dailyVerseLanguageAlternate: string = 'Tamil';
   public dailyVerse_top: string = '';
   public dailyVerse_bottom: string = '';
-  public showDailyVerseSetting: string = 'opacityhidehome';
+  public menuOpen: boolean = false;
+  public menuEvent?: Event;
   public showRatioSelection: boolean = false;
   public isLoading: boolean = true;
   public selectedColorTheme: number = 0; // Default to first theme
@@ -74,7 +75,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
     } else {
       this.dailyVerseLanguageAlternate = 'Tamil';
     }
-    this.addGlobalClickListener();
   }
 
   ngOnChanges() {
@@ -87,39 +87,8 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Clean up the global click listener
-    this.removeGlobalClickListener();
-    // Clean up any open menus
-    this.removeMenu();
     this.removeRatioMenu();
   }
-
-  private addGlobalClickListener() {
-    document.addEventListener('click', this.globalClickHandler);
-  }
-
-  private removeGlobalClickListener() {
-    document.removeEventListener('click', this.globalClickHandler);
-  }
-
-  private globalClickHandler = (event: Event) => {
-    const target = event.target as HTMLElement;
-
-    // Check if click is outside any menu
-    const isClickOnVerseSetting =
-      target.closest('#dynamic-verse-menu') ||
-      target.closest('app-daily-bible-verse .verse-menu-icon');
-    const isClickOnQuoteSetting =
-      target.closest('#dynamic-quote-menu') ||
-      target.closest('app-daily-bible-quote .quote-menu-icon');
-
-    // If click is outside both menus, hide this component's menu
-    if (!isClickOnVerseSetting && !isClickOnQuoteSetting) {
-      if (this.showDailyVerseSetting === 'opacityshowhome') {
-        this.hideSettingsMenu();
-      }
-    }
-  };
 
   getVerseOfTheDay() {
     const todayDate = new Date();
@@ -184,158 +153,11 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
       }
     } */
 
-  showSettings() {
-    this.showDailyVerseSetting =
-      this.showDailyVerseSetting === 'opacityshowhome'
-        ? 'opacityhidehome'
-        : 'opacityshowhome';
-
-    if (this.showDailyVerseSetting === 'opacityshowhome') {
-      setTimeout(() => {
-        this.createAndPositionMenu();
-      }, 10);
-    } else {
-      this.removeMenu();
-    }
-
-    this.cdr.detectChanges();
+  showSettings(event: Event) {
+    this.menuEvent = event;
+    this.menuOpen = true;
   }
 
-  private createAndPositionMenu() {
-    // Remove existing menu if any
-    this.removeMenu();
-
-    // Use a more specific selector that targets only this component's button
-    const moreButton = document.querySelector(
-      'app-daily-bible-verse .verse-menu-icon'
-    );
-    if (!moreButton) return;
-
-    const rect = moreButton.getBoundingClientRect();
-
-    // Create menu overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'versettingMenu-dynamic opacityshowhome';
-    overlay.id = 'dynamic-verse-menu';
-
-    // Hide menu when clicking outside (on overlay)
-    overlay.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      // Check if the click was on the overlay itself (not on children)
-      if (
-        target === overlay ||
-        target.classList.contains('versettingMenu-dynamic')
-      ) {
-        this.hideSettingsMenu();
-      }
-    });
-
-    // Create popover
-    const popover = document.createElement('div');
-    popover.className = 'popover-dynamic pop-over-shadow opacityshowhome';
-
-    // Position the popover
-    popover.style.position = 'fixed';
-    popover.style.top = rect.bottom + 5 + 'px';
-    popover.style.right = window.innerWidth - rect.right + 'px';
-    popover.style.width = '140px';
-    popover.style.zIndex = '10001';
-
-    // Prevent popover clicks from bubbling to overlay
-    popover.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
-
-    // Add menu content with Create Image option
-    popover.innerHTML = `
-      <ion-list style="padding:0px">
-        <ion-item no-padding style="border-bottom: 1px solid rgba(0,0,0,.3);height:47px;--padding-start: 10px;" class="menu-language">
-          <ion-avatar slot="start" style="margin-inline:unset;">
-            <ion-icon name="language-outline" style="font-size:24px; position:relative;top:3px"></ion-icon>
-          </ion-avatar>
-          <ion-label style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-5px">${this.dailyVerseLanguageAlternate}</ion-label>
-        </ion-item>
-        <ion-item no-padding style="border-bottom: 1px solid rgba(0,0,0,.3);height:47px;--padding-start: 10px;" class="menu-create-image">
-          <ion-avatar slot="start" style="margin-inline:unset;">
-            <ion-icon name="image-outline" style="font-size:24px; position:relative;top:3px"></ion-icon>
-          </ion-avatar>
-          <ion-label style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-5px">Image</ion-label>
-        </ion-item>
-        <ion-item no-padding style="border-bottom: 1px solid rgba(0,0,0,.3);height:47px;--padding-start: 10px;" class="menu-copy">
-          <ion-avatar slot="start" style="margin-inline:unset;">
-            <ion-icon name="copy-outline" style="font-size:24px; position:relative;top:3px"></ion-icon>
-          </ion-avatar>
-          <ion-label style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-5px">Copy</ion-label>
-        </ion-item>
-        <ion-item no-padding style="border-bottom: 1px solid rgba(0,0,0,.3);height:47px;--padding-start: 10px;" class="menu-copy-all">
-          <ion-avatar slot="start" style="margin-inline:unset;">
-            <ion-icon name="documents-outline" style="font-size:24px; position:relative;top:3px"></ion-icon>
-          </ion-avatar>
-          <ion-label style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-5px">Copy All</ion-label>
-        </ion-item>
-        <ion-item no-padding style="border-bottom: 1px solid rgba(0,0,0,.3);height:47px;--padding-start: 10px;" class="menu-share">
-          <ion-avatar slot="start" style="margin-inline:unset;">
-            <ion-icon name="share-social-outline" style="font-size:24px;position:relative; top:6px;"></ion-icon>
-          </ion-avatar>
-          <ion-label style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-2px">Share</ion-label>
-        </ion-item>
-        <ion-item no-padding style="height:47px;--padding-start: 10px;display: block;" class="menu-share-all">
-          <ion-avatar slot="start" style="margin-inline:unset;">
-            <ion-icon name="share-outline" style="font-size:24px;position:relative; top:6px;"></ion-icon>
-          </ion-avatar>
-          <ion-label style="font-size:16px;font-family: Arial, Helvetica, sans-serif;position:relative;top:-2px">Share All</ion-label>
-        </ion-item>
-      </ion-list>
-    `;
-
-    // Add event listeners
-    popover.querySelector('.menu-language')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.setLanguage();
-      this.hideSettingsMenu();
-    });
-
-    popover
-      .querySelector('.menu-create-image')
-      ?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.createImage();
-        this.hideSettingsMenu();
-      });
-
-    popover.querySelector('.menu-copy')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.shareContent('COPY');
-      this.hideSettingsMenu();
-    });
-
-    popover.querySelector('.menu-copy-all')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.shareContent('COPY_ALL');
-      this.hideSettingsMenu();
-    });
-
-    popover.querySelector('.menu-share')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.shareContent('SHARE');
-      this.hideSettingsMenu();
-    });
-
-    popover.querySelector('.menu-share-all')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.shareContent('SHARE_ALL');
-      this.hideSettingsMenu();
-    });
-
-    overlay.appendChild(popover);
-    document.body.appendChild(overlay);
-  }
-
-  hideSettingsMenu() {
-    this.showDailyVerseSetting = 'opacityhidehome';
-    this.removeMenu();
-    this.cdr.detectChanges();
-  }
   showRatioSelectionMenu() {
     // Remove any existing ratio menu
     this.removeRatioMenu();
@@ -536,13 +358,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
   // Add this method to remove the ratio menu
   private removeRatioMenu() {
     const existingMenu = document.getElementById('ratio-selection-menu');
-    if (existingMenu) {
-      existingMenu.remove();
-    }
-  }
-
-  private removeMenu() {
-    const existingMenu = document.getElementById('dynamic-verse-menu');
     if (existingMenu) {
       existingMenu.remove();
     }
@@ -852,7 +667,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
     localStorage.setItem('bibleVerseLanguage', this.dailyVerseLanguage);
 
     this.getVerseOfTheDay();
-    this.showDailyVerseSetting = 'opacityhidehome';
     this.cdr.detectChanges(); // Trigger change detection
   }
 
@@ -871,8 +685,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
         '\n\n' +
         'Shared via Viviliam\nhttps://app.viviliam.com';
     }
-
-    this.showDailyVerseSetting = 'opacityhidehome';
 
     if (mode === 'SHARE' || mode === 'SHARE_ALL') {
       this.shareService.share({

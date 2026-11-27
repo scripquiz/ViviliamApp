@@ -72,31 +72,6 @@
     font-weight: 500;
 }
 
-// Remove the old static menu styles - commenting out since we're using dynamic menu
-/*
-.versettingMenu {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: calc(100vh);
-    background-color: transparent;
-}
-
-.popover {
-    top: 43px;
-    font-size: 18px;
-    position: absolute;
-    right: 10px;
-    width: 140px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    overflow: hidden;
-    z-index: 999;
-}
-*/
-
 .settings-list {
     padding: 0px;
 }
@@ -156,13 +131,6 @@
     }
 }
 
-.opacityshowhome {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
-}
-
 // Dark mode styles
 body.dark-theme {
     .card {
@@ -218,48 +186,26 @@ body.dark-theme {
     }
 }
 
-.opacityhidehome {
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0.95);
-    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s 0.4s;
-}
+.quote-menu-popover {
+    --width: 170px;
 
-.pop-over-shadow {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-
-// Dynamic menu styles
-:host ::ng-deep .quotesettingMenu-dynamic {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: transparent;
-    z-index: 10000;
-}
-
-:host ::ng-deep .popover-dynamic {
-    font-size: 18px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    overflow: hidden;
-    width: 140px; // Ensure consistent width for all menu items
+    ion-list {
+        padding: 0;
+    }
 
     ion-item {
-        cursor: pointer;
-        min-height: 47px; // Ensure consistent height
+        --min-height: 47px;
+        --padding-start: 12px;
+        font-family: Arial, Helvetica, sans-serif;
 
-        &:hover {
-            background-color: #f0f0f0;
+        ion-icon {
+            font-size: 24px;
+            margin-inline-end: 12px;
         }
 
         ion-label {
+            font-size: 16px;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
     }
 }
