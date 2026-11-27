@@ -26,11 +26,6 @@
       ></ion-icon>
     </h4>
     <div class="card-item-daily-items-padding">
-      <div
-        class="home-dynamic-content"
-        [ngStyle]="{ display: dailyVerse_top != '' ? 'block' : 'none' }"
-        [innerHTML]="dailyVerse_top"
-      ></div>
       <div style="width: 100%; text-align: center">
         <div class="verseoftheday" [innerHTML]="verseoftheday"></div>
         <div
@@ -38,11 +33,6 @@
           [innerHTML]="verseoftheday_reference"
         ></div>
       </div>
-      <div
-        class="home-dynamic-content"
-        [ngStyle]="{ display: dailyVerse_bottom != '' ? 'block' : 'none' }"
-        [innerHTML]="dailyVerse_bottom"
-      ></div>
     </div>
   </div>
   }

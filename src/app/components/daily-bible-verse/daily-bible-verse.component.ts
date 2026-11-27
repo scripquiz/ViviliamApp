@@ -1,19 +1,15 @@
 import {
   Component,
   OnInit,
-  OnDestroy, // Add this import
+  OnDestroy,
   Input,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from '@angular/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { Share } from '@capacitor/share';
-import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { DatabaseService, DatabaseConnection } from 'src/app/services/database.service';
+import { DatabaseConnection } from 'src/app/services/database.service';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
 import { ShareService } from '../../providers/share.service';
 import { Clipboard } from '@capacitor/clipboard';
@@ -23,7 +19,7 @@ import { Toast } from '@capacitor/toast';
     selector: 'app-daily-bible-verse',
     templateUrl: './daily-bible-verse.component.html',
     styleUrls: ['./daily-bible-verse.component.scss'],
-    imports: [CommonModule, IonicModule, FormsModule],
+    imports: [IonicModule, FormsModule],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DailyBibleVerseComponent implements OnInit, OnDestroy {
@@ -39,11 +35,8 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
   public verseoftheday_reference: string = '';
   public dailyVerseLanguage: string = 'English';
   public dailyVerseLanguageAlternate: string = 'Tamil';
-  public dailyVerse_top: string = '';
-  public dailyVerse_bottom: string = '';
   public menuOpen: boolean = false;
   public menuEvent?: Event;
-  public showRatioSelection: boolean = false;
   public isLoading: boolean = true;
   public selectedColorTheme: number = 0; // Default to first theme
 
@@ -82,7 +75,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
     if (this.database) {
       this.isLoading = true;
       this.getVerseOfTheDay();
-      //this.loadDailyVerseOnlineContent();
     }
   }
 
@@ -98,14 +90,9 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
       ' and Date=' +
       todayDate.getDate();
 
-    console.log('Verse of the day qry :' + qry);
     this.database
       .executeSql(qry, [])
       .then((data) => {
-        console.log('verse of the day count ' + data.rows.length);
-        console.log(
-          'Daily verse language : ' + this.dailyVerseLanguage.toUpperCase()
-        );
         if (data.rows.length > 0) {
           // Store both versions
           this.tamilVerse = data.rows.item(0).Tvrs;
@@ -123,10 +110,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
             this.verseoftheday_reference = this.englishVerseReference;
             this.dailyVerseLanguageAlternate = 'Tamil';
           }
-          console.log(
-            'Daily verse language alternate : ' +
-              this.dailyVerseLanguageAlternate
-          );
         }
         this.isLoading = false;
         this.cdr.detectChanges(); // Trigger change detection
@@ -137,21 +120,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges(); // Trigger change detection on error too
       });
   }
-
-  /*   loadDailyVerseOnlineContent() {
-      this.dailyVerse_top = "";
-      this.dailyVerse_bottom = "";
-      const params = "dailyverseonlinecontent";
-      this.authservice.execute_api(params, this.dailyVerseOnlineContentResult, this);
-    }
-  
-    dailyVerseOnlineContentResult(status, objAllData, objThis) {
-      if (status && objAllData.length > 0) {
-        objThis.dailyVerse_top = objAllData[0]["dailyverse_top"].split("&gt;").join(">").split("&lt;").join("<");
-        objThis.dailyVerse_bottom = objAllData[0]["dailyverse_bottom"].split("&gt;").join(">").split("&lt;").join("<");
-        objThis.cdr.detectChanges(); // Trigger change detection
-      }
-    } */
 
   showSettings(event: Event) {
     this.menuEvent = event;
@@ -374,7 +342,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
       });
 
       // Wait for fonts to be loaded
-      console.log('Starting font loading process...');
       await this.ensureFontLoaded();
 
       // Create a canvas element
@@ -400,7 +367,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
 
       // Check if the verse contains Tamil text (basic check for Tamil Unicode range)
       const containsTamil = /[\u0B80-\u0BFF]/.test(verseText);
-      console.log('Contains Tamil:', containsTamil);
 
       // Use selected color theme
       const selectedTheme = this.colorThemes[this.selectedColorTheme];
@@ -415,7 +381,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
 
       const textColor = selectedTheme.textColor;
       const referenceColor = selectedTheme.textColor;
-      const footerColor = 'rgba(255, 255, 255, 0.9)';
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -451,22 +416,17 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
             ctx.font = fontFamily;
             // Test the font with Tamil text
             const testWidth = ctx.measureText('தமிழ் பைபிள்').width;
-            console.log(
-              `Testing Tamil font: ${fontFamily}, width: ${testWidth}`
-            );
 
             if (testWidth > 0) {
-              console.log('Successfully set Tamil font:', fontFamily);
               fontSet = true;
               break;
             }
-          } catch (e) {
-            console.log('Failed to set Tamil font:', fontFamily, e);
+          } catch {
+            // try the next font
           }
         }
 
         if (!fontSet) {
-          console.log('All Tamil fonts failed, falling back to sans-serif');
           ctx.font = `600 ${mainFontSize}px sans-serif`;
         }
       } else {
@@ -485,22 +445,17 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
             ctx.font = fontFamily;
             // Test the font with English text
             const testWidth = ctx.measureText('Bible Verse').width;
-            console.log(
-              `Testing English font: ${fontFamily}, width: ${testWidth}`
-            );
 
             if (testWidth > 0) {
-              console.log('Successfully set English font:', fontFamily);
               fontSet = true;
               break;
             }
-          } catch (e) {
-            console.log('Failed to set English font:', fontFamily, e);
+          } catch {
+            // try the next font
           }
         }
 
         if (!fontSet) {
-          console.log('All English fonts failed, falling back to serif');
           ctx.font = `600 ${mainFontSize}px serif`;
         }
       }
@@ -541,12 +496,11 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
             ctx.font = font;
             const testWidth = ctx.measureText('வசனம்').width;
             if (testWidth > 0) {
-              console.log('Successfully set Tamil reference font:', font);
               refFontSet = true;
               break;
             }
-          } catch (e) {
-            console.log('Failed Tamil reference font:', font);
+          } catch {
+            // try the next font
           }
         }
 
@@ -568,12 +522,11 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
             ctx.font = font;
             const testWidth = ctx.measureText('Reference').width;
             if (testWidth > 0) {
-              console.log('Successfully set English reference font:', font);
               refFontSet = true;
               break;
             }
-          } catch (e) {
-            console.log('Failed English reference font:', font);
+          } catch {
+            // try the next font
           }
         }
 
@@ -740,7 +693,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
             logoHeight
           );
 
-          console.log('Logo added successfully');
           resolve();
         } catch (error) {
           console.error('Error drawing logo:', error);
@@ -773,8 +725,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
   // Enhanced font loading method specifically for canvas
   private async ensureFontLoaded(): Promise<void> {
     return new Promise((resolve) => {
-      console.log('Starting enhanced font loading...');
-
       // Load both fonts with specific weights
       if ('fonts' in document && (document as any).fonts.load) {
         const fontPromises = [
@@ -792,15 +742,7 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
           ),
         ];
 
-        Promise.allSettled(fontPromises).then((results) => {
-          results.forEach((result, index) => {
-            if (result.status === 'fulfilled') {
-              console.log(`Font ${index + 1} loaded successfully`);
-            } else {
-              console.log(`Font ${index + 1} failed to load:`, result.reason);
-            }
-          });
-
+        Promise.allSettled(fontPromises).then(() => {
           // Additional wait for font to be fully available
           setTimeout(() => {
             resolve();
@@ -813,28 +755,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  // Method to check if font is available
-  private isFontAvailable(fontName: string): boolean {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    if (!context) return false;
-
-    const text = 'தமிழ் பைபிள்'; // Tamil text to test
-
-    // Test with a known font first
-    context.font = '40px monospace';
-    const baselineSize = context.measureText(text).width;
-
-    // Test with the target font
-    context.font = `40px "${fontName}", monospace`;
-    const newSize = context.measureText(text).width;
-
-    console.log(
-      `Font test - Baseline: ${baselineSize}, With ${fontName}: ${newSize}`
-    );
-    return newSize !== baselineSize;
   }
 
   // Improved font loading via element
@@ -866,7 +786,6 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
           }
         });
 
-        console.log('Font loading via element method completed');
         resolve();
       }, 800); // Increased timeout to 800ms
     });
@@ -929,67 +848,5 @@ export class DailyBibleVerseComponent implements OnInit, OnDestroy {
     if (line.trim()) {
       ctx.fillText(line.trim(), x, currentY);
     }
-  }
-
-  // Keep the original wrapText method for backward compatibility (if needed elsewhere)
-  private wrapText(
-    ctx: CanvasRenderingContext2D,
-    text: string,
-    x: number,
-    y: number,
-    maxWidth: number,
-    lineHeight: number
-  ) {
-    const words = text.split(' ');
-    let line = '';
-    let currentY = y;
-
-    for (let n = 0; n < words.length; n++) {
-      const testLine = line + words[n] + ' ';
-      const metrics = ctx.measureText(testLine);
-      const testWidth = metrics.width;
-
-      if (testWidth > maxWidth && n > 0) {
-        ctx.fillText(line, x, currentY);
-        line = words[n] + ' ';
-        currentY += lineHeight;
-      } else {
-        line = testLine;
-      }
-    }
-    ctx.fillText(line, x, currentY);
-  }
-
-  // Add this method to pre-load the font
-  private async loadFont(): Promise<void> {
-    return new Promise((resolve) => {
-      if ((document as any).fonts && (document as any).fonts.load) {
-        // Modern browsers with FontFace API
-        (document as any).fonts
-          .load('40px "Anek Tamil"')
-          .then(() => {
-            console.log('Anek Tamil font loaded successfully');
-            resolve();
-          })
-          .catch(() => {
-            console.log('Anek Tamil font failed to load, using fallback');
-            resolve();
-          });
-      } else {
-        // Fallback for older browsers
-        const testElement = document.createElement('div');
-        testElement.style.fontFamily = '"Anek Tamil", Tamil, serif';
-        testElement.style.fontSize = '40px';
-        testElement.style.position = 'absolute';
-        testElement.style.left = '-9999px';
-        testElement.innerHTML = 'பைபிள்';
-        document.body.appendChild(testElement);
-
-        setTimeout(() => {
-          document.body.removeChild(testElement);
-          resolve();
-        }, 100);
-      }
-    });
   }
 }

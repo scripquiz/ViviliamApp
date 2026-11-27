@@ -1,10 +1,8 @@
 import {
   Component,
   OnInit,
-  OnDestroy, // Add this import
+  OnDestroy,
   Input,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from '@angular/core';
@@ -12,10 +10,7 @@ import {
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import {
-  DatabaseService,
-  DatabaseConnection,
-} from 'src/app/services/database.service';
+import { DatabaseConnection } from 'src/app/services/database.service';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
 import { ShareService } from '../../providers/share.service';
 import { Clipboard } from '@capacitor/clipboard';
@@ -96,19 +91,11 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
     const month = todayDate.getMonth() + 1; // January is 0
     const day = todayDate.getDate();
 
-    console.log(`Looking for quote with month=${month}, day=${day}`);
     const qry =
       'SELECT * FROM quoteoftheday where Mnth=' + month + ' and Date=' + day;
-
-    console.log('Quote of the day query:' + qry);
     this.database
       .executeSql(qry, [])
       .then((data) => {
-        console.log('Quote of the day count: ' + data.rows.length);
-        console.log(
-          'Daily Quote language: ' + this.dailyQuoteLanguage.toUpperCase()
-        );
-
         if (data && data.rows && data.rows.length > 0) {
           // Store both versions
           this.tamilQuote =
@@ -125,12 +112,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
             this.quoteoftheday = this.englishQuote;
             this.dailyQuoteLanguageAlternate = 'Tamil';
           }
-          console.log('Quote loaded: ' + this.quoteoftheday);
-          console.log('Author: ' + this.quoteofthedayauthor);
-          console.log(
-            'Daily quote language alternate: ' +
-              this.dailyQuoteLanguageAlternate
-          );
         } else {
           // Handle case when no quote is found for today
           this.quoteoftheday = 'No quote available for today';
@@ -155,14 +136,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.cdr.detectChanges(); // Trigger change detection on error too
       });
-
-    // Optional: Add a direct check to see total quotes in database
-    this.database
-      .executeSql('SELECT COUNT(*) as count FROM quoteoftheday', [])
-      .then((res) => {
-        console.log(`Total quotes in database: ${res.rows.item(0).count}`);
-      })
-      .catch((err) => console.error('Error checking quote table:', err));
   }
 
   showSettings(event: Event) {
@@ -485,7 +458,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
       });
 
       // Wait for fonts to be loaded
-      console.log('Starting font loading process...');
       await this.ensureFontLoaded();
 
       // Create a canvas element
@@ -511,7 +483,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
 
       // Check if the verse contains Tamil text (basic check for Tamil Unicode range)
       const containsTamil = /[\u0B80-\u0BFF]/.test(verseText);
-      console.log('Contains Tamil:', containsTamil);
 
       // Use selected color theme
       const selectedTheme = this.colorThemes[this.selectedColorTheme];
@@ -526,7 +497,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
 
       const textColor = selectedTheme.textColor;
       const referenceColor = selectedTheme.textColor;
-      const footerColor = 'rgba(255, 255, 255, 0.9)';
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -562,22 +532,17 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
             ctx.font = fontFamily;
             // Test the font with Tamil text
             const testWidth = ctx.measureText('தமிழ் பைபிள்').width;
-            console.log(
-              `Testing Tamil font: ${fontFamily}, width: ${testWidth}`
-            );
 
             if (testWidth > 0) {
-              console.log('Successfully set Tamil font:', fontFamily);
               fontSet = true;
               break;
             }
-          } catch (e) {
-            console.log('Failed to set Tamil font:', fontFamily, e);
+          } catch {
+            // try the next font
           }
         }
 
         if (!fontSet) {
-          console.log('All Tamil fonts failed, falling back to sans-serif');
           ctx.font = `600 ${mainFontSize}px sans-serif`;
         }
       } else {
@@ -596,22 +561,17 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
             ctx.font = fontFamily;
             // Test the font with English text
             const testWidth = ctx.measureText('Bible Verse').width;
-            console.log(
-              `Testing English font: ${fontFamily}, width: ${testWidth}`
-            );
 
             if (testWidth > 0) {
-              console.log('Successfully set English font:', fontFamily);
               fontSet = true;
               break;
             }
-          } catch (e) {
-            console.log('Failed to set English font:', fontFamily, e);
+          } catch {
+            // try the next font
           }
         }
 
         if (!fontSet) {
-          console.log('All English fonts failed, falling back to serif');
           ctx.font = `600 ${mainFontSize}px serif`;
         }
       }
@@ -652,12 +612,11 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
             ctx.font = font;
             const testWidth = ctx.measureText('வசனம்').width;
             if (testWidth > 0) {
-              console.log('Successfully set Tamil reference font:', font);
               refFontSet = true;
               break;
             }
-          } catch (e) {
-            console.log('Failed Tamil reference font:', font);
+          } catch {
+            // try the next font
           }
         }
 
@@ -679,12 +638,11 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
             ctx.font = font;
             const testWidth = ctx.measureText('Reference').width;
             if (testWidth > 0) {
-              console.log('Successfully set English reference font:', font);
               refFontSet = true;
               break;
             }
-          } catch (e) {
-            console.log('Failed English reference font:', font);
+          } catch {
+            // try the next font
           }
         }
 
@@ -804,7 +762,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
             logoHeight
           );
 
-          console.log('Logo added successfully');
           resolve();
         } catch (error) {
           console.error('Error drawing logo:', error);
@@ -837,8 +794,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
   // Enhanced font loading method specifically for canvas
   private async ensureFontLoaded(): Promise<void> {
     return new Promise((resolve) => {
-      console.log('Starting enhanced font loading...');
-
       // Load both fonts with specific weights
       if ('fonts' in document && (document as any).fonts.load) {
         const fontPromises = [
@@ -856,15 +811,7 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
           ),
         ];
 
-        Promise.allSettled(fontPromises).then((results) => {
-          results.forEach((result, index) => {
-            if (result.status === 'fulfilled') {
-              console.log(`Font ${index + 1} loaded successfully`);
-            } else {
-              console.log(`Font ${index + 1} failed to load:`, result.reason);
-            }
-          });
-
+        Promise.allSettled(fontPromises).then(() => {
           // Additional wait for font to be fully available
           setTimeout(() => {
             resolve();
@@ -908,7 +855,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnDestroy {
           }
         });
 
-        console.log('Font loading via element method completed');
         resolve();
       }, 800); // Increased timeout to 800ms
     });
