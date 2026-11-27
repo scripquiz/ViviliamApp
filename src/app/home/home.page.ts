@@ -32,6 +32,7 @@ export class HomePage {
   private lastConnectivityCheck: number = 0;
   private connectivityCacheDuration: number = 30000; // 30 seconds
   public networkSubscription: any;
+  private orientationSubscription: any;
   private networkStateChangeDebounceTime = 3000; // 3 seconds
   private networkDebounceTimer: any = null;
   private lastReportedNetworkState: boolean | null = null;
@@ -155,21 +156,23 @@ export class HomePage {
         });
         this.pauseListener = this.platform.pause.subscribe(() => { });
         this.orientation = this.authservice.orientation;
-        this.screenorientation.onChange().subscribe(() => {
-          this.logger.log(
-            'Orientation changed to ' + this.screenorientation.type
-          );
-          if (
-            this.screenorientation.type == 'landscape-primary' ||
-            this.screenorientation.type === 'landscape-secondary'
-          ) {
-            this.orientation = 'landscape';
-            this.authservice.orientation = this.orientation;
-          } else {
-            this.orientation = 'portrait';
-            this.authservice.orientation = this.orientation;
-          }
-        });
+        this.orientationSubscription = this.screenorientation
+          .onChange()
+          .subscribe(() => {
+            this.logger.log(
+              'Orientation changed to ' + this.screenorientation.type
+            );
+            if (
+              this.screenorientation.type == 'landscape-primary' ||
+              this.screenorientation.type === 'landscape-secondary'
+            ) {
+              this.orientation = 'landscape';
+              this.authservice.orientation = this.orientation;
+            } else {
+              this.orientation = 'portrait';
+              this.authservice.orientation = this.orientation;
+            }
+          });
         this.databaseService
           .create({
             name: 'viviliam.db',
@@ -342,6 +345,7 @@ export class HomePage {
   }
 
   ionViewWillLeave() {
+    this.removeNetworkListeners();
     this.stopHomeAudioPlayback();
     this.audioFocusService.releaseFocus('home');
 
@@ -451,8 +455,12 @@ export class HomePage {
     this.audioFocusService.releaseFocus('home');
     this.audioFocusService.unregisterOwner('home');
 
-    if (this.networkSubscription) {
-      this.networkSubscription.unsubscribe();
+    this.removeNetworkListeners();
+    if (this.errorStateTimer) {
+      clearTimeout(this.errorStateTimer);
+    }
+    if (this.orientationSubscription) {
+      this.orientationSubscription.unsubscribe();
     }
     if (this.resumeListener) {
       this.resumeListener.unsubscribe();
@@ -620,22 +628,36 @@ export class HomePage {
       .catch(() => this.logger.log('Wake lock release failed'));
   }
   onChangePlayTimeDirect(idx, obj) {
-    if (!this.playAll && this.audioPlaying) {
-      if (idx != this.currentAudioIndex) {
-        this.todayAudioFiles[idx].ctime = obj.currentTarget.value;
-        this.todayAudioFiles[idx].ctimeintime = this.convertHMS(
-          obj.currentTarget.value
-        );
-        this.todayAudioFiles[idx].durationintime = this.convertHMS(
-          parseInt(this.todayAudioFiles[idx].duration) -
-          parseInt(obj.currentTarget.value)
-        );
-        this.startAudioDirect(idx);
-      } else {
-        this.audio.nativeElement.currentTime = obj.currentTarget.value;
-        this.audio.nativeElement.play();
-      }
+    const position = Number(obj.currentTarget.value) || 0;
+
+    // Nothing playing: remember the position; it applies when this track is played
+    if (!this.audioPlaying) {
+      this.setTrackPosition(idx, position);
+      return;
     }
+
+    if (idx === this.currentAudioIndex) {
+      this.setTrackPosition(idx, position);
+      this.audio.nativeElement.currentTime = position;
+      this.audio.nativeElement.play();
+      return;
+    }
+
+    // Jumping to another track. In Play All, rewind the one being left so a
+    // repeat of the playlist doesn't resume it halfway.
+    if (this.playAll) {
+      this.setTrackPosition(this.currentAudioIndex, 0);
+    }
+    this.setTrackPosition(idx, position);
+    this.startAudioDirect(idx);
+  }
+  private setTrackPosition(idx: number, position: number): void {
+    const track = this.todayAudioFiles[idx];
+    track.ctime = position;
+    track.ctimeintime = this.convertHMS(position);
+    track.durationintime = this.convertHMS(
+      Math.max(0, Math.floor(track.duration) - Math.floor(position))
+    );
   }
   async openExternalURLDirectly(url: string, title: string, urlplace?: string) {
     if (url != '') {
@@ -702,6 +724,16 @@ export class HomePage {
       this.appversionText = '4.9.0';
     }
   }
+  private removeNetworkListeners() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
+      this.networkSubscription = null;
+    }
+    if (this.networkDebounceTimer) {
+      clearTimeout(this.networkDebounceTimer);
+      this.networkDebounceTimer = null;
+    }
+  }
   setupNetworkListeners() {
     this.logger.network('Setting up network listeners in HomePage');
 
@@ -711,6 +743,7 @@ export class HomePage {
     this.lastReportedNetworkState = this.network.isConnected;
 
     // Single network subscription with debouncing
+    this.removeNetworkListeners();
     this.networkSubscription = this.network.actualConnectivity$.subscribe(
       (hasConnectivity) => {
         this.logger.network(
