@@ -48,21 +48,6 @@ body {
   flex-shrink: 0;
 }
 
-.card-item-audio {
-  text-align: left;
-  width: 100%;
-  padding: 10px;
-  padding-top: 0px;
-  transition: background-color 0.3s ease;
-  background: linear-gradient(to right,
-      #ffffff 0%,
-      #fdfbff 25%,
-      #faf6ff 50%,
-      #f6f1ff 75%,
-      #fcf9ff 100%);
-  overflow: hidden;
-}
-
 .home-content {
   position: absolute;
   left: 0px;
@@ -80,14 +65,6 @@ body {
 .daily-bible-quote-row ion-col {
   padding-top: 0;
   padding-bottom: 0;
-}
-
-.audio-button {
-  width: 42px;
-  height: 42px;
-  margin: 0 auto;
-  display: block;
-  margin-top: 12px;
 }
 
 .home-audio-slider {
@@ -169,115 +146,6 @@ ion-card.simple-card {
   }
 }
 
-.card-item-audio table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-}
-
-.card-item-audio td:first-child {
-  width: 60px;
-  padding: 0;
-  vertical-align: middle;
-  text-align: center;
-}
-
-.card-item-audio td:nth-child(2) {
-  width: auto;
-  padding: 0 5px;
-}
-
-.card-item-audio td:last-child {
-  width: 60px;
-  padding: 0;
-  vertical-align: middle;
-  text-align: center;
-}
-
-.card-item-audio tr {
-  height: 65px;
-}
-
-.card-item-audio tr:first-child td {
-  text-align: center;
-  padding-bottom: 5px;
-}
-
-.card-item-audio tr:last-child td:nth-child(1) {
-  flex: 0 0 60px;
-  text-align: center;
-}
-
-.card-item-audio tr:last-child td:nth-child(2) {
-  flex: 0 0 60px;
-  text-align: center;
-}
-
-.repeat-icon {
-  width: 32px;
-  height: 32px;
-  margin: 0 auto;
-  display: block;
-  margin-top: 12px;
-}
-
-
-.audio-item-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333333;
-  line-height: 1.2;
-  margin: 0;
-}
-
-
-.audio-title-container {
-  height: 20px;
-  margin-top: 6px;
-  margin-bottom: -2px;
-  text-align: center;
-}
-
-.audio-slider-container {
-  height: 25px;
-  margin-bottom: 2px;
-  padding: 0 15px 0 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-
-.audio-time-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: -2px;
-  margin-bottom: -5px;
-  font-size: 12px;
-  color: #666;
-  padding: 0 2px;
-}
-
-.audio-time-left {
-  text-align: left;
-  padding-left: 10px;
-}
-
-.audio-time-right {
-  text-align: right;
-  padding-right: 10px;
-  margin-right: 5px;
-}
-
-.audio-slider-container ion-range {
-  width: 90%;
-  margin: 0;
-  --padding-top: 0;
-  --padding-bottom: 0;
-}
-
-
 .button-normal.retry {
   align-self: flex-start;
   margin-left: 20px;
@@ -285,66 +153,6 @@ ion-card.simple-card {
   color: #333;
   padding: 0 15px;
   height: 30px;
-}
-
-
-.audio-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0;
-  border-bottom: 1px solid #ddd;
-  height: 56px;
-  position: relative;
-}
-
-/* Left control (Play/Pause) */
-.audio-left-control {
-  width: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  vertical-align: middle;
-  text-align: center;
-}
-
-/* Center title */
-.audio-title-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 20px;
-  font-weight: 500;
-  color: #333;
-  text-align: center;
-}
-
-/* Right control (Repeat) */
-.audio-right-control {
-  position: relative;
-  width: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  vertical-align: middle;
-  text-align: center;
-}
-
-/* Control buttons (Play/Pause/Repeat) */
-.audio-control-button1 {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  display: block;
-  margin-left: 20px;
-}
-
-.audio-control-button2 {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  display: block;
-  margin-right: 20px;
 }
 
 
@@ -525,6 +333,10 @@ body.dark-theme {
   padding: 10px 14px;
   border: 0;
   background: linear-gradient(115deg, #fff4e9, #fffaf5 70%, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
 
 .daily-audio-card .audio-left-control,
@@ -537,6 +349,8 @@ body.dark-theme {
   flex: 0 0 48px;
   margin: 0;
   border-radius: 50%;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .daily-audio-card .audio-control-button1 {
@@ -547,6 +361,7 @@ body.dark-theme {
   padding: 2px;
   color: var(--daily-audio-accent);
   cursor: pointer;
+  display: block;
 }
 
 .daily-audio-card .audio-control-button2 {
@@ -556,6 +371,7 @@ body.dark-theme {
   margin: 0;
   padding: 6px;
   cursor: pointer;
+  display: block;
 }
 
 .daily-audio-card .audio-left-control {
@@ -588,6 +404,7 @@ body.dark-theme {
   font-weight: 500;
   line-height: 1.15;
   transform: none;
+  text-align: center;
 }
 
 .daily-audio-card .audio-subtitle {
@@ -621,6 +438,8 @@ body.dark-theme {
   border: 1px solid #eee8e2;
   border-radius: 14px;
   background: #fff;
+  text-align: left;
+  transition: background-color 0.3s ease;
 }
 
 .daily-audio-card .card-item-audio table {
@@ -636,6 +455,7 @@ body.dark-theme {
 .daily-audio-card .card-item-audio tr:first-child td {
   padding: 0;
   vertical-align: middle;
+  text-align: center;
 }
 
 .daily-audio-card .card-item-audio td:first-child,
@@ -665,6 +485,7 @@ body.dark-theme {
   margin: 0 auto;
   color: var(--daily-audio-accent);
   cursor: pointer;
+  display: block;
 }
 
 .daily-audio-card .audio-title-container {
@@ -686,6 +507,8 @@ body.dark-theme {
   font-family: Roboto, sans-serif;
   font-size: 17px;
   font-weight: 500;
+  line-height: 1.2;
+  margin: 0;
 }
 
 .daily-audio-card .audio-slider-container {
@@ -698,6 +521,9 @@ body.dark-theme {
   padding: 0;
   box-sizing: border-box;
   transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .daily-audio-card .audio-slider-container ion-range {
@@ -705,6 +531,9 @@ body.dark-theme {
   height: 24px;
   min-height: 24px;
   --height: 24px;
+  margin: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
 }
 
 .daily-audio-card .home-audio-slider {
@@ -736,12 +565,17 @@ body.dark-theme {
   color: #8a817a;
   font-size: 10px;
   font-variant-numeric: tabular-nums;
+  width: 100%;
 }
 
 .daily-audio-card .audio-time-left,
 .daily-audio-card .audio-time-right {
   padding: 0;
   margin: 0;
+}
+
+.daily-audio-card .audio-time-left {
+  text-align: left;
 }
 
 .daily-audio-card .audio-time-right {
@@ -766,6 +600,7 @@ body.dark-theme {
   margin: 0;
   padding: 3px;
   cursor: pointer;
+  display: block;
 }
 
 .daily-audio-card .audio-repeat-badge {

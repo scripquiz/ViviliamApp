@@ -52,7 +52,7 @@ This file is global (`ViewEncapsulation.None`). Keep `.title`, `.card`, `.card-i
 ## 5. `home.page.scss`: duplicates and conflicts (needs a visual check)
 
 - [x] 5.1 Blocks defined twice or three times (`.card-item-audio table`, `.event-header`, ...)
-- [ ] 5.2 Older audio player rules superseded by `.daily-audio-card` (1355+)
+- [x] 5.2 Older audio player rules superseded by `.daily-audio-card` (1355+)
 - [ ] 5.3 `!important` dark rules (1273-1294) defeating later ones (1659-1687)
 
 ## Keep (used elsewhere)
