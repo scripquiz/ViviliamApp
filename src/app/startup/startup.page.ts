@@ -1,20 +1,22 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { Platform, NavController, IonicModule } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular/standalone';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { MenuController } from '@ionic/angular';
+import { MenuController } from '@ionic/angular/standalone';
+import { IonContent } from "@ionic/angular/standalone";
+
 @Component({
   selector: 'app-startup',
   templateUrl: './startup.page.html',
   styleUrls: ['./startup.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [FormsModule, IonContent],
 })
 export class StartupPage {
   private menuCtrl = inject(MenuController);

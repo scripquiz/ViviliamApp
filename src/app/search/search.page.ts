@@ -11,8 +11,24 @@ import {
   DatabaseConnection,
 } from 'src/app/services/database.service';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
-import { Platform, NavController, IonicModule } from '@ionic/angular';
-import { MenuController } from '@ionic/angular';
+import {
+  Platform,
+  NavController,
+  IonContent,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonMenuToggle,
+} from '@ionic/angular/standalone';
+import { MenuController } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  arrowForward,
+  arrowForwardOutline,
+  chevronBack,
+  chevronForward,
+  settingsOutline,
+} from 'ionicons/icons';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
 import { DarkModeService } from '../services/dark-mode.service';
 import { Subscription } from 'rxjs';
@@ -27,7 +43,15 @@ import { Keyboard } from '@capacitor/keyboard';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonIcon,
+    IonInput,
+    IonItem,
+    IonMenuToggle,
+  ],
 })
 export class SearchPage implements OnDestroy {
   appComponent = inject(AppComponent);
@@ -60,6 +84,13 @@ export class SearchPage implements OnDestroy {
   private darkModeSubscription: Subscription;
 
   constructor() {
+    addIcons({
+      arrowForward,
+      arrowForwardOutline,
+      chevronBack,
+      chevronForward,
+      settingsOutline,
+    });
     this.setSearchData();
 
     // Subscribe to dark mode state changes

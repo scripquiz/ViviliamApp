@@ -5,7 +5,7 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonicModule } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular/standalone';
 import { DatabaseImportService } from 'src/app/services/database-import.service';
 import { HttpClient } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { AppComponent } from '../../app/app.component';
 // Replace Cordova ScreenOrientation with our Capacitor service
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
+import { IonContent } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-getstarted',
@@ -21,7 +22,7 @@ import { ScreenOrientationService } from '../services/screen-orientation.service
   styleUrls: ['./getstarted.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [FormsModule, IonContent],
 })
 export class GetstartedPage {
   screenorientation = inject(ScreenOrientationService);

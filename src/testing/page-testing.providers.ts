@@ -1,12 +1,8 @@
 import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import {
-  EnvironmentProviders,
-  importProvidersFrom,
-  Provider,
-} from '@angular/core';
+import { EnvironmentProviders, Provider } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { provideIonicAngular } from '@ionic/angular/standalone';
 import { of } from 'rxjs';
 import {
   DatabaseConnection,
@@ -94,7 +90,7 @@ function createScreenOrientationService(): jasmine.SpyObj<ScreenOrientationServi
  */
 export function providePageTesting(): (Provider | EnvironmentProviders)[] {
   return [
-    importProvidersFrom(IonicModule.forRoot()),
+    provideIonicAngular(),
     provideHttpClient(withXhr()),
     provideHttpClientTesting(),
     provideRouter([]),

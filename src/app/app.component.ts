@@ -6,9 +6,8 @@ import { AuthserviceProvider } from '../providers/authservice/authservice';
 import {
   LoadingController,
   Platform,
-  NavController,
-  IonicModule,
-} from '@ionic/angular';
+  NavController
+} from '@ionic/angular/standalone';
 // Remove Cordova ScreenOrientation import
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 // Import the new ScreenOrientationService
@@ -20,7 +19,39 @@ import { ChangeDetectionStrategy } from '@angular/core';
 import { ShareService } from './providers/share.service';
 // Replace Cordova Toast with Capacitor Toast
 import { Toast } from '@capacitor/toast';
-import { IonSelect } from '@ionic/angular';
+import {
+  IonApp,
+  IonContent,
+  IonIcon,
+  IonItem,
+  IonMenu,
+  IonRadio,
+  IonRadioGroup,
+  IonRange,
+  IonRouterOutlet,
+  IonSelect,
+  IonSelectOption,
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  bookOutline,
+  bookmarkOutline,
+  bookmarksOutline,
+  brushOutline,
+  caretForwardCircleOutline,
+  copyOutline,
+  createOutline,
+  pauseCircleOutline,
+  playSkipBackOutline,
+  playSkipForwardOutline,
+  readerOutline,
+  shareOutline,
+  syncOutline,
+  timeOutline,
+  timerOutline,
+  volumeHighOutline,
+  volumeMuteOutline,
+} from 'ionicons/icons';
 import { Component, OnInit, OnDestroy, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonLoaderService } from '../app/ion-loader.service';
@@ -47,7 +78,22 @@ register();
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule, RouterModule, IonicModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    IonApp,
+    IonContent,
+    IonIcon,
+    IonItem,
+    IonMenu,
+    IonRadio,
+    IonRadioGroup,
+    IonRange,
+    IonRouterOutlet,
+    IonSelect,
+    IonSelectOption,
+  ],
 })
 export class AppComponent implements OnDestroy {
   darkModeService = inject(DarkModeService);
@@ -258,6 +304,25 @@ export class AppComponent implements OnDestroy {
   public selectedFromBookCaption = '';
   public selectedToBookCaption = '';
   constructor() {
+    addIcons({
+      bookOutline,
+      bookmarkOutline,
+      bookmarksOutline,
+      brushOutline,
+      caretForwardCircleOutline,
+      copyOutline,
+      createOutline,
+      pauseCircleOutline,
+      playSkipBackOutline,
+      playSkipForwardOutline,
+      readerOutline,
+      shareOutline,
+      syncOutline,
+      timeOutline,
+      timerOutline,
+      volumeHighOutline,
+      volumeMuteOutline,
+    });
     this.audioFocusService.registerOwner('app', () => {
       this.stopAppAudioPlayback();
     });
@@ -1607,8 +1672,7 @@ export class AppComponent implements OnDestroy {
             this.resetAudioState();
             this.PauseAudio();
             void Toast.show({
-              text: `Completed ${completedChapters} chapter${
-                completedChapters > 1 ? 's' : ''
+              text: `Completed ${completedChapters} chapter${completedChapters > 1 ? 's' : ''
               }`,
               duration: 'short',
               position: 'bottom',

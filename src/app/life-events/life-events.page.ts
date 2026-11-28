@@ -1,8 +1,11 @@
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { NavController, IonicModule } from '@ionic/angular';
+import { NavController } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
+import { addIcons } from "ionicons";
+import { arrowBackOutline, chevronForwardOutline } from "ionicons/icons";
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent, IonSegment, IonSegmentButton, IonLabel } from "@ionic/angular/standalone";
 
 interface LifeEventReference {
   book: string;
@@ -30,7 +33,7 @@ interface LifeEventItem {
   styleUrls: ['./life-events.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [FormsModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent, IonSegment, IonSegmentButton, IonLabel],
 })
 export class LifeEventsPage {
   private navctrl = inject(NavController);
@@ -79,5 +82,9 @@ export class LifeEventsPage {
       ...item,
       id: index,
     }));
+  }
+
+  constructor() {
+    addIcons({ arrowBackOutline, chevronForwardOutline });
   }
 }

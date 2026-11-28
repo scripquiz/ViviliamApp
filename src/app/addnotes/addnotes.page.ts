@@ -8,15 +8,19 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonicModule } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular/standalone';
 import { AppComponent } from '../../app/app.component';
+import { addIcons } from "ionicons";
+import { arrowBackOutline } from "ionicons/icons";
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent, IonTextarea } from "@ionic/angular/standalone";
+
 @Component({
   selector: 'app-addnotes',
   templateUrl: './addnotes.page.html',
   styleUrls: ['./addnotes.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent, IonTextarea],
 })
 export class AddnotesPage {
   private router = inject(Router);
@@ -236,5 +240,9 @@ export class AddnotesPage {
         this.goBack();
       });
     }
+  }
+
+  constructor() {
+    addIcons({ arrowBackOutline });
   }
 }

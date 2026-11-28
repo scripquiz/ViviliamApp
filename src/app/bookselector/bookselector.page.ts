@@ -9,7 +9,25 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonicModule } from '@ionic/angular';
+import {
+  Platform,
+  NavController,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonSearchbar,
+  IonSegment,
+  IonSegmentButton,
+  IonText,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 
 @Component({
@@ -19,13 +37,32 @@ import { AuthserviceProvider } from '../../providers/authservice/authservice';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [
+    FormsModule,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonSearchbar,
+    IonSegment,
+    IonSegmentButton,
+    IonText,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class BookselectorPage {
   databaseService = inject(DatabaseService);
   platform = inject(Platform);
   authservice = inject(AuthserviceProvider);
   navctrl = inject(NavController);
+
+  constructor() {
+    addIcons({ arrowBackOutline });
+  }
 
   public database: DatabaseConnection;
   public selectedsegmentemode: any = 'books';

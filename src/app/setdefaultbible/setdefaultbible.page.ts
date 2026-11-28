@@ -10,8 +10,11 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonicModule } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular/standalone';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
+import { addIcons } from "ionicons";
+import { arrowBackOutline, volumeHighOutline } from "ionicons/icons";
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-setdefaultbible',
@@ -20,7 +23,7 @@ import { AuthserviceProvider } from '../../providers/authservice/authservice';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent],
 })
 export class SetdefaultbiblePage {
   databaseService = inject(DatabaseService);
@@ -60,6 +63,7 @@ export class SetdefaultbiblePage {
           }
         );
     });
+    addIcons({ arrowBackOutline, volumeHighOutline });
   }
   bindBibles() {
     this.bibleListEnglish = [];

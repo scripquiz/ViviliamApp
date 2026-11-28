@@ -3,14 +3,16 @@ import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
-import { MenuController, IonicModule } from '@ionic/angular';
+import { MenuController } from '@ionic/angular/standalone';
+import { IonContent, IonItem } from "@ionic/angular/standalone";
+
 @Component({
   selector: 'app-startup-language',
   templateUrl: './startup-language.page.html',
   styleUrls: ['./startup-language.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [FormsModule, IonContent, IonItem],
 })
 export class StartupLanguagePage {
   private menuCtrl = inject(MenuController);

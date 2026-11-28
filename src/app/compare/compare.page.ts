@@ -15,10 +15,15 @@ import {
   Platform,
   NavController,
   IonContent,
-  IonicModule,
-} from '@ionic/angular';
+  IonButtons,
+  IonHeader,
+  IonIcon,
+  IonToolbar,
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { ellipsisVertical } from 'ionicons/icons';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
-import { MenuController } from '@ionic/angular';
+import { MenuController } from '@ionic/angular/standalone';
 // Replace Cordova ScreenOrientation with our Capacitor service
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
@@ -35,7 +40,15 @@ import { AppComponent } from '../../app/app.component';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonToolbar,
+  ],
 })
 export class ComparePage implements OnInit, OnDestroy {
   darkModeService = inject(DarkModeService);
@@ -80,6 +93,7 @@ export class ComparePage implements OnInit, OnDestroy {
   private darkModeSubscription: Subscription;
 
   constructor() {
+    addIcons({ ellipsisVertical });
     const authservice = this.authservice;
 
     console.log('Constructor calleing :' + authservice.timerState);

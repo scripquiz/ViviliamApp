@@ -3,12 +3,15 @@ import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, Platform, IonicModule } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import {
   DatabaseConnection,
   DatabaseService,
 } from 'src/app/services/database.service';
+import { addIcons } from "ionicons";
+import { arrowBackOutline } from "ionicons/icons";
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent, IonSegment, IonSegmentButton, IonLabel } from "@ionic/angular/standalone";
 
 interface TopicReference {
   book: string;
@@ -51,7 +54,7 @@ interface BookRow {
   styleUrls: ['./life-event-detail.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [FormsModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent, IonSegment, IonSegmentButton, IonLabel],
 })
 export class LifeEventDetailPage {
   private navctrl = inject(NavController);
@@ -294,5 +297,9 @@ export class LifeEventDetailPage {
     } finally {
       this.isLoadingVerses = false;
     }
+  }
+
+  constructor() {
+    addIcons({ arrowBackOutline });
   }
 }

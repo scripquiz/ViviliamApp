@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 import { Capacitor, SystemBars, SystemBarsStyle } from '@capacitor/core';
 
 export interface DarkModeState {
@@ -297,8 +297,7 @@ export class DarkModeService {
       await this.updateNavigationBar(barColor);
 
       console.log(
-        `StatusBar & NavigationBar updated for ${
-          currentPage || 'global'
+        `StatusBar & NavigationBar updated for ${currentPage || 'global'
         } - Dark: ${isDark}, Color: ${barColor}`
       );
     } catch (error) {

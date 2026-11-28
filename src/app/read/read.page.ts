@@ -14,8 +14,15 @@ import {
   Platform,
   NavController,
   IonContent,
-  IonicModule,
-} from '@ionic/angular';
+  IonButtons,
+  IonCol,
+  IonHeader,
+  IonIcon,
+  IonRow,
+  IonToolbar,
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { arrowBack, bookmark, create, ellipsisVertical } from 'ionicons/icons';
 import { FormsModule } from '@angular/forms';
 
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
@@ -24,7 +31,7 @@ import { ShareService } from '../providers/share.service';
 // Replace Cordova Clipboard with Capacitor Clipboard
 import { Clipboard } from '@capacitor/clipboard';
 
-import { MenuController } from '@ionic/angular';
+import { MenuController } from '@ionic/angular/standalone';
 // Replace Cordova ScreenOrientation with our Capacitor service
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
@@ -49,7 +56,17 @@ import { AudioFocusService } from '../services/audio-focus.service';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonRow,
+    IonToolbar,
+  ],
 })
 export class ReadPage implements OnInit, OnDestroy {
   darkModeService = inject(DarkModeService);
@@ -131,6 +148,7 @@ export class ReadPage implements OnInit, OnDestroy {
   private darkModeSubscription: Subscription;
 
   constructor() {
+    addIcons({ arrowBack, bookmark, create, ellipsisVertical });
     const authservice = this.authservice;
 
     // Note: Removed toast from constructor parameters since Capacitor plugins don't need DI
@@ -524,8 +542,7 @@ export class ReadPage implements OnInit, OnDestroy {
                 this.appComponent.PauseAudio();
                 this.appComponent.resetAudioState();
                 void Toast.show({
-                  text: `Completed ${completedChapters} chapter${
-                    completedChapters > 1 ? 's' : ''
+                  text: `Completed ${completedChapters} chapter${completedChapters > 1 ? 's' : ''
                   }`,
                   duration: 'short',
                   position: 'bottom',

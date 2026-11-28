@@ -3,8 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import { ViewEncapsulation } from '@angular/core';
-import { NavController, IonicModule } from '@ionic/angular';
-import { MenuController } from '@ionic/angular';
+import { NavController } from '@ionic/angular/standalone';
+import { MenuController } from '@ionic/angular/standalone';
+import { addIcons } from "ionicons";
+import { arrowBackOutline } from "ionicons/icons";
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-startup-default-bible',
@@ -13,7 +16,7 @@ import { MenuController } from '@ionic/angular';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent],
 })
 export class StartupDefaultBiblePage {
   private menuCtrl = inject(MenuController);
@@ -100,5 +103,9 @@ export class StartupDefaultBiblePage {
   }
   navigateto_defaultbible() {
     this.navctrl.navigateRoot('/getstarted');
+  }
+
+  constructor() {
+    addIcons({ arrowBackOutline });
   }
 }

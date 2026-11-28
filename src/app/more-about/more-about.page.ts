@@ -1,8 +1,12 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { NavController, IonicModule } from '@ionic/angular';
+import { NavController } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
+import { addIcons } from "ionicons";
+import { arrowBackOutline, informationCircleOutline } from "ionicons/icons";
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent } from "@ionic/angular/standalone";
+
 //import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 
 @Component({
@@ -11,7 +15,7 @@ import { App } from '@capacitor/app';
   styleUrls: ['./more-about.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [FormsModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent],
 })
 export class MoreAboutPage {
   navctrl = inject(NavController);
@@ -20,6 +24,7 @@ export class MoreAboutPage {
   constructor() {
     // Get app version using Capacitor App plugin
     this.getAppVersion();
+    addIcons({ arrowBackOutline, informationCircleOutline });
   }
 
   async getAppVersion() {

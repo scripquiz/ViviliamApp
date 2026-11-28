@@ -7,8 +7,6 @@ import {
   ChangeDetectorRef,
   inject,
 } from '@angular/core';
-
-import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { DatabaseConnection } from 'src/app/services/database.service';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
@@ -21,12 +19,33 @@ import {
   VerseImageService,
 } from '../../services/verse-image.service';
 import { RatioDialogComponent } from '../../shared/ratio-dialog/ratio-dialog.component';
+import {
+  IonCard,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonPopover,
+  IonSpinner,
+} from '@ionic/angular/standalone';
+import { addIcons } from "ionicons";
+import { ellipsisHorizontal, languageOutline, imageOutline, copyOutline, documentsOutline, shareSocialOutline, shareOutline } from "ionicons/icons";
 
 @Component({
   selector: 'app-daily-bible-quote',
   templateUrl: './daily-bible-quote.component.html',
   styleUrls: ['./daily-bible-quote.component.scss'],
-  imports: [IonicModule, FormsModule, RatioDialogComponent],
+  imports: [
+    FormsModule,
+    RatioDialogComponent,
+    IonCard,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonPopover,
+    IonSpinner,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DailyBibleQuoteComponent implements OnInit, OnChanges {
@@ -192,5 +211,9 @@ export class DailyBibleQuoteComponent implements OnInit, OnChanges {
 
   createImage() {
     this.showRatioDialog = true;
+  }
+
+  constructor() {
+    addIcons({ ellipsisHorizontal, languageOutline, imageOutline, copyOutline, documentsOutline, shareSocialOutline, shareOutline });
   }
 }

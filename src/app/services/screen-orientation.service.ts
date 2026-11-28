@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ScreenOrientation as CapacitorScreenOrientation } from '@capacitor/screen-orientation';
 import { BehaviorSubject, Observable, from } from 'rxjs';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 
 /**
  * Service that provides screen orientation functionality using Capacitor's ScreenOrientation plugin

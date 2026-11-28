@@ -13,8 +13,41 @@ import {
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Platform, IonicModule } from '@ionic/angular';
-import { MenuController } from '@ionic/angular';
+import {
+  Platform,
+  IonButton,
+  IonCard,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonLabel,
+  IonRange,
+  IonRow,
+  IonSegment,
+  IonSegmentButton,
+  IonSpinner,
+} from '@ionic/angular/standalone';
+import { MenuController } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  addCircleOutline,
+  bookOutline,
+  discOutline,
+  extensionPuzzleOutline,
+  helpCircleOutline,
+  imagesOutline,
+  medical,
+  mic,
+  pauseCircle,
+  playCircle,
+  podiumOutline,
+  radioButtonOff,
+  radioButtonOn,
+  readerOutline,
+  syncOutline,
+  trophyOutline,
+} from 'ionicons/icons';
 import { DailyBibleVerseComponent } from '../components/daily-bible-verse/daily-bible-verse.component';
 import { DailyBibleQuoteComponent } from '../components/daily-bible-quote/daily-bible-quote.component';
 import { IonLoaderService } from '../ion-loader.service';
@@ -35,9 +68,20 @@ import { AudioFocusService } from '../services/audio-focus.service';
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule,
     DailyBibleVerseComponent,
     DailyBibleQuoteComponent,
+    IonButton,
+    IonCard,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonIcon,
+    IonLabel,
+    IonRange,
+    IonRow,
+    IonSegment,
+    IonSegmentButton,
+    IonSpinner,
   ],
 })
 export class HomePage implements OnDestroy {
@@ -87,6 +131,24 @@ export class HomePage implements OnDestroy {
   private loadedAudioDate: string = '';
   public segmentSelected: string = '0';
   constructor() {
+    addIcons({
+      addCircleOutline,
+      bookOutline,
+      discOutline,
+      extensionPuzzleOutline,
+      helpCircleOutline,
+      imagesOutline,
+      medical,
+      mic,
+      pauseCircle,
+      playCircle,
+      podiumOutline,
+      radioButtonOff,
+      radioButtonOn,
+      readerOutline,
+      syncOutline,
+      trophyOutline,
+    });
     this.getAppVersionInfo();
 
     this.audioFocusService.registerOwner('home', () => {
@@ -739,8 +801,7 @@ export class HomePage implements OnDestroy {
       now - this.lastConnectivityCheck < this.connectivityCacheDuration
     ) {
       this.logger.network(
-        `Using cached connectivity result (${
-          now - this.lastConnectivityCheck
+        `Using cached connectivity result (${now - this.lastConnectivityCheck
         }ms old): ${this.lastConnectivityResult}`
       );
 

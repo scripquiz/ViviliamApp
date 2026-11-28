@@ -1,6 +1,5 @@
 import {
   ApplicationConfig,
-  importProvidersFrom,
   provideZoneChangeDetection,
 } from '@angular/core';
 import {
@@ -14,7 +13,10 @@ import {
   withPreloading,
 } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import {
+  IonicRouteStrategy,
+  provideIonicAngular,
+} from '@ionic/angular/standalone';
 
 import { routes } from './app.routes';
 import { SelectivePreloadingStrategy } from './core/selective-preloading.strategy';
@@ -22,14 +24,12 @@ import { SelectivePreloadingStrategy } from './core/selective-preloading.strateg
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection(),
-    importProvidersFrom(
-      IonicModule.forRoot({
-        innerHTMLTemplatesEnabled: true,
-      })
-    ),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideRouter(routes, withPreloading(SelectivePreloadingStrategy)),
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideAnimations(),
+    provideIonicAngular({
+      innerHTMLTemplatesEnabled: true,
+    }),
   ],
 };

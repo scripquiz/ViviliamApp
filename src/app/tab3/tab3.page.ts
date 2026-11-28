@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 
 @Component({
@@ -10,6 +10,6 @@ import { ExploreContainerComponent } from '../explore-container/explore-containe
   styleUrls: ['tab3.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule, ExploreContainerComponent],
+  imports: [FormsModule, ExploreContainerComponent, IonHeader, IonToolbar, IonTitle, IonContent],
 })
 export class Tab3Page {}

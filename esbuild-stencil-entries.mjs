@@ -2,7 +2,7 @@
  * esbuild plugin — suppresses the "empty-glob" warning from @stencil/core.
  *
  * In Angular + Ionic, Stencil's lazy *.entry.js loading is never used because
- * all Ionic web components are already compiled into the bundle via IonicModule.
+ * all Ionic web components are already compiled into the bundle via @ionic/angular/standalone.
  * Marking these phantom dynamic imports as external tells esbuild not to try
  * to resolve them as static globs, which eliminates the build warning.
  */

@@ -1,7 +1,10 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { addIcons } from "ionicons";
+import { homeOutline, bookOutline, gridOutline, search, menu } from "ionicons/icons";
+import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from "@ionic/angular/standalone";
+
 // import {
 //       NativePageTransitions,
 //       NativeTransitionOptions,
@@ -12,7 +15,7 @@ import { IonicModule } from '@ionic/angular';
   styleUrls: ['./tabslink.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [FormsModule, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel],
 })
 export class TabslinkPage {
   //Look the index to see which direction to go (if you have more than 3 tabs)
@@ -59,4 +62,7 @@ export class TabslinkPage {
   //       }
   //       this.nativePageTransitions.slide(options);
   //     }
+  constructor() {
+    addIcons({ homeOutline, bookOutline, gridOutline, search, menu });
+  }
 }

@@ -1,20 +1,23 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MenuController, NavController, IonicModule } from '@ionic/angular';
+import { MenuController, NavController } from '@ionic/angular/standalone';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform } from '@ionic/angular';
-import { IonicSafeString } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
+import { IonicSafeString } from '@ionic/angular/standalone';
 import { ShareService } from '../providers/share.service';
 import { IonLoaderService } from '../ion-loader.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular/standalone';
 //import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
 import { Browser } from '@capacitor/browser';
 import { App } from '@capacitor/app';
+import { addIcons } from "ionicons";
+import { informationCircleOutline, shieldOutline, bugOutline, mailOutline, settingsOutline, starHalfOutline, shareSocialOutline, logoYoutube, chatbubbleOutline, listOutline, sparklesOutline } from "ionicons/icons";
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonIcon } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-more',
@@ -22,7 +25,7 @@ import { App } from '@capacitor/app';
   styleUrls: ['./more.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, IonIcon],
 })
 export class MorePage {
   alertController = inject(AlertController);
@@ -66,6 +69,7 @@ export class MorePage {
           });
         });
     });
+    addIcons({ informationCircleOutline, shieldOutline, bugOutline, mailOutline, settingsOutline, starHalfOutline, shareSocialOutline, logoYoutube, chatbubbleOutline, listOutline, sparklesOutline });
   }
   async getAppVersion() {
     try {

@@ -18,9 +18,25 @@ import {
   Platform,
   NavController,
   IonContent,
-  IonicModule,
-} from '@ionic/angular';
-import { AlertController } from '@ionic/angular';
+  IonButtons,
+  IonHeader,
+  IonIcon,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
+import { AlertController } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  arrowBackOutline,
+  bookOutline,
+  createOutline,
+  gitCompare,
+  menu,
+  trashOutline,
+} from 'ionicons/icons';
 import { AppComponent } from '../../app/app.component';
 import { NetworkService } from '../services/network.service';
 
@@ -31,7 +47,19 @@ import { NetworkService } from '../services/network.service';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonInput,
+    IonSelect,
+    IonSelectOption,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class ReadmarklistPage {
   private network = inject(NetworkService);
@@ -76,6 +104,14 @@ export class ReadmarklistPage {
   public endTime: any;
   public interval: any;
   constructor() {
+    addIcons({
+      arrowBackOutline,
+      bookOutline,
+      createOutline,
+      gitCompare,
+      menu,
+      trashOutline,
+    });
     // Note: Removed toast from constructor parameters since Capacitor plugins don't need DI
 
     this.drawer_highlightedit_show = new Date();

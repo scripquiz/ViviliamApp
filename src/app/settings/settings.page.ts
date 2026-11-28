@@ -11,8 +11,25 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonicModule } from '@ionic/angular';
-import { MenuController } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular/standalone';
+import {
+  MenuController,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonList,
+  IonReorder,
+  IonReorderGroup,
+  IonSelect,
+  IonSelectOption,
+  IonTitle,
+  IonToggle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { arrowBackOutline, move } from 'ionicons/icons';
 // Replace Cordova ScreenOrientation with our Capacitor service
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
@@ -26,7 +43,22 @@ import { AppComponent } from '../../app/app.component';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [
+    FormsModule,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonList,
+    IonReorder,
+    IonReorderGroup,
+    IonSelect,
+    IonSelectOption,
+    IonTitle,
+    IonToggle,
+    IonToolbar,
+  ],
 })
 export class SettingsPage implements OnInit {
   appComponent = inject(AppComponent);
@@ -88,6 +120,7 @@ export class SettingsPage implements OnInit {
   public isGlobalDarkMode: boolean = false;
 
   constructor() {
+    addIcons({ arrowBackOutline, move });
     console.log('Paragraph mode ' + this.paragraphModeSettings);
     this.platform.ready().then(() => {
       this.globalFontTamil = this.authservice.fontFamilyTamil;

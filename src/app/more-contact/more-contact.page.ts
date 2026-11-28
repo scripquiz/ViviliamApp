@@ -1,16 +1,20 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { NavController, IonicModule } from '@ionic/angular';
+import { NavController } from '@ionic/angular/standalone';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
 import { IonLoaderService } from '../ion-loader.service';
+import { addIcons } from "ionicons";
+import { arrowBackOutline } from "ionicons/icons";
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent } from "@ionic/angular/standalone";
+
 @Component({
   selector: 'app-more-contact',
   templateUrl: './more-contact.page.html',
   styleUrls: ['./more-contact.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [FormsModule, IonicModule],
+  imports: [FormsModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonContent],
 })
 export class MoreContactPage {
   ionLoaderService = inject(IonLoaderService);
@@ -76,5 +80,9 @@ export class MoreContactPage {
         objThis.authservice.serverDownMessage
       );
     }
+  }
+
+  constructor() {
+    addIcons({ arrowBackOutline });
   }
 }
