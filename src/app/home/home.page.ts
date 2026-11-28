@@ -68,6 +68,8 @@ export class HomePage {
   public stableErrorDetected: boolean = false;
   private isActivelyTesting: boolean = false;
   private audioLoadInProgress: boolean = false;
+  // True while the list on screen came from the local cache
+  public isShowingCachedAudio: boolean = false;
   // Date (YYYY-MM-DD) that todayAudioFiles was loaded for
   private loadedAudioDate: string = '';
   public get isServerError(): boolean {
@@ -186,8 +188,7 @@ export class HomePage {
     this.isAudioLoading = false;
     this.audioLoadError = !this.todayAudioFiles.length;
     this.audioLoadInProgress = false;
-    const connectionType = this.network.connectionType;
-    if (connectionType !== 'none' && connectionType !== 'unknown') {
+    if (this.network.isConnected) {
       this.setStableErrorState(true, this.authservice.serverDownMessage);
       this.logger.log('Setting server error flag for audio loading');
     } else {
@@ -463,15 +464,101 @@ export class HomePage {
       );
     };
     audioElement.currentTime = this.todayAudioFiles[idx].ctime;
-    void audioElement.play().catch((error) => {
-      this.logger.error('Error starting audio playback:', error);
-    });
     this.audioPlaying = true;
+    this.playCurrentAudio();
     // Reset wake lock activity timer on audio play
     this.wakeLockService.resetActivity();
   }
+  private playCurrentAudio(): void {
+    const audioElement = this.audio.nativeElement;
+    const url = this.todayAudioFiles[this.currentAudioIndex]?.url;
+    void audioElement.play()?.catch((error) => {
+      // AbortError: a pause or a newer track interrupted this request
+      if (
+        error?.name === 'AbortError' ||
+        url !== this.todayAudioFiles[this.currentAudioIndex]?.url
+      ) {
+        return;
+      }
+      this.handlePlaybackFailure(error);
+    });
+  }
+  // Bound to the <audio> element's error event
+  onAudioError(): void {
+    const error = this.audio.nativeElement.error;
+    // No error on the element means the event is from a replaced source
+    if (error) {
+      this.handlePlaybackFailure(error);
+    }
+  }
+  private handlePlaybackFailure(error: unknown): void {
+    this.logger.error('Audio playback failed:', error);
+    // Also guards against reporting one failure twice
+    if (!this.audioPlaying || !this.todayAudioFiles[this.currentAudioIndex]) {
+      return;
+    }
+    this.stopAudioDirect(this.currentAudioIndex);
+    this.authservice.showAlert(
+      'Error',
+      '',
+      this.network.isConnected
+        ? 'Unable to play this audio. Please try again.'
+        : this.authservice.noNetWorkMessage
+    );
+  }
+  // Bound to the <audio> element's pause event. Pauses made by this page have
+  // already cleared audioPlaying, so only outside ones (call, headset) remain.
+  onAudioPause(): void {
+    const audioElement = this.audio.nativeElement;
+    if (
+      !this.audioPlaying ||
+      !audioElement.paused ||
+      audioElement.ended || // handled by handleAudioEnded
+      !this.todayAudioFiles[this.currentAudioIndex]
+    ) {
+      return;
+    }
+    this.stopAudioDirect(this.currentAudioIndex);
+  }
+  // Bound to the <audio> element's play event; covers playback resumed from
+  // outside the page, e.g. a headset button.
+  onAudioPlay(): void {
+    const audioElement = this.audio.nativeElement;
+    if (this.audioPlaying || audioElement.paused) {
+      return;
+    }
+    const idx = this.todayAudioFiles.findIndex(
+      (item) => item.url === audioElement.getAttribute('src')
+    );
+    if (idx < 0) {
+      audioElement.pause();
+      return;
+    }
+    this.audioFocusService.requestFocus('home');
+    this.currentAudioIndex = idx;
+    this.todayAudioFiles[idx].state = 'play';
+    this.audioPlaying = true;
+    this.holdWakeLock();
+  }
+  // The wake lock service drops the lock after 5 minutes without activity,
+  // after 30 minutes, and when the app is paused, so keep renewing it.
+  private holdWakeLock(): void {
+    if (document.visibilityState !== 'visible') {
+      return;
+    }
+    if (this.wakeLockService.isActive()) {
+      this.wakeLockService.resetActivity();
+    } else {
+      this.wakeLockService
+        .keepAwake()
+        .catch(() => this.logger.log('Wake lock acquisition failed'));
+    }
+  }
   // Bound to the <audio> element's timeupdate event
   onTimeUpdate(): void {
+    if (this.audioPlaying) {
+      this.holdWakeLock();
+    }
     const track = this.todayAudioFiles[this.currentAudioIndex];
     if (!this.audioPlaying || this.isSeeking || !track) {
       return;
@@ -526,7 +613,7 @@ export class HomePage {
       ) {
         activeAudioArray[this.currentAudioIndex].repeat_played_count++;
         this.audio.nativeElement.currentTime = 0;
-        this.audio.nativeElement.play();
+        this.playCurrentAudio();
       } else {
         this.stopAudioDirect(this.currentAudioIndex);
         activeAudioArray[this.currentAudioIndex].repeat_state = 0;
@@ -560,7 +647,7 @@ export class HomePage {
     if (idx === this.currentAudioIndex) {
       this.setTrackPosition(idx, position);
       this.audio.nativeElement.currentTime = position;
-      this.audio.nativeElement.play();
+      this.playCurrentAudio();
       return;
     }
 
@@ -582,8 +669,7 @@ export class HomePage {
   }
   async openExternalURLDirectly(url: string, title: string, urlplace?: string) {
     if (url != '') {
-      const connectionType = this.network.connectionType;
-      if (connectionType === 'none' || connectionType === 'unknown') {
+      if (!this.network.isConnected) {
         this.authservice.showAlert('', '', this.authservice.noNetWorkMessage);
         return;
       }
@@ -891,10 +977,7 @@ export class HomePage {
         if (!this.processNewAudioData(data, dateStr)) {
           return false;
         }
-        this.setStableErrorState(
-          true,
-          'Using cached data - no internet connection'
-        );
+        this.isShowingCachedAudio = true;
         return true;
       } catch (error) {
         this.logger.error('Error loading from cache:', error);
@@ -1006,6 +1089,8 @@ export class HomePage {
         // An empty list also replaces the old one, to show "No audio today"
         this.todayAudioFiles = todaysAudio;
         this.loadedAudioDate = dateStr;
+        // tryLoadFromCache sets this again after calling this method
+        this.isShowingCachedAudio = false;
         this.notificationsHomeCount = todaysAudio.length;
         this.isAudioLoading = false;
         this.audioLoadError = false;

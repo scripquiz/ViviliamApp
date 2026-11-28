@@ -115,6 +115,9 @@
             playsinline
             (timeupdate)="onTimeUpdate()"
             (ended)="handleAudioEnded()"
+            (play)="onAudioPlay()"
+            (pause)="onAudioPause()"
+            (error)="onAudioError()"
           >
             <source src="{{selectedAudioSource}}" />
           </audio>
@@ -158,6 +161,14 @@
                 }
               </div>
             </div>
+
+            @if (isShowingCachedAudio) {
+            <div class="audio-cached-notice" role="status">
+              {{ network.isConnected
+              ? 'Showing saved audio'
+              : 'Using cached data - no internet connection' }}
+            </div>
+            }
 
             @for (audioItem of todayAudioFiles; track audioItem; let i = $index)
             {

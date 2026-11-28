@@ -1444,6 +1444,14 @@ body.dark-theme {
   text-transform: uppercase;
 }
 
+// Inherits the card's text color, so it follows the dark theme
+.daily-audio-card .audio-cached-notice {
+  margin-bottom: 8px;
+  font-size: 12px;
+  text-align: center;
+  opacity: 0.75;
+}
+
 .daily-audio-card .daily-audio-track {
   padding: 0;
 }
