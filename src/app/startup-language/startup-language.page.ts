@@ -1,13 +1,16 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
-import { MenuController } from '@ionic/angular';
+import { MenuController, IonicModule } from '@ionic/angular';
 @Component({
   selector: 'app-startup-language',
   templateUrl: './startup-language.page.html',
   styleUrls: ['./startup-language.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class StartupLanguagePage {
   constructor(

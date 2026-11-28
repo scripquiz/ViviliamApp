@@ -1,6 +1,7 @@
 import {
   Component,
   OnInit,
+  OnChanges,
   Input,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -26,7 +27,7 @@ import { RatioDialogComponent } from '../../shared/ratio-dialog/ratio-dialog.com
     imports: [IonicModule, FormsModule, RatioDialogComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DailyBibleVerseComponent implements OnInit {
+export class DailyBibleVerseComponent implements OnInit, OnChanges {
   // Inputs from parent component
   @Input() database: DatabaseConnection;
 

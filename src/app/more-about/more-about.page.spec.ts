@@ -10,8 +10,7 @@ describe('MoreAboutPage', () => {
   beforeEach(waitForAsync(() => {
     spyOn(MoreAboutPage.prototype, 'getAppVersion').and.resolveTo();
     TestBed.configureTestingModule({
-      declarations: [ MoreAboutPage ],
-      imports: [IonicModule.forRoot()]
+      imports: [MoreAboutPage, IonicModule.forRoot()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MoreAboutPage);

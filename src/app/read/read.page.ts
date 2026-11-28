@@ -3,7 +3,7 @@ import {
   Renderer2,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   DatabaseService,
@@ -43,7 +43,7 @@ import { AudioFocusService } from '../services/audio-focus.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class ReadPage implements OnInit {
+export class ReadPage implements OnInit, OnDestroy {
   @ViewChild(IonContent, { static: false }) content: IonContent;
   @ViewChild('audio') audio;
   @ViewChild('header') header: HTMLElement;

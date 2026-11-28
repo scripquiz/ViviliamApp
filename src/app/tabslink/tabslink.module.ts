@@ -13,8 +13,8 @@ import { TabslinkPage } from './tabslink.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    TablinksPageRoutingModule
-  ],
-  declarations: [TabslinkPage]
+    TablinksPageRoutingModule,
+    TabslinkPage
+  ]
 })
 export class TabslinkPageModule {}

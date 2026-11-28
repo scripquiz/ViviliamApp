@@ -10,8 +10,7 @@ describe('GetstartedPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ GetstartedPage ],
-      imports: [PageTestingModule],
+      imports: [GetstartedPage, PageTestingModule],
       providers: [{ provide: AppComponent, useFactory: () => ({ play_speed: '1' }) }]
     }).compileComponents();
 

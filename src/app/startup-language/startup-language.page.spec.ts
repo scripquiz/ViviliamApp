@@ -9,8 +9,7 @@ describe('StartupLanguagePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ StartupLanguagePage ],
-      imports: [PageTestingModule]
+      imports: [StartupLanguagePage, PageTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(StartupLanguagePage);

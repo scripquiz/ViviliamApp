@@ -4,7 +4,8 @@ const angular = require('angular-eslint');
 
 module.exports = tseslint.config(
   {
-    ignores: ['projects/**/*'],
+    // src/assets holds data/static files; www/ and android/ are build output
+    ignores: ['projects/**/*', 'src/assets/**/*', 'www/**/*', 'android/**/*'],
   },
   {
     files: ['**/*.ts'],
@@ -38,6 +39,8 @@ module.exports = tseslint.config(
           style: 'camelCase',
         },
       ],
+      // Project rule (CLAUDE.md): keep Eager change detection; never flip to OnPush
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
     },
   },
   {

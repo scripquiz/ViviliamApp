@@ -1,11 +1,13 @@
 import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
 import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform, NavController, IonicModule } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 // Replace Cordova ScreenOrientation with our Capacitor service
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
@@ -19,7 +21,8 @@ import { AppComponent } from '../../app/app.component';
   styleUrls: ['./settings.page.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class SettingsPage implements OnInit {
   public bibleList: any = [];

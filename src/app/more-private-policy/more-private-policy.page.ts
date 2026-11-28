@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NavController, IonicModule } from '@ionic/angular';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
 import { IonLoaderService } from '../ion-loader.service';
 @Component({
@@ -7,7 +9,8 @@ import { IonLoaderService } from '../ion-loader.service';
   templateUrl: './more-private-policy.page.html',
   styleUrls: ['./more-private-policy.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class MorePrivatePolicyPage {
   constructor(

@@ -13,8 +13,8 @@ import { MorePage } from './more.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    MorePageRoutingModule
-  ],
-  declarations: [MorePage]
+    MorePageRoutingModule,
+    MorePage
+  ]
 })
 export class MorePageModule {}

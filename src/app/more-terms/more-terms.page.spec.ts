@@ -9,8 +9,7 @@ describe('MoreTermsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MoreTermsPage ],
-      imports: [PageTestingModule]
+      imports: [MoreTermsPage, PageTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MoreTermsPage);

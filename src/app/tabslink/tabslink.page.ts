@@ -1,4 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 // import {
 //       NativePageTransitions,
 //       NativeTransitionOptions,
@@ -8,7 +11,8 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   templateUrl: './tabslink.page.html',
   styleUrls: ['./tabslink.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class TabslinkPage {
   //Look the index to see which direction to go (if you have more than 3 tabs)

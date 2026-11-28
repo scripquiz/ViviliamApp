@@ -13,8 +13,8 @@ import { StartupLanguagePage } from './startup-language.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    StartupLanguagePageRoutingModule
-  ],
-  declarations: [StartupLanguagePage]
+    StartupLanguagePageRoutingModule,
+    StartupLanguagePage
+  ]
 })
 export class StartupLanguagePageModule {}

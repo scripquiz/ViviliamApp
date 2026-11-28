@@ -56,26 +56,6 @@ export const routes: Routes = [
         loadChildren: () => import('./bookselector/bookselector.module').then(m => m.BookselectorPageModule)
     },
     {
-        path: 'forgot-password',
-        loadChildren: () => import('./forgot-password/forgot-password.module').then(m => m.ForgotPasswordPageModule)
-    },
-    {
-        path: 'change-password',
-        loadChildren: () => import('./change-password/change-password.module').then(m => m.ChangePasswordPageModule)
-    },
-    {
-        path: 'login',
-        loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
-    },
-    {
-        path: 'myaccount',
-        loadChildren: () => import('./myaccount/myaccount.module').then(m => m.MyaccountPageModule)
-    },
-    {
-        path: 'signup',
-        loadChildren: () => import('./signup/signup.module').then(m => m.SignupPageModule)
-    },
-    {
         path: 'readmarklist/:counter',
         loadChildren: () => import('./readmarklist/readmarklist.module').then(m => m.ReadmarklistPageModule)
     },

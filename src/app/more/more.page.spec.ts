@@ -9,8 +9,7 @@ describe('MorePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MorePage ],
-      imports: [PageTestingModule]
+      imports: [MorePage, PageTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MorePage);

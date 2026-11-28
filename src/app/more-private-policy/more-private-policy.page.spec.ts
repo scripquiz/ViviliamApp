@@ -9,8 +9,7 @@ describe('MorePrivatePolicyPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MorePrivatePolicyPage ],
-      imports: [PageTestingModule]
+      imports: [MorePrivatePolicyPage, PageTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MorePrivatePolicyPage);

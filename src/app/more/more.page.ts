@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { MenuController, NavController } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MenuController, NavController, IonicModule } from '@ionic/angular';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import {
   DatabaseService,
@@ -19,7 +21,8 @@ import { App } from '@capacitor/app';
   templateUrl: './more.page.html',
   styleUrls: ['./more.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class MorePage {
   public database: DatabaseConnection;

@@ -10,8 +10,7 @@ describe('SettingsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SettingsPage ],
-      imports: [PageTestingModule],
+      imports: [SettingsPage, PageTestingModule],
       providers: [{ provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['initializeData', 'setReadAloud']) }]
     }).compileComponents();
 

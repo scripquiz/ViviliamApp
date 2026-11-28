@@ -10,8 +10,7 @@ describe('StartupPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ StartupPage ],
-      imports: [PageTestingModule],
+      imports: [StartupPage, PageTestingModule],
       providers: [{
         provide: NavController,
         useFactory: () => {

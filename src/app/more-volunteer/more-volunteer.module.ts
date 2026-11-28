@@ -13,8 +13,8 @@ import { MoreVolunteerPage } from './more-volunteer.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    MoreVolunteerPageRoutingModule
-  ],
-  declarations: [MoreVolunteerPage]
+    MoreVolunteerPageRoutingModule,
+    MoreVolunteerPage
+  ]
 })
 export class MoreVolunteerPageModule {}

@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { Platform, NavController } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Platform, NavController, IonicModule } from '@ionic/angular';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import {
   DatabaseService,
@@ -11,7 +13,8 @@ import { MenuController } from '@ionic/angular';
   templateUrl: './startup.page.html',
   styleUrls: ['./startup.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class StartupPage {
   private database: DatabaseConnection;

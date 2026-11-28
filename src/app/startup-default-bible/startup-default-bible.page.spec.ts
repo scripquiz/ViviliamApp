@@ -9,8 +9,7 @@ describe('StartupDefaultBiblePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ StartupDefaultBiblePage ],
-      imports: [PageTestingModule]
+      imports: [StartupDefaultBiblePage, PageTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(StartupDefaultBiblePage);

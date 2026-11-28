@@ -3,7 +3,7 @@ import {
   Renderer2,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {
   DatabaseService,
   DatabaseConnection,
@@ -28,7 +28,7 @@ import { AppComponent } from '../../app/app.component';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class ComparePage implements OnInit {
+export class ComparePage implements OnInit, OnDestroy {
   @ViewChild(IonContent, { static: false }) content: IonContent;
   @ViewChild('header') header: HTMLElement;
   public paragraphModeClass: any = '';

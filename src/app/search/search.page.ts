@@ -1,5 +1,5 @@
 import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnDestroy } from '@angular/core';
 import {
   DatabaseService,
   DatabaseConnection,
@@ -22,7 +22,7 @@ import { Keyboard } from '@capacitor/keyboard';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class SearchPage {
+export class SearchPage implements OnDestroy {
   public currentpage: any = 1;
   public totalpages: any = 15;
   public showSearchNavigation: any = 'hide';

@@ -5,7 +5,6 @@ import {
 import { AuthserviceProvider } from '../providers/authservice/authservice';
 import {
   LoadingController,
-  AlertController,
   Platform,
   NavController,
   IonicModule,
@@ -22,7 +21,7 @@ import { ShareService } from './providers/share.service';
 // Replace Cordova Toast with Capacitor Toast
 import { Toast } from '@capacitor/toast';
 import { IonSelect } from '@ionic/angular';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonLoaderService } from '../app/ion-loader.service';
 // Remove Insomnia import
@@ -50,7 +49,7 @@ register();
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, FormsModule, RouterModule, IonicModule],
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   @ViewChild('mySelect') selectRef: IonSelect;
   @ViewChild('audio') audio;
   public fromid: any = '2';
@@ -200,8 +199,6 @@ export class AppComponent {
   public colorshow8 = 'hide';
   public colorshow9 = 'hide';
   public colorshow10 = 'hide';
-  public signupMenu: any = 'myaccount-signup-menu-hide';
-  public myaccountPopover: any = 'myaccount-popover-hide';
 
   public audio_panel: any = 'audio-panel-hide';
   public audioCurrentTime: any = '0:00';
@@ -253,7 +250,6 @@ export class AppComponent {
     // Replace Insomnia with WakeLockService
     public wakeLockService: WakeLockService,
     public ionLoaderService: IonLoaderService,
-    public alertController: AlertController,
     public socialSharing: ShareService,
     public router: Router,
     // Replace ScreenOrientation with ScreenOrientationService
@@ -403,19 +399,6 @@ export class AppComponent {
     });
   }
 
-  showSignupMenu() {
-    if (this.signupMenu == 'myaccount-signup-menu-show') {
-      this.signupMenu = 'myaccount-signup-menu-hide';
-      this.myaccountPopover = 'myaccount-popover-hide';
-    } else {
-      this.signupMenu = 'myaccount-signup-menu-show';
-      this.myaccountPopover = 'myaccount-popover-show';
-    }
-  }
-  hideSignupMenu() {
-    this.signupMenu = 'myaccount-signup-menu-hide';
-    this.myaccountPopover = 'myaccount-popover-hide';
-  }
   ionViewDidEnter() {
     this.platform.ready().then(() => {
       this.orientation = this.authservice.orientation;
@@ -1287,130 +1270,6 @@ export class AppComponent {
     });
 
     this.authservice.paragraphMode = selectedValue.currentTarget.value;
-  }
-  showLogin() {
-    this.router.navigateByUrl('/login');
-  }
-  showProfile() {
-    this.router.navigateByUrl('/myaccount');
-  }
-  showChangePassword() {
-    this.authservice.userId_ForgotPassword = '';
-    this.router.navigateByUrl('/change-password');
-  }
-  doLogout() {
-    var qry;
-    qry = "UPDATE CONFIG SET value = '' WHERE id = 26";
-    console.log('udpate user :' + qry);
-    this.database
-      .executeSql(qry)
-      .then(() => {
-        console.log('userid inserted');
-      })
-      .catch((e) => {
-        console.log(
-          'Hot fixes config USERID insert error: ' + JSON.stringify(e)
-        );
-      });
-
-    qry = "UPDATE CONFIG Set value = '' WHERE id = 27";
-    console.log('udpate user :' + qry);
-    this.database
-      .executeSql(qry)
-      .then(() => {
-        console.log('username inserted');
-      })
-      .catch((e) => {
-        console.log(
-          'Hot fixes config USERNAME insert error: ' + JSON.stringify(e)
-        );
-      });
-    this.authservice.userSignedStatus = 0;
-    this.authservice.userId = '';
-    this.authservice.userFirsletter = '';
-    this.hideSignupMenu();
-  }
-  deleteAccount() {
-    this.showConfirm();
-  }
-  showConfirm() {
-    this.alertController
-      .create({
-        header: 'Confirm Alert',
-        subHeader:
-          'Your account will be removed from the system. Your Highlights, Bookmarks, and Notes will be permanently deleted.',
-        message: 'Are you sure? Do you want to delete your account?',
-        cssClass: 'custom-confirm',
-        buttons: [
-          {
-            text: 'YES',
-            handler: () => {
-              this.doDeleteAccount();
-            },
-          },
-          {
-            text: 'NO',
-            handler: () => {
-              alert('No');
-            },
-          },
-        ],
-      })
-      .then((res) => {
-        res.present();
-      });
-  }
-  doDeleteAccount() {
-    //this.ionLoaderService.simpleLoader("Validating data, please wait...");
-    var params =
-      'delete_account?userid=' + this.authservice.userId + '&device=android';
-    this.authservice.execute_api(params, this.deleteaccountResult, this);
-  }
-  deleteaccountResult(status, objAllData, objThis) {
-    //  objThis.ionLoaderService.dismissLoader();
-    if (status) {
-      if (objAllData[0]['status'] == '0') {
-        //alert(objAllData[0]["message"]);
-        objThis.authservice.showAlert('', '', objAllData[0]['message']);
-      } else {
-        objThis.databaseService
-          .create({
-            name: 'viviliam.db',
-            location: 'default',
-          })
-          .then((db: DatabaseConnection) => {
-            console.log('DB created');
-            objThis.database = db;
-            objThis.database
-              .executeSql(
-                "UPDATE vers SET notes = '', textHighlight='', bookMark=0",
-                []
-              )
-              .then((data) => {
-                objThis.database
-                  .executeSql("UPDATE CONFIG SET value = '' WHERE id = 26", [])
-                  .then((data) => {
-                    objThis.database
-                      .executeSql(
-                        "UPDATE CONFIG SET value = '' WHERE id = 27",
-                        []
-                      )
-                      .then((data) => {
-                        objThis.authservice.userSignedStatus = 0;
-                        objThis.authservice.userId = '';
-                        objThis.authservice.userFirsletter = '';
-                        objThis.hideSignupMenu();
-                        objThis.authservice.showAlert(
-                          '',
-                          '',
-                          objAllData[0]['message']
-                        );
-                      });
-                  });
-              });
-          });
-      }
-    }
   }
   hideAudioPanel() {
     this.audio_panel = 'audio-panel-hide';

@@ -10,8 +10,7 @@ describe('TabslinkPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TabslinkPage ],
-      imports: [IonicModule.forRoot()],
+      imports: [TabslinkPage, IonicModule.forRoot()],
       providers: [provideRouter([])]
     }).compileComponents();
 

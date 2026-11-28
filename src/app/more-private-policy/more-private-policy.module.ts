@@ -13,8 +13,8 @@ import { MorePrivatePolicyPage } from './more-private-policy.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    MorePrivatePolicyPageRoutingModule
-  ],
-  declarations: [MorePrivatePolicyPage]
+    MorePrivatePolicyPageRoutingModule,
+    MorePrivatePolicyPage
+  ]
 })
 export class MorePrivatePolicyPageModule {}

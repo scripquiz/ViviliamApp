@@ -13,8 +13,8 @@ import { StartupPage } from './startup.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    StartupPageRoutingModule
-  ],
-  declarations: [StartupPage]
+    StartupPageRoutingModule,
+    StartupPage
+  ]
 })
 export class StartupPageModule {}

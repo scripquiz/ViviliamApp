@@ -31,49 +31,6 @@ ion-select-option {
   border: none;
 }
 
-.myaccount-popover {
-  width: 215px;
-  padding: 10px;
-  background-color: #fff;
-  z-index: 99;
-  right: 5px;
-  position: absolute;
-  top: 0px;
-  border-radius: 5px;
-  padding-bottom: 5px;
-  border: 1px solid #666666;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);
-  color: #000;
-}
-
-.myaccount-popovermenu-item {
-  width: 100%;
-}
-
-.myaccount-signup-menu-show {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0px;
-  top: 60px;
-  z-index: 999;
-  display: inline-block;
-  transition: all .5s ease-in-out;
-  left: 0px;
-}
-
-.myaccount-signup-menu-hide {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0px;
-  top: 60px;
-  z-index: 999;
-
-  left: calc(100%);
-  transition: all .5s ease-in-out;
-}
-
 .enableditem {
   color: #000;
 }

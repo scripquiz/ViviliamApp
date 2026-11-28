@@ -13,8 +13,8 @@ import { MoreTermsPage } from './more-terms.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    MoreTermsPageRoutingModule
-  ],
-  declarations: [MoreTermsPage]
+    MoreTermsPageRoutingModule,
+    MoreTermsPage
+  ]
 })
 export class MoreTermsPageModule {}

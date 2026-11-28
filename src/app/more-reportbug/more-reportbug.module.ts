@@ -13,8 +13,8 @@ import { MoreReportbugPage } from './more-reportbug.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    MoreReportbugPageRoutingModule
-  ],
-  declarations: [MoreReportbugPage]
+    MoreReportbugPageRoutingModule,
+    MoreReportbugPage
+  ]
 })
 export class MoreReportbugPageModule {}

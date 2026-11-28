@@ -1,7 +1,9 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import { ViewEncapsulation } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 
 @Component({
@@ -10,7 +12,8 @@ import { MenuController } from '@ionic/angular';
   styleUrls: ['./startup-default-bible.page.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class StartupDefaultBiblePage {
   bibleData = [];

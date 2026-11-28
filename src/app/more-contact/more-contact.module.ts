@@ -13,8 +13,8 @@ import { MoreContactPage } from './more-contact.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    MoreContactPageRoutingModule
-  ],
-  declarations: [MoreContactPage]
+    MoreContactPageRoutingModule,
+    MoreContactPage
+  ]
 })
 export class MoreContactPageModule {}

@@ -9,8 +9,7 @@ describe('MoreReportbugPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MoreReportbugPage ],
-      imports: [PageTestingModule]
+      imports: [MoreReportbugPage, PageTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MoreReportbugPage);

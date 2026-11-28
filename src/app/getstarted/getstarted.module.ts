@@ -13,8 +13,8 @@ import { GetstartedPage } from './getstarted.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    GetstartedPageRoutingModule
-  ],
-  declarations: [GetstartedPage]
+    GetstartedPageRoutingModule,
+    GetstartedPage
+  ]
 })
 export class GetstartedPageModule {}

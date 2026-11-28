@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NavController, IonicModule } from '@ionic/angular';
 import { App } from '@capacitor/app';
 //import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 
@@ -8,7 +10,8 @@ import { App } from '@capacitor/app';
   templateUrl: './more-about.page.html',
   styleUrls: ['./more-about.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class MoreAboutPage {
   public appversionText: any;

@@ -12,7 +12,7 @@
 | `CoreModule` / `SharedModule` | Empty shells. All `CoreModule` services are already `providedIn: 'root'`. |
 | Services | All `providedIn: 'root'` except `AuthserviceProvider` (plain `@Injectable()`) |
 | Shared bits | `ExploreContainerComponent` (NgModule, used by tab1–3). Daily verse/quote components already standalone. |
-| Custom elements | `<swiper-container>` in `login` and `forgot-password` → need `CUSTOM_ELEMENTS_SCHEMA` |
+| Custom elements | None left (the `<swiper-container>` pages `login` / `forgot-password` were removed) |
 | Tests | 38 specs; most use `declarations: [XPage]` + `PageTestingModule`, a few use `IonicModule.forRoot()` |
 
 **Latent risk:** the standalone bootstrap path doesn't provide `HttpClient`, `AuthserviceProvider` or `innerHTMLTemplatesEnabled`. Pages injecting `HttpClient` (home, getstarted, bible-topics, life-events, life-event-detail) would throw `NullInjectorError` unless the app is really running on the `AppModule` fallback. Phase 1 fixes this either way.
@@ -39,7 +39,7 @@
 ### Phase 2 — Convert pages in batches
 Each page → `standalone: true`, `imports: [CommonModule, FormsModule, IonicModule]` (matches `AppComponent`; never mix with `@ionic/angular/standalone`).
 1. Static: `more-*`, `settings`, `tabslink`
-2. Startup/auth: `startup*`, `getstarted`, `login`, `signup`, `forgot-password`, `change-password`, `myaccount` (swiper pages get `CUSTOM_ELEMENTS_SCHEMA`)
+2. Startup: `startup`, `startup-language`, `startup-default-bible`, `getstarted` (the unused auth pages `login`, `signup`, `forgot-password`, `change-password` and `myaccount` were removed instead)
 3. Topics: `bible-topics`, `bible-topic-detail`, `life-events`, `bookselector`, `setdefaultbible`, `search`, `readmarklist`, `addnotes`
 4. Tabs + `ExploreContainerComponent`
 5. Risky, one at a time with device test: `home`, `read`, `compare`, `life-event-detail`
@@ -68,6 +68,13 @@ Each page → `standalone: true`, `imports: [CommonModule, FormsModule, IonicMod
 ## Progress log
 - [x] Phase 0 — baseline: build OK, 46/46 tests, lint 394 errors / 8 warnings (pre-existing)
 - [x] Phase 1 — single `bootstrapApplication` path via `app.config.ts`; AppModule, AppRoutingModule, CoreModule and SharedModule removed; `SelectivePreloadingStrategy` extracted; `AuthserviceProvider` is now `providedIn: 'root'`; duplicate `addnotes` route removed. Verified: build OK, 46/46 tests, lint unchanged (394 / 8). Still needs a device smoke test.
+- [x] Lint cleanup (small): ignore `src/assets`, `www`, `android` (data/build output); OnPush lint rule off (CLAUDE.md: keep Eager); 7 missing `OnDestroy`/`OnChanges` interfaces added; unused disable comment removed. Lint 394/8 → 331/0. Build OK, 46/46.
+  - Deferred: `prefer-inject` (192) + `prefer-control-flow` → Phase 5; `template/eqeqeq` (~104) → separate careful pass (values often strings); `prefer-standalone` (35) → fixed by Phase 2.
 - [ ] Phase 2
+  - [x] Batch 1 — `more`, `more-about`, `more-contact`, `more-private-policy`, `more-reportbug`, `more-terms`, `more-volunteer`, `settings`, `tabslink` → standalone (`CommonModule, FormsModule, IonicModule`). Page modules now import the page (removed in Phase 3); specs use `imports: [XPage, …]`. Lint 331 → 322, build OK, 46/46. Needs device smoke test.
+  - [x] Batch 2 — `startup`, `startup-language`, `startup-default-bible`, `getstarted` → standalone. Unused auth pages (`login`, `signup`, `forgot-password`, `change-password`, `myaccount`) deleted with their routes, plus the dead signup/account popup and its methods/styles in `AppComponent` (`AuthserviceProvider` kept; account-field cleanup is a later task). Lint 322 → 276, build OK, 41/41 (5 specs removed with the pages). Needs device smoke test.
+  - [ ] Batch 3 — topics
+  - [ ] Batch 4 — tabs + `ExploreContainerComponent`
+  - [ ] Batch 5 — home, read, compare, life-event-detail
 - [ ] Phase 3
 - [ ] Phase 4

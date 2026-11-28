@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { timeout } from 'rxjs';
 import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import {
   DatabaseService,
   DatabaseConnection,
@@ -25,7 +25,7 @@ import { AudioFocusService } from '../services/audio-focus.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class HomePage {
+export class HomePage implements OnDestroy {
   @ViewChild('audioPlayer') audio: any;
   private lastConnectivityResult: boolean = false;
   private lastConnectivityCheck: number = 0;

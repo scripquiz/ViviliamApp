@@ -13,8 +13,8 @@ import { MoreAboutPage } from './more-about.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    MoreAboutPageRoutingModule
-  ],
-  declarations: [MoreAboutPage]
+    MoreAboutPageRoutingModule,
+    MoreAboutPage
+  ]
 })
 export class MoreAboutPageModule {}

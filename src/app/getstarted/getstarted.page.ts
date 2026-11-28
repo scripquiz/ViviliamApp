@@ -1,9 +1,11 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform, NavController, IonicModule } from '@ionic/angular';
 import { DatabaseImportService } from 'src/app/services/database-import.service';
 import { HttpClient } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
@@ -18,7 +20,8 @@ import { ScreenOrientationService } from '../services/screen-orientation.service
   templateUrl: './getstarted.page.html',
   styleUrls: ['./getstarted.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class GetstartedPage {
   public orientation: any;

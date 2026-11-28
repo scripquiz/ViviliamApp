@@ -13,8 +13,8 @@ import { StartupDefaultBiblePage } from './startup-default-bible.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    StartupDefaultBiblePageRoutingModule
-  ],
-  declarations: [StartupDefaultBiblePage]
+    StartupDefaultBiblePageRoutingModule,
+    StartupDefaultBiblePage
+  ]
 })
 export class StartupDefaultBiblePageModule {}
