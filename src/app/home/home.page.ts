@@ -40,7 +40,6 @@ export class HomePage {
   public database: DatabaseConnection;
   public tabRowitemSelected: any = '0';
   public orientation: any;
-  public selectedAudioSource: any = '';
   public currentAudioIndex: any = 0;
   public audioPlaying: any;
   public isSeeking = false;
@@ -390,7 +389,6 @@ export class HomePage {
       return;
     }
 
-    this.selectedAudioSource = this.todayAudioFiles[idx].url;
     audioElement.preload = 'auto';
     audioElement.src = this.todayAudioFiles[idx].url;
     audioElement.load();
@@ -730,18 +728,10 @@ export class HomePage {
       source?: string;
       priority?: boolean;
       loadAudio?: boolean;
-      showLoader?: boolean;
-      timeout?: number;
     } = {}
   ): Promise<boolean> {
     // Set defaults
-    const {
-      source = 'general',
-      priority = false,
-      loadAudio = false,
-      showLoader = false,
-      timeout = 10000,
-    } = options;
+    const { source = 'general', priority = false, loadAudio = false } = options;
 
     this.logger.network(
       `Network check (${source}${priority ? ', priority' : ''})`
@@ -774,11 +764,6 @@ export class HomePage {
       return Promise.resolve(this.network.isConnected);
     }
 
-    // Show loader if requested
-    if (showLoader) {
-      this.ionLoaderService.simpleLoader('Checking connection...');
-    }
-
     this.isActivelyTesting = true;
 
     // Basic check - if device reports no connection, don't bother with full check
@@ -786,7 +771,6 @@ export class HomePage {
       this.logger.network(`Device reports disconnected (${source})`);
       this.handleNetworkResult(false, loadAudio);
       this.isActivelyTesting = false;
-      if (showLoader) this.ionLoaderService.dismissLoader();
 
       // Update cached result
       this.lastConnectivityCheck = now;
@@ -810,7 +794,7 @@ export class HomePage {
 
           resolve(false);
         }
-      }, timeout);
+      }, 10000);
     });
 
     // Perform actual connectivity check
@@ -841,7 +825,6 @@ export class HomePage {
       if (timeoutId) clearTimeout(timeoutId);
 
       this.isActivelyTesting = false;
-      if (showLoader) this.ionLoaderService.dismissLoader();
       this.handleNetworkResult(isConnected, loadAudio);
       return isConnected;
     });
