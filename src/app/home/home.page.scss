@@ -232,8 +232,9 @@ body.dark-theme {
     }
   }
 
-  // Card styles
-  .card {
+  // Card styles. The daily audio card has its own dark styles below;
+  // :where() excludes it without raising specificity
+  .card:not(:where(.daily-audio-card)) {
     background: linear-gradient(to bottom,
         #2a2a2a 0%,
         #252525 25%,
@@ -252,36 +253,8 @@ body.dark-theme {
     color: #b0b0b0 !important;
   }
 
-  // Audio section
-  .card-item-header {
+  .card-item-header:not(:where(.audio-header)) {
     border-bottom: 1px solid #444 !important;
-  }
-
-  .audio-header {
-    border-bottom: 1px solid #444 !important;
-  }
-
-  .audio-title-center {
-    color: #e0e0e0 !important;
-  }
-
-  .card-item-audio {
-    background: linear-gradient(to right,
-        #2a2a2a 0%,
-        #252525 25%,
-        #222222 50%,
-        #202020 75%,
-        #1e1e1e 100%) !important;
-    border-bottom: 1px solid #444 !important;
-  }
-
-  .audio-item-title {
-    color: #e0e0e0 !important;
-  }
-
-  .audio-time-left,
-  .audio-time-right {
-    color: #b0b0b0 !important;
   }
 
   // Simple card for quick links
@@ -625,9 +598,11 @@ body.dark-theme {
 body.dark-theme .daily-audio-card {
   --daily-audio-accent: #2fbf71;
   --daily-audio-accent-soft: rgba(47, 191, 113, 0.16);
-  --background: #242321;
+  // !important: global.scss forces a background on every dark ion-card
+  --background: #242321 !important;
+  background: #242321 !important;
   --color: #f0ece7;
-  border-color: #3b3834;
+  border: 1px solid #3b3834;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
