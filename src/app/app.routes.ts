@@ -3,7 +3,8 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: '',
-        loadChildren: () => import('./startup/startup.module').then(m => m.StartupPageModule)
+        loadChildren: () => import('./startup/startup.module').then(m => m.StartupPageModule),
+        data: { preload: true }
     },
     {
         path: 'tabs',
@@ -39,7 +40,8 @@ export const routes: Routes = [
     },
     {
         path: 'home',
-        loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+        loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
+        data: { preload: true }
     },
     {
         path: 'read/:counter',
@@ -132,9 +134,5 @@ export const routes: Routes = [
     {
         path: 'life-events/:id',
         loadChildren: () => import('./life-event-detail/life-event-detail.module').then(m => m.LifeEventDetailPageModule)
-    },
-    {
-        path: 'addnotes',
-        loadChildren: () => import('./addnotes/addnotes.module').then(m => m.AddnotesPageModule)
     },
 ];

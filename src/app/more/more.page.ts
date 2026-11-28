@@ -71,7 +71,7 @@ export class MorePage {
       console.log('Version loaded:', this.appversionText);
     } catch (error) {
       // Fallback version in case the plugin fails
-      this.appversionText = '4.9.0';
+      this.appversionText = '4.9.1';
       console.error('Error getting version:', error);
     }
   }

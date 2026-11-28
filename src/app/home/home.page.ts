@@ -629,7 +629,7 @@ export class HomePage {
       this.logger.log('App version retrieved from Capacitor:', info.version);
     } catch (err) {
       this.logger.error('Error getting app version:', err);
-      this.appversionText = '4.9.0';
+      this.appversionText = '4.9.1';
     }
   }
   private removeNetworkListeners() {

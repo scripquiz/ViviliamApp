@@ -16,7 +16,7 @@ import {
 import { ScreenOrientationService } from './services/screen-orientation.service';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NgModule, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 import { ShareService } from './providers/share.service';
 // Replace Cordova Toast with Capacitor Toast

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { timeout } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthserviceProvider {
   API_URL = 'https://api.viviliam.com/api/';
   //API_URL="http://apitest.viviliam.com/api/";
@@ -14,7 +14,7 @@ export class AuthserviceProvider {
   allData: any;
   api_status: any;
 
-  public _DB_VERSION: any = '40900'; // Changed to string to match what's stored in the DB
+  public _DB_VERSION: any = '40901'; // Changed to string to match what's stored in the DB
   public _IS_UPDATE_BIBLE: any = 0;
   public bibleImportInProgress: boolean = false;
   public defaultBibleId: any = 3;
