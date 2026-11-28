@@ -9,7 +9,6 @@ import { BibleTopicsPageRoutingModule } from './bible-topics-routing.module';
 import { BibleTopicsPage } from './bible-topics.page';
 
 @NgModule({
-    imports: [CommonModule, FormsModule, IonicModule, BibleTopicsPageRoutingModule],
-    declarations: [BibleTopicsPage],
+    imports: [CommonModule, FormsModule, IonicModule, BibleTopicsPageRoutingModule, BibleTopicsPage]
 })
 export class BibleTopicsPageModule { }

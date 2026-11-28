@@ -1,6 +1,8 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform, IonicModule } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import {
   DatabaseConnection,
@@ -45,7 +47,8 @@ interface BookFilterOption {
   templateUrl: './bible-topics.page.html',
   styleUrls: ['./bible-topics.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class BibleTopicsPage {
   private readonly STORAGE_LANGUAGE_KEY = 'bible_topics_language';

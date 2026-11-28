@@ -1,10 +1,6 @@
 <ion-content>
   <div class="home-container">
-    <ion-segment
-      [(ngModel)]="segmentSelected"
-      (ionChange)="segmentChanged($event)"
-      class="home-segment"
-    >
+    <ion-segment [(ngModel)]="segmentSelected" (ionChange)="segmentChanged($event)" class="home-segment">
       <ion-segment-button value="0">
         <ion-label>Today</ion-label>
       </ion-segment-button>
@@ -20,25 +16,17 @@
       <!-- Today Tab Content -->
       <div [ngStyle]="{'display': tabRowitemSelected=='0' ? 'block' : 'none'}">
         <ion-grid class="ion-no-padding">
-          <ion-row
-            class="ion-align-items-center ion-justify-content-center daily-bible-verse-row"
-          >
+          <ion-row class="ion-align-items-center ion-justify-content-center daily-bible-verse-row">
             <ion-col size="12">
-              <app-daily-bible-verse
-                [database]="database"
-              ></app-daily-bible-verse>
+              <app-daily-bible-verse [database]="database"></app-daily-bible-verse>
             </ion-col>
           </ion-row>
         </ion-grid>
 
         <ion-grid class="ion-no-padding">
-          <ion-row
-            class="ion-align-items-center ion-justify-content-center daily-bible-quote-row"
-          >
+          <ion-row class="ion-align-items-center ion-justify-content-center daily-bible-quote-row">
             <ion-col size="12">
-              <app-daily-bible-quote
-                [database]="database"
-              ></app-daily-bible-quote>
+              <app-daily-bible-quote [database]="database"></app-daily-bible-quote>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -48,11 +36,7 @@
         <div class="audio-loading">
           <ion-card class="card">
             <div class="card-item-header">
-              <span
-                class="title"
-                style="padding-left: 10px; display: inline-block"
-                >Loading Audio...</span
-              >
+              <span class="title" style="padding-left: 10px; display: inline-block">Loading Audio...</span>
               <ion-spinner name="crescent"></ion-spinner>
             </div>
           </ion-card>
@@ -64,16 +48,9 @@
         <div class="audio-error">
           <ion-card class="card">
             <div class="card-item-header">
-              <span
-                class="title"
-                style="padding-left: 10px; display: inline-block"
-                >{{ APIMessage || 'Unable to load audio' }}</span
-              >
-              <ion-button
-                (click)="loadAudioDirectly()"
-                fill="clear"
-                class="button-normal retry"
-              >
+              <span class="title" style="padding-left: 10px; display: inline-block">{{ APIMessage || 'Unable to load
+                audio' }}</span>
+              <ion-button (click)="loadAudioDirectly()" fill="clear" class="button-normal retry">
                 Retry
               </ion-button>
             </div>
@@ -87,16 +64,8 @@
         <div class="no-audio">
           <ion-card class="card">
             <div class="card-item-header">
-              <span
-                class="title"
-                style="padding-left: 10px; display: inline-block"
-                >No audio today</span
-              >
-              <ion-button
-                (click)="loadAudioDirectly()"
-                fill="clear"
-                class="button-normal retry"
-              >
+              <span class="title" style="padding-left: 10px; display: inline-block">No audio today</span>
+              <ion-button (click)="loadAudioDirectly()" fill="clear" class="button-normal retry">
                 Refresh
               </ion-button>
             </div>
@@ -106,51 +75,27 @@
 
         <!-- Audio content -->
         <div
-          [ngStyle]="{'display': !isAudioLoading && !audioLoadError && todayAudioFiles.length > 0 ? 'block' : 'none'}"
-        >
-          <audio
-            #audioPlayer
-            preload="auto"
-            playsinline
-            (timeupdate)="onTimeUpdate()"
-            (ended)="handleAudioEnded()"
-            (play)="onAudioPlay()"
-            (pause)="onAudioPause()"
-            (error)="onAudioError()"
-          ></audio>
+          [ngStyle]="{'display': !isAudioLoading && !audioLoadError && todayAudioFiles.length > 0 ? 'block' : 'none'}">
+          <audio #audioPlayer preload="auto" playsinline (timeupdate)="onTimeUpdate()" (ended)="handleAudioEnded()"
+            (play)="onAudioPlay()" (pause)="onAudioPause()" (error)="onAudioError()"></audio>
           <ion-card class="card daily-audio-card">
             <div class="card-item-header audio-header">
               <div class="audio-left-control">
-                <ion-icon
-                  name="play-circle"
-                  (click)="playAllAudiosDirect()"
-                  class="audio-control-button1"
+                <ion-icon name="play-circle" (click)="playAllAudiosDirect()" class="audio-control-button1"
                   [ngStyle]="{'display': playAllText=='Play All' ? 'block' : 'none'}"
-                  aria-label="Play all audio"
-                ></ion-icon>
-                <ion-icon
-                  name="pause-circle"
-                  (click)="playAllAudiosDirect()"
-                  class="audio-control-button1"
+                  aria-label="Play all audio"></ion-icon>
+                <ion-icon name="pause-circle" (click)="playAllAudiosDirect()" class="audio-control-button1"
                   [ngStyle]="{'display': playAllText=='Stop Playing' ? 'block' : 'none'}"
-                  aria-label="Stop playing audio"
-                ></ion-icon>
+                  aria-label="Stop playing audio"></ion-icon>
               </div>
 
               <div class="audio-heading">
-                <span class="audio-title-center">Daily Audio</span>
+                <span class="audio-title-center">Daily Audio 491.1</span>
                 <span class="audio-subtitle">Hear God Every Day</span>
               </div>
 
-              <div
-                class="audio-right-control"
-                [class.repeat-on]="repeat_state_all > 0"
-              >
-                <ion-icon
-                  class="audio-control-button2"
-                  name="sync-outline"
-                  (click)="setRepeatStateAll()"
-                ></ion-icon>
+              <div class="audio-right-control" [class.repeat-on]="repeat_state_all > 0">
+                <ion-icon class="audio-control-button2" name="sync-outline" (click)="setRepeatStateAll()"></ion-icon>
                 @if (repeat_state_all > 0) {
                 <span class="repeat-badge audio-repeat-badge">
                   {{repeat_state_all}}
@@ -170,72 +115,41 @@
             @for (audioItem of todayAudioFiles; track audioItem; let i = $index)
             {
             <ion-grid class="ion-no-padding daily-audio-track">
-              <ion-row
-                class="ion-align-items-center ion-justify-content-center daily-audio-track-row"
-              >
+              <ion-row class="ion-align-items-center ion-justify-content-center daily-audio-track-row">
                 <ion-col size="12" class="daily-audio-track-col">
                   <div class="card-item-audio">
                     <table>
                       <tr>
                         <td>
-                          <ion-icon
-                            name="play-circle"
-                            (click)="playAudioDirect(i)"
-                            class="audio-button"
+                          <ion-icon name="play-circle" (click)="playAudioDirect(i)" class="audio-button"
                             [ngStyle]="{'display': audioItem.state=='pause' ? 'block' : 'none'}"
-                            aria-label="Play audio"
-                          ></ion-icon>
-                          <ion-icon
-                            name="pause-circle"
-                            (click)="stopAudioDirect(i)"
-                            class="audio-button"
+                            aria-label="Play audio"></ion-icon>
+                          <ion-icon name="pause-circle" (click)="stopAudioDirect(i)" class="audio-button"
                             [ngStyle]="{'display': audioItem.state=='play' ? 'block' : 'none'}"
-                            aria-label="Pause audio"
-                          ></ion-icon>
+                            aria-label="Pause audio"></ion-icon>
                         </td>
                         <td class="audio-track-details">
                           <div class="audio-track-layout">
                             <div class="audio-title-container">
-                              <span
-                                [innerHTML]="audioItem.type"
-                                class="audio-item-title"
-                              ></span>
+                              <span [innerHTML]="audioItem.type" class="audio-item-title"></span>
                             </div>
                             <div class="audio-slider-container">
-                              <ion-range
-                                min="0"
-                                class="home-audio-slider"
-                                max="{{audioItem.duration}}"
-                                snaps="false"
-                                ticks="false"
-                                step="0.1"
-                                value="{{audioItem.ctime}}"
-                                (touchstart)="isSeeking = true"
+                              <ion-range min="0" class="home-audio-slider" max="{{audioItem.duration}}" snaps="false"
+                                ticks="false" step="0.1" value="{{audioItem.ctime}}" (touchstart)="isSeeking = true"
                                 (touchend)="isSeeking = false; onChangePlayTimeDirect(i,$event)"
-                                (touchcancel)="isSeeking = false"
-                              >
+                                (touchcancel)="isSeeking = false">
                               </ion-range>
                               <div class="audio-time-container">
-                                <span class="audio-time-left"
-                                  >{{audioItem.ctimeintime}}</span
-                                >
-                                <span class="audio-time-right"
-                                  >{{audioItem.durationintime}}</span
-                                >
+                                <span class="audio-time-left">{{audioItem.ctimeintime}}</span>
+                                <span class="audio-time-right">{{audioItem.durationintime}}</span>
                               </div>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <div
-                            class="audio-track-repeat"
-                            [class.repeat-on]="audioItem.repeat_state > 0"
-                          >
-                            <ion-icon
-                              class="repeat-icon"
-                              name="sync-outline"
-                              (click)="setRepeatStateDirect(i)"
-                            ></ion-icon>
+                          <div class="audio-track-repeat" [class.repeat-on]="audioItem.repeat_state > 0">
+                            <ion-icon class="repeat-icon" name="sync-outline"
+                              (click)="setRepeatStateDirect(i)"></ion-icon>
                             @if (audioItem.repeat_state > 0) {
                             <span class="repeat-badge audio-repeat-badge">
                               {{audioItem.repeat_state}}
@@ -258,15 +172,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row class="ion-align-items-center ion-justify-content-center">
               <ion-col size="12">
-                <ion-card
-                  class="card simple-card"
-                  (click)="openExternalURLDirectly('https://viviliam.in/dmverse')"
-                >
+                <ion-card class="card simple-card" (click)="openExternalURLDirectly('https://viviliam.in/dmverse')">
                   <h4 class="title card-item-daiy-header">
                     <ion-icon name="book-outline"></ion-icon>&nbsp;&nbsp;Daily
-                    Memory Verse&nbsp;&nbsp;<ion-icon
-                      name="book-outline"
-                    ></ion-icon>
+                    Memory Verse&nbsp;&nbsp;<ion-icon name="book-outline"></ion-icon>
                   </h4>
                 </ion-card>
               </ion-col>
@@ -277,15 +186,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row class="ion-align-items-center ion-justify-content-center">
               <ion-col size="12">
-                <ion-card
-                  class="card simple-card"
-                  (click)="openExternalURLDirectly('https://vvlm.in/bible-plan')"
-                >
+                <ion-card class="card simple-card" (click)="openExternalURLDirectly('https://vvlm.in/bible-plan')">
                   <h4 class="title card-item-daiy-header">
-                    <ion-icon name="radio-button-off"></ion-icon
-                    >&nbsp;&nbsp;Daily Bible Plan&nbsp;&nbsp;<ion-icon
-                      name="radio-button-off"
-                    ></ion-icon>
+                    <ion-icon name="radio-button-off"></ion-icon>&nbsp;&nbsp;Daily Bible Plan&nbsp;&nbsp;<ion-icon
+                      name="radio-button-off"></ion-icon>
                   </h4>
                 </ion-card>
               </ion-col>
@@ -296,15 +200,11 @@
           <ion-grid class="ion-no-padding">
             <ion-row class="ion-align-items-center ion-justify-content-center">
               <ion-col size="12">
-                <ion-card
-                  class="card simple-card"
-                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/daily-quiz')"
-                >
+                <ion-card class="card simple-card"
+                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/daily-quiz')">
                   <h4 class="title card-item-daiy-header">
-                    <ion-icon name="radio-button-on"></ion-icon
-                    >&nbsp;&nbsp;Daily Bible Quiz&nbsp;&nbsp;<ion-icon
-                      name="radio-button-on"
-                    ></ion-icon>
+                    <ion-icon name="radio-button-on"></ion-icon>&nbsp;&nbsp;Daily Bible Quiz&nbsp;&nbsp;<ion-icon
+                      name="radio-button-on"></ion-icon>
                   </h4>
                 </ion-card>
               </ion-col>
@@ -315,10 +215,8 @@
           <ion-grid class="ion-no-padding">
             <ion-row class="ion-align-items-center ion-justify-content-center">
               <ion-col size="12">
-                <ion-card
-                  class="card simple-card"
-                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/prayer-request')"
-                >
+                <ion-card class="card simple-card"
+                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/prayer-request')">
                   <h4 class="title card-item-daiy-header">
                     <ion-icon name="medical"></ion-icon>&nbsp;&nbsp;Prayer
                     Request&nbsp;&nbsp;<ion-icon name="medical"></ion-icon>
@@ -331,15 +229,11 @@
           <ion-grid class="ion-no-padding">
             <ion-row class="ion-align-items-center ion-justify-content-center">
               <ion-col size="12">
-                <ion-card
-                  class="card simple-card"
-                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/word-search')"
-                >
+                <ion-card class="card simple-card"
+                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/word-search')">
                   <h4 class="title card-item-daiy-header">
-                    <ion-icon name="add-circle-outline"></ion-icon
-                    >&nbsp;&nbsp;Word Search&nbsp;&nbsp;<ion-icon
-                      name="add-circle-outline"
-                    ></ion-icon>
+                    <ion-icon name="add-circle-outline"></ion-icon>&nbsp;&nbsp;Word Search&nbsp;&nbsp;<ion-icon
+                      name="add-circle-outline"></ion-icon>
                   </h4>
                 </ion-card>
               </ion-col>
@@ -357,16 +251,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/year-plan')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/year-plan')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="reader-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;One Year Bible Plan
+                  <ion-icon name="reader-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;One Year Bible Plan
                 </h4>
               </ion-card>
             </ion-col>
@@ -376,13 +264,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/announcements')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/announcements')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon name="mic" style="font-size: 30px"></ion-icon
-                  >&nbsp;&nbsp;Announcements
+                  <ion-icon name="mic" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;Announcements
                 </h4>
               </ion-card>
             </ion-col>
@@ -392,16 +277,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/sample')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/sample')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="add-circle-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;Sample Games
+                  <ion-icon name="add-circle-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;Sample Games
                 </h4>
               </ion-card>
             </ion-col>
@@ -411,16 +290,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/scripquiz')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/scripquiz')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="disc-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;ScripQuiz
+                  <ion-icon name="disc-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;ScripQuiz
                 </h4>
               </ion-card>
             </ion-col>
@@ -430,16 +303,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/competition')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/competition')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="trophy-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;Competition
+                  <ion-icon name="trophy-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;Competition
                 </h4>
               </ion-card>
             </ion-col>
@@ -454,16 +321,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/events/new/instructions')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/events/new/instructions')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="reader-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;Events Instructions
+                  <ion-icon name="reader-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;Events Instructions
                 </h4>
               </ion-card>
             </ion-col>
@@ -473,16 +334,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/events/new/leaderboard')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/events/new/leaderboard')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="podium-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;Leaderboard
+                  <ion-icon name="podium-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;Leaderboard
                 </h4>
               </ion-card>
             </ion-col>
@@ -492,16 +347,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/events/new/memory-game')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/events/new/memory-game')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="images-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;Memory Game
+                  <ion-icon name="images-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;Memory Game
                 </h4>
               </ion-card>
             </ion-col>
@@ -511,16 +360,10 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/events/new/puzzle')"
-              >
+              <ion-card class="card simple-card"
+                (click)="openExternalURLDirectly('https://viviliam.in/events/new/puzzle')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="extension-puzzle-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;Puzzle
+                  <ion-icon name="extension-puzzle-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;Puzzle
                 </h4>
               </ion-card>
             </ion-col>
@@ -530,16 +373,9 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
-              <ion-card
-                class="card simple-card"
-                (click)="openExternalURLDirectly('https://quiz.viviliam.in')"
-              >
+              <ion-card class="card simple-card" (click)="openExternalURLDirectly('https://quiz.viviliam.in')">
                 <h4 class="title card-item-daiy-header">
-                  <ion-icon
-                    name="help-circle-outline"
-                    style="font-size: 30px"
-                  ></ion-icon
-                  >&nbsp;&nbsp;Quiz
+                  <ion-icon name="help-circle-outline" style="font-size: 30px"></ion-icon>&nbsp;&nbsp;Quiz
                 </h4>
               </ion-card>
             </ion-col>

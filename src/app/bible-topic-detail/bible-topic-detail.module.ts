@@ -7,7 +7,6 @@ import { BibleTopicDetailPageRoutingModule } from './bible-topic-detail-routing.
 import { BibleTopicDetailPage } from './bible-topic-detail.page';
 
 @NgModule({
-    imports: [CommonModule, FormsModule, IonicModule, BibleTopicDetailPageRoutingModule],
-    declarations: [BibleTopicDetailPage],
+    imports: [CommonModule, FormsModule, IonicModule, BibleTopicDetailPageRoutingModule, BibleTopicDetailPage]
 })
 export class BibleTopicDetailPageModule { }

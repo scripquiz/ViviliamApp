@@ -13,8 +13,7 @@ import { AddnotesPage } from './addnotes.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    AddnotesPageRoutingModule
-  ],
-  declarations: [AddnotesPage]
+    AddnotesPageRoutingModule, AddnotesPage
+  ]
 })
 export class AddnotesPageModule {}

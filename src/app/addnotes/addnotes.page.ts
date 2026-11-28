@@ -1,3 +1,5 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
@@ -6,14 +8,15 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform, NavController, IonicModule } from '@ionic/angular';
 import { AppComponent } from '../../app/app.component';
 @Component({
   selector: 'app-addnotes',
   templateUrl: './addnotes.page.html',
   styleUrls: ['./addnotes.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class AddnotesPage {
   private database: DatabaseConnection;

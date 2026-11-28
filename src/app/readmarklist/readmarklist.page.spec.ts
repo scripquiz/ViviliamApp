@@ -10,8 +10,7 @@ describe('ReadmarklistPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReadmarklistPage ],
-      imports: [PageTestingModule],
+      imports: [ReadmarklistPage, PageTestingModule],
       providers: [{ provide: AppComponent, useFactory: () => ({ drawer: 'drawerhide' }) }]
     }).compileComponents();
 

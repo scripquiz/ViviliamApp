@@ -13,8 +13,7 @@ import { BookselectorPage } from './bookselector.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    BookselectorPageRoutingModule
-  ],
-  declarations: [BookselectorPage]
+    BookselectorPageRoutingModule, BookselectorPage
+  ]
 })
 export class BookselectorPageModule {}

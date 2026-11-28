@@ -13,8 +13,7 @@ import { SetdefaultbiblePage } from './setdefaultbible.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    SetdefaultbiblePageRoutingModule
-  ],
-  declarations: [SetdefaultbiblePage]
+    SetdefaultbiblePageRoutingModule, SetdefaultbiblePage
+  ]
 })
 export class SetdefaultbiblePageModule {}

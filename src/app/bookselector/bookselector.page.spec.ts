@@ -9,8 +9,7 @@ describe('BookselectorPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ BookselectorPage ],
-      imports: [PageTestingModule]
+      imports: [BookselectorPage, PageTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BookselectorPage);

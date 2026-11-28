@@ -7,7 +7,6 @@ import { LifeEventsPageRoutingModule } from './life-events-routing.module';
 import { LifeEventsPage } from './life-events.page';
 
 @NgModule({
-    imports: [CommonModule, FormsModule, IonicModule, LifeEventsPageRoutingModule],
-    declarations: [LifeEventsPage],
+    imports: [CommonModule, FormsModule, IonicModule, LifeEventsPageRoutingModule, LifeEventsPage]
 })
 export class LifeEventsPageModule { }

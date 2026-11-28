@@ -10,8 +10,7 @@ describe('SearchPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SearchPage ],
-      imports: [PageTestingModule],
+      imports: [SearchPage, PageTestingModule],
       providers: [{ provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['initializeData']) }]
     }).compileComponents();
 

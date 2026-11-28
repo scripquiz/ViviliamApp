@@ -1,6 +1,8 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform, IonicModule } from '@ionic/angular';
 import {
   DatabaseConnection,
   DatabaseService,
@@ -21,7 +23,8 @@ interface TopicSection {
   templateUrl: './bible-topic-detail.page.html',
   styleUrls: ['./bible-topic-detail.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class BibleTopicDetailPage {
   private readonly BSI_BIBLE_ID = 3;

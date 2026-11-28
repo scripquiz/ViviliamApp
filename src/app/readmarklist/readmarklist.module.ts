@@ -13,8 +13,7 @@ import { ReadmarklistPage } from './readmarklist.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    ReadmarklistPageRoutingModule
-  ],
-  declarations: [ReadmarklistPage]
+    ReadmarklistPageRoutingModule, ReadmarklistPage
+  ]
 })
 export class ReadmarklistPageModule {}

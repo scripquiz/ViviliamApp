@@ -1,3 +1,5 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { Component, ViewChild } from '@angular/core';
 // Replace Cordova Toast with Capacitor Toast
@@ -8,7 +10,7 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonContent } from '@ionic/angular';
+import { Platform, NavController, IonContent, IonicModule } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { AppComponent } from '../../app/app.component';
 import { NetworkService } from '../services/network.service';
@@ -19,7 +21,8 @@ import { NetworkService } from '../services/network.service';
   styleUrls: ['./readmarklist.page.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class ReadmarklistPage {
   @ViewChild(IonContent, { static: false }) content: IonContent;

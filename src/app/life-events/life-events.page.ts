@@ -1,6 +1,8 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 
 interface LifeEventReference {
@@ -28,7 +30,8 @@ interface LifeEventItem {
   templateUrl: './life-events.page.html',
   styleUrls: ['./life-events.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class LifeEventsPage {
   private readonly STORAGE_LANGUAGE_KEY = 'life_events_language';

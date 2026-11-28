@@ -9,8 +9,7 @@ describe('SetdefaultbiblePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SetdefaultbiblePage ],
-      imports: [PageTestingModule]
+      imports: [SetdefaultbiblePage, PageTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SetdefaultbiblePage);

@@ -1,3 +1,5 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { Component, NgZone, OnDestroy } from '@angular/core';
 import {
@@ -5,7 +7,7 @@ import {
   DatabaseConnection,
 } from 'src/app/services/database.service';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform, NavController, IonicModule } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
 import { DarkModeService } from '../services/dark-mode.service';
@@ -20,7 +22,8 @@ import { Keyboard } from '@capacitor/keyboard';
   styleUrls: ['search.page.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class SearchPage implements OnDestroy {
   public currentpage: any = 1;

@@ -10,8 +10,7 @@ describe('AddnotesPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddnotesPage ],
-      imports: [PageTestingModule],
+      imports: [AddnotesPage, PageTestingModule],
       providers: [{ provide: AppComponent, useFactory: () => ({ drawer: 'drawerhide' }) }]
     }).compileComponents();
 

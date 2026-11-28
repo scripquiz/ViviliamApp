@@ -1,3 +1,5 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   Component,
   ViewEncapsulation,
@@ -7,7 +9,7 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform, NavController, IonicModule } from '@ionic/angular';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 
 @Component({
@@ -16,7 +18,8 @@ import { AuthserviceProvider } from '../../providers/authservice/authservice';
   styleUrls: ['./setdefaultbible.page.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class SetdefaultbiblePage {
   public database: DatabaseConnection;
