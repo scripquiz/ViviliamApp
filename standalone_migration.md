@@ -74,7 +74,7 @@ Each page → `standalone: true`, `imports: [CommonModule, FormsModule, IonicMod
   - [x] Batch 1 — `more`, `more-about`, `more-contact`, `more-private-policy`, `more-reportbug`, `more-terms`, `more-volunteer`, `settings`, `tabslink` → standalone (`CommonModule, FormsModule, IonicModule`). Page modules now import the page (removed in Phase 3); specs use `imports: [XPage, …]`. Lint 331 → 322, build OK, 46/46. Needs device smoke test.
   - [x] Batch 2 — `startup`, `startup-language`, `startup-default-bible`, `getstarted` → standalone. Unused auth pages (`login`, `signup`, `forgot-password`, `change-password`, `myaccount`) deleted with their routes, plus the dead signup/account popup and its methods/styles in `AppComponent` (`AuthserviceProvider` kept; account-field cleanup is a later task). Lint 322 → 276, build OK, 41/41 (5 specs removed with the pages). Needs device smoke test.
   - [x] Batch 3 — `bible-topics`, `bible-topic-detail`, `life-events`, `bookselector`, `setdefaultbible`, `search`, `readmarklist`, `addnotes` → standalone. Page modules import the page; specs use `imports: [XPage, …]`. Lint 276 → 268 (9 `prefer-standalone` left for Batches 4–5), build OK, 41/41. Needs device smoke test.
-  - [ ] Batch 4 — tabs + `ExploreContainerComponent`
+  - [x] Batch 4 — `tabs`, `tab1`, `tab2`, `tab3`, `ExploreContainerComponent` → standalone. `ExploreContainerComponentModule` deleted (tab2/tab3 import the component directly). Tab modules import the page; specs use `imports: [XPage, PageTestingModule]` (`CUSTOM_ELEMENTS_SCHEMA` dropped from tabs spec). Lint 268 → 263 (4 `prefer-standalone` left for Batch 5), build OK, 41/41. Needs device smoke test.
   - [ ] Batch 5 — home, read, compare, life-event-detail
 - [ ] Phase 3
 - [ ] Phase 4

@@ -5,7 +5,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
   templateUrl: './explore-container.component.html',
   styleUrls: ['./explore-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
 })
 export class ExploreContainerComponent {
   @Input() name?: string;

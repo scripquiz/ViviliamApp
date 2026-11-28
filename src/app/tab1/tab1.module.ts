@@ -11,8 +11,8 @@ import { Tab1PageRoutingModule } from './tab1-routing.module';
     IonicModule,
     CommonModule,
     FormsModule,
-    Tab1PageRoutingModule
-  ],
-  declarations: [Tab1Page]
+    Tab1PageRoutingModule,
+    Tab1Page
+  ]
 })
 export class Tab1PageModule { }

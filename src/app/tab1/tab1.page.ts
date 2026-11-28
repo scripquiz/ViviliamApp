@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { Platform, NavController } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Platform, NavController, IonicModule } from '@ionic/angular';
 import { Clipboard } from '@capacitor/clipboard';
 import { ShareService } from '../providers/share.service';
 import { App } from '@capacitor/app';
@@ -22,7 +24,8 @@ import { Browser } from '@capacitor/browser';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class Tab1Page {
   dateExample = new Date().toISOString();
