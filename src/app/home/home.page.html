@@ -1,6 +1,5 @@
-<ion-content style="background-color: --ion-color-theme1">
+<ion-content>
   <div class="home-container">
-    <!-- Keeping all tabs, but only Today tab will have content -->
     <ion-segment
       [(ngModel)]="segmentSelected"
       (ionChange)="segmentChanged($event)"
@@ -353,7 +352,7 @@
         </div>
       </div>
 
-      <!-- Misc Tab (Empty Placeholder) -->
+      <!-- Misc Tab Content -->
       <div [ngStyle]="{'display': tabRowitemSelected=='1' ? 'block' : 'none'}">
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
@@ -446,43 +445,6 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-
-        <!--         <ion-grid class="ion-no-padding">
-  <ion-row class="ion-align-items-center ion-justify-content-center">
-    <ion-col size="12">
-      <ion-card class="card simple-card" (click)="openPoll()">
-        <h4 class="title card-item-daiy-header">
-          <ion-icon name="checkbox-outline" style="font-size: 30px;"></ion-icon>&nbsp;&nbsp;Viviliam Poll
-        </h4>
-      </ion-card>
-    </ion-col>
-  </ion-row>
-</ion-grid> -->
-
-        <!--         <ion-grid class="ion-no-padding">
-<ion-row class="ion-align-items-center ion-justify-content-center">
-  <ion-col size="12">
-    <ion-card class="card simple-card"
-      (click)="openExternalURLDirectly('https://viviliam.in/misc/youtube')">
-      <h4 class="title card-item-daiy-header">
-        <ion-icon name="logo-youtube" style="font-size: 30px;"></ion-icon>&nbsp;&nbsp;Viviliam YouTube
-      </h4>
-    </ion-card>
-  </ion-col>
-</ion-row>
-</ion-grid>
-
-<ion-grid class="ion-no-padding">
-  <ion-row class="ion-align-items-center ion-justify-content-center">
-    <ion-col size="12">
-      <ion-card class="card simple-card" (click)="openWhatsApp()">
-        <h4 class="title card-item-daiy-header">
-          <ion-icon name="logo-whatsapp" style="font-size: 30px;"></ion-icon>&nbsp;&nbsp;Viviliam WhatsApp
-        </h4>
-      </ion-card>
-    </ion-col>
-  </ion-row>
-</ion-grid> -->
 
         <div class="bottom-spacer"></div>
       </div>

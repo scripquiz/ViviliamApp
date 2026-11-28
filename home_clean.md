@@ -30,10 +30,10 @@ Line numbers refer to the files as they were **before** cleanup started.
 
 ## 3. HTML and module
 
-- [ ] 3.1 Invalid `background-color: --ion-color-theme1` (html 1)
-- [ ] 3.2 Commented-out cards calling `openPoll()` / `openWhatsApp()` (html 452-487)
-- [ ] 3.3 Stale "Empty Placeholder" comment (html 358)
-- [ ] 3.4 `CUSTOM_ELEMENTS_SCHEMA` (`home.module.ts`). Confirm with a build
+- [x] 3.1 Invalid `background-color: --ion-color-theme1` (html 1)
+- [x] 3.2 Commented-out cards calling `openPoll()` / `openWhatsApp()` (html 452-487)
+- [x] 3.3 Stale "Empty Placeholder" comment (html 358)
+- [x] 3.4 `CUSTOM_ELEMENTS_SCHEMA` (`home.module.ts`). Confirm with a build
 
 ## 4. `home.page.scss`: unused rules
 
