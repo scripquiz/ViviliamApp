@@ -7,7 +7,7 @@ import {
   DatabaseConnection,
 } from 'src/app/services/database.service';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
-import { IonContent, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 import { IonLoaderService } from '../ion-loader.service';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
@@ -16,7 +16,6 @@ import { WakeLockService } from '../services/wake-lock.service';
 import { NetworkService } from '../services/network.service';
 import { Browser } from '@capacitor/browser';
 import { LoggerService } from '../services/logger.service';
-import { DarkModeService } from '../services/dark-mode.service';
 import { AudioFocusService } from '../services/audio-focus.service';
 @Component({
   selector: 'app-home',
@@ -27,7 +26,6 @@ import { AudioFocusService } from '../services/audio-focus.service';
   standalone: false,
 })
 export class HomePage {
-  @ViewChild(IonContent, { static: false }) content: IonContent;
   @ViewChild('audioPlayer') audio: any;
   private lastConnectivityResult: boolean = false;
   private lastConnectivityCheck: number = 0;
@@ -39,45 +37,29 @@ export class HomePage {
   private lastReportedNetworkState: boolean | null = null;
 
   public APIMessage: any = '';
-  public todayDate: any = '';
   public database: DatabaseConnection;
-  public unread: any = 0;
-  public todayTabSelected: any = 'today';
-  public notificationsTabSelected: any = '';
   public tabRowitemSelected: any = '0';
   public orientation: any;
-  public isNetworkAvailable: any = 0;
-  public notificationsHomeCount: any;
   public selectedAudioSource: any = '';
   public currentAudioIndex: any = 0;
   public audioPlaying: any;
   public isSeeking = false;
   public playAll: any = false;
   public playAllText: any = 'Play All';
-  public notificationUpdateIndex: any = 0;
   public appversionText: any = '';
   public resumeListener: any;
   public repeat_state_all: any = 0;
   public repeat_played_count_all: any = 0;
-  public showNetworkOrAPIErrorMessage: any = 0;
   public todayAudioFiles: any[] = [];
   public isAudioLoading: boolean = true;
   public audioLoadError: boolean = false;
-  public hasInternetConnection: boolean = true;
-  public errorStateTimer: any = null;
-  public stableErrorDetected: boolean = false;
   private isActivelyTesting: boolean = false;
   private audioLoadInProgress: boolean = false;
   // True while the list on screen came from the local cache
   public isShowingCachedAudio: boolean = false;
   // Date (YYYY-MM-DD) that todayAudioFiles was loaded for
   private loadedAudioDate: string = '';
-  public get isServerError(): boolean {
-    return this.APIMessage === this.authservice.serverDownMessage;
-  }
   public segmentSelected: string = '0';
-  public isDarkMode: boolean = false;
-  private darkModeSubscription: any;
   constructor(
     private http: HttpClient,
     public network: NetworkService,
@@ -89,24 +71,13 @@ export class HomePage {
     private platform: Platform,
     private databaseService: DatabaseService,
     private logger: LoggerService,
-    private darkModeService: DarkModeService,
     private audioFocusService: AudioFocusService
   ) {
-    this.errorStateTimer = null;
-    this.stableErrorDetected = false;
-    this.todayDate = Date.now();
     this.getAppVersionInfo();
 
     this.audioFocusService.registerOwner('home', () => {
       this.stopHomeAudioPlayback();
     });
-
-    // Subscribe to dark mode changes
-    this.darkModeSubscription = this.darkModeService.darkModeState$.subscribe(
-      (state) => {
-        this.isDarkMode = state.globalDarkMode;
-      }
-    );
 
     this.platform
       .ready()
@@ -120,7 +91,6 @@ export class HomePage {
             this.logger.error('Failed to load audio bibles:', error);
           });
         this.resumeListener = this.platform.resume.subscribe(() => {
-          this.notificationUpdateIndex = 0;
           this.logger.network('App resumed - checking active connectivity');
           this.testActiveConnectivity().then((isConnected) => {
             if (isConnected) {
@@ -327,8 +297,6 @@ export class HomePage {
         this.logger.network(
           'Active internet connection confirmed - initializing page'
         );
-        this.isNetworkAvailable = '1';
-        this.hasInternetConnection = true;
         this.setStableErrorState(false, '');
         if (this.isTodayTabActive()) {
           this.loadAudioDirectly();
@@ -336,8 +304,6 @@ export class HomePage {
       }
     });
     this.authservice.currentPage = 'HOME';
-    this.authservice.showsign = 1;
-    this.notificationUpdateIndex = 0;
     this.authservice.currentPage = 'HOME';
     this.platform.ready().then(() => {
       this.orientation = this.authservice.orientation;
@@ -362,21 +328,11 @@ export class HomePage {
     this.tabRowitemSelected = tabitem;
     this.segmentSelected = tabitem.toString();
     if (tabitem.toString() === '0') {
-      this.todayTabSelected = 'today';
-      this.notificationsTabSelected = '';
       this.checkNetworkForAudio();
     } else if (tabitem.toString() === '1') {
-      this.unread = 0;
-      this.notificationsTabSelected = 'notifications';
-      this.todayTabSelected = '';
-      this.showNetworkOrAPIErrorMessage = 0;
       if (this.network && this.network.hasInternetConnectivity) {
         this.logger.log('Misc tab selected - ensuring content visibility');
       }
-    } else if (tabitem.toString() === '2') {
-      this.notificationsTabSelected = '';
-      this.todayTabSelected = '';
-      this.showNetworkOrAPIErrorMessage = 0;
     }
   }
   convertHMS(value) {
@@ -401,17 +357,11 @@ export class HomePage {
     this.audioFocusService.unregisterOwner('home');
 
     this.removeNetworkListeners();
-    if (this.errorStateTimer) {
-      clearTimeout(this.errorStateTimer);
-    }
     if (this.orientationSubscription) {
       this.orientationSubscription.unsubscribe();
     }
     if (this.resumeListener) {
       this.resumeListener.unsubscribe();
-    }
-    if (this.darkModeSubscription) {
-      this.darkModeSubscription.unsubscribe();
     }
   }
   setRepeatStateAll() {
@@ -695,10 +645,6 @@ export class HomePage {
     }
   }
   setStableErrorState(isError: boolean, message: string) {
-    if (this.errorStateTimer) {
-      clearTimeout(this.errorStateTimer);
-      this.errorStateTimer = null;
-    }
     if (isError) {
       const isServerErr =
         this.network.hasInternetConnectivity &&
@@ -706,18 +652,7 @@ export class HomePage {
       if (isServerErr || message === this.authservice.noNetWorkMessage) {
         this.APIMessage = message;
       }
-      this.showNetworkOrAPIErrorMessage = 1;
-      this.stableErrorDetected = false;
-      this.errorStateTimer = setTimeout(() => {
-        this.logger.log(
-          'Error state stabilized - showing error message:',
-          this.APIMessage
-        );
-        this.stableErrorDetected = true;
-      }, 3000);
     } else {
-      this.showNetworkOrAPIErrorMessage = 0;
-      this.stableErrorDetected = false;
       this.APIMessage = '';
     }
   }
@@ -745,8 +680,6 @@ export class HomePage {
     this.logger.network('Setting up network listeners in HomePage');
 
     // Initial connectivity state
-    this.hasInternetConnection = this.network.isConnected;
-    this.isNetworkAvailable = this.network.isConnected ? '1' : '0';
     this.lastReportedNetworkState = this.network.isConnected;
 
     // Single network subscription with debouncing
@@ -771,10 +704,6 @@ export class HomePage {
               hasConnectivity
             );
             this.lastReportedNetworkState = hasConnectivity;
-
-            // Update network state properties
-            this.hasInternetConnection = hasConnectivity;
-            this.isNetworkAvailable = hasConnectivity ? '1' : '0';
 
             if (hasConnectivity) {
               this.logger.network('Stable network connectivity established');
@@ -1064,12 +993,10 @@ export class HomePage {
       const todaysAudio = [];
       if (data.audio && Array.isArray(data.audio)) {
         this.logger.log(`Found ${data.audio.length} audio items from new API`);
-        data.audio.forEach((item, index) => {
+        data.audio.forEach((item) => {
           this.logger.log(`Processing ${item.type} audio for today`);
           todaysAudio.push({
-            id: item.type + '_' + dateStr + '_' + index,
             type: item.type,
-            subtitle: item.type + ' - ' + item.formattedDuration,
             url: item.url,
             duration: parseInt(item.duration || '0'),
             durationintime:
@@ -1091,7 +1018,6 @@ export class HomePage {
         this.loadedAudioDate = dateStr;
         // tryLoadFromCache sets this again after calling this method
         this.isShowingCachedAudio = false;
-        this.notificationsHomeCount = todaysAudio.length;
         this.isAudioLoading = false;
         this.audioLoadError = false;
         this.logger.log(
@@ -1113,8 +1039,6 @@ export class HomePage {
   private handleNetworkResult(isConnected: boolean, loadAudio: boolean): void {
     // Update app state based on connectivity
     if (isConnected) {
-      this.isNetworkAvailable = '1';
-      this.hasInternetConnection = true;
       this.setStableErrorState(false, '');
 
       // Load audio if requested and needed
@@ -1123,8 +1047,6 @@ export class HomePage {
         this.loadAudioDirectly();
       }
     } else {
-      this.isNetworkAvailable = '0';
-      this.hasInternetConnection = false;
       this.APIMessage = this.authservice.noNetWorkMessage;
       this.setStableErrorState(true, this.authservice.noNetWorkMessage);
 

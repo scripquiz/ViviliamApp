@@ -4,13 +4,13 @@ Scope: `src/app/home` and the services it depends on. These findings come from r
 
 ## 1. Likely bugs (fix first)
 
-1. **Audio errors and pauses aren't handled.** The `<audio>` element (`src/app/home/home.page.html:112-120`) has no `(error)`, `(play)` or `(pause)` handlers. If a track fails, the rejection is only logged (`home.page.ts:466-469`). The row still shows "playing", the wake lock stays held and Play All stalls. A phone call or headphone pause would leave the UI wrong too.
-2. **The screen can sleep during long tracks.**
+1. ✅ **Done.** **Audio errors and pauses aren't handled.** The `<audio>` element (`src/app/home/home.page.html:112-120`) has no `(error)`, `(play)` or `(pause)` handlers. If a track fails, the rejection is only logged (`home.page.ts:466-469`). The row still shows "playing", the wake lock stays held and Play All stalls. A phone call or headphone pause would leave the UI wrong too.
+2. ✅ **Done.** **The screen can sleep during long tracks.**
    - The wake lock releases after 300s of inactivity (`services/wake-lock.service.ts:401-404`), but the page only resets that timer when a track starts (`home.page.ts:471`).
    - After the app is backgrounded, the lock isn't reacquired (`wake-lock.service.ts:154-167`).
    - Consider replacing the service with `@capacitor/keep-awake`.
-3. **Online users may be treated as offline.** `connectionType === 'unknown'` counts as offline (`home.page.ts:190`, `586`). `NetworkService` returns `connected: true, connectionType: 'unknown'` when its status check fails (`network.service.ts:184`). Use `isConnected` instead.
-4. **The "Using cached data" notice never appears.** `home.page.ts:894-897` passes the message, but `setStableErrorState` (`617-622`) doesn't assign it, and the template only shows messages when the list is empty.
+3. ✅ **Done.** **Online users may be treated as offline.** `connectionType === 'unknown'` counts as offline (`home.page.ts:190`, `586`). `NetworkService` returns `connected: true, connectionType: 'unknown'` when its status check fails (`network.service.ts:184`). Use `isConnected` instead.
+4. ✅ **Done.** **The "Using cached data" notice never appears.** `home.page.ts:894-897` passes the message, but `setStableErrorState` (`617-622`) doesn't assign it, and the template only shows messages when the list is empty.
 5. **Smaller issues:**
    - Resume only checks `landscape-primary`, not `landscape-secondary` (`home.page.ts:141` vs `156-159`).
    - `convertHMS` can produce `01:5:03` (`home.page.ts:381-397`).
@@ -51,7 +51,7 @@ Scope: `src/app/home` and the services it depends on. These findings come from r
 
 ## Suggested order
 
-1. Fix the audio and network bugs (items 1–4).
+1. ✅ Fix the audio and network bugs (items 1–4).
 2. Add tests around playback and caching.
 3. Remove dead code and duplicate calls.
 4. Extract the services.
