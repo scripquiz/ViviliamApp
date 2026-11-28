@@ -211,15 +211,6 @@ body.dark-theme {
   --ion-color-tab-indicator-tint: #c28ffc;
 }
 
-ion-slides {
-  .swiper-slide, .swiper-pagination {
-     --bullet-background: #453ead;
-     --bullet-background-active: #662D91;
-   }
-}
-.swiper-pagination-bullet {
-  background: var(--bullet-background);
-}
 @media (prefers-color-scheme: dark) {
   /*
    * Dark Colors

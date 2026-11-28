@@ -152,7 +152,13 @@ export class SettingsPage implements OnInit {
     console.log('View will enter');
     this.menuCtrl.enable(false);
   }
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
+    if (!this.database) {
+      this.database = await this.databaseService.create({
+        name: 'viviliam.db',
+        location: 'default',
+      });
+    }
     this.database.executeSql('select * from config', []).then((data) => {
       for (var i = 0; i < data.rows.length; i++) {
         if (data.rows.item(i).id == 1)
@@ -402,63 +408,53 @@ export class SettingsPage implements OnInit {
     this.authservice.verseSpacing = selectedValue.currentTarget.value;
   }
 
+  // Persist a toggle as '1'/'0'. Inserts the row if the UPDATE matched nothing.
+  private saveToggle(id: number, caption: string, on: boolean) {
+    const v = on ? '1' : '0';
+    this.database
+      .executeSql("update config set value = '" + v + "' where id=" + id, [])
+      .then((data) => {
+        if (data.rowsAffected === 0)
+          return this.database.executeSql(
+            'insert into config (id, caption, value) values (?, ?, ?)',
+            [id, caption, v]
+          );
+        return data;
+      })
+      .catch((err) =>
+        console.error('Config save failed id=' + id, JSON.stringify(err))
+      );
+  }
+
   setSelectedShowVerseMode(selectedValue: any) {
     this.verseNumberToggle = selectedValue.detail.checked;
-    var qry =
-      "update config set value = '" +
-      (this.verseNumberToggle ? '1' : '0') +
-      "' where id=8";
-    console.log(selectedValue.currentTarget.value + ' - ' + ' qry ' + qry);
-    this.database.executeSql(qry, []).then((data) => {
-      console.log('Versenumber sow toggle updtaed');
-    });
+    this.saveToggle(8, 'versenumberShow', this.verseNumberToggle);
 
     this.authservice.versenumberShow = this.verseNumberToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
   }
   setSelectedBSINumberShow(selectedValue: any) {
     this.BSINumberToggle = selectedValue.detail.checked;
-    var qry =
-      "update config set value = '" +
-      (this.BSINumberToggle ? '1' : '0') +
-      "' where id=25";
-    console.log(selectedValue.currentTarget.value + ' - ' + ' qry ' + qry);
-    this.database.executeSql(qry, []).then((data) => {
-      console.log('BSI Number showtoggle updtaed');
-    });
+    this.saveToggle(25, 'BSINumberShow', this.BSINumberToggle);
 
-    this.authservice.BSINumberShow = this.BSINumberToggle;
+    this.authservice.BSINumberShow = this.BSINumberToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
   }
 
   setSelectedBSIRedLettersShow(selectedValue: any) {
     this.BSIRedLettersToggle = selectedValue.detail.checked;
-    var qry =
-      "update config set value = '" +
-      (this.BSIRedLettersToggle ? '1' : '0') +
-      "' where id=29";
-    console.log(selectedValue.currentTarget.value + ' - ' + ' qry ' + qry);
-    this.database.executeSql(qry, []).then((data) => {
-      console.log('BSI Number showtoggle updtaed');
-    });
+    this.saveToggle(29, 'BSIRedLettersShow', this.BSIRedLettersToggle);
 
-    this.authservice.BSIRedLettersShow = this.BSIRedLettersToggle;
+    this.authservice.BSIRedLettersShow = this.BSIRedLettersToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
     this.authservice.dataLoadedCompare = 0;
   }
 
   setSelecteTextHighlightShow(selectedValue: any) {
     this.TextHighlightToggle = selectedValue.detail.checked;
-    var qry =
-      "update config set value = '" +
-      (this.TextHighlightToggle ? '1' : '0') +
-      "' where id=32";
-    console.log(selectedValue.currentTarget.value + ' - ' + ' qry ' + qry);
-    this.database.executeSql(qry, []).then((data) => {
-      console.log('Text Highlight showtoggle updtaed');
-    });
+    this.saveToggle(32, 'TextHighlightShow', this.TextHighlightToggle);
 
-    this.authservice.TextHighlightShow = this.TextHighlightToggle;
+    this.authservice.TextHighlightShow = this.TextHighlightToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
     this.authservice.dataLoadedCompare = 0;
     if (
@@ -471,14 +467,7 @@ export class SettingsPage implements OnInit {
 
   setCompareLabel(selectedValue: any) {
     this.CompareShowLabelToggle = selectedValue.detail.checked;
-    var qry =
-      "update config set value = '" +
-      (this.CompareShowLabelToggle ? '1' : '0') +
-      "' where id=30";
-    console.log(selectedValue.currentTarget.value + ' - ' + ' qry ' + qry);
-    this.database.executeSql(qry, []).then((data) => {
-      console.log('Compare label showtoggle updated');
-    });
+    this.saveToggle(30, 'CompareShowLabel', this.CompareShowLabelToggle);
 
     this.authservice.CompareShowLabel = this.CompareShowLabelToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
@@ -486,15 +475,7 @@ export class SettingsPage implements OnInit {
   }
   setSelectedParagraphMode(selectedValue: any) {
     this.paragraphToggle = selectedValue.detail.checked;
-
-    var qry =
-      "update config set value = '" +
-      (this.paragraphToggle ? '1' : '0') +
-      "' where id=4";
-    console.log(selectedValue.currentTarget.value + ' - ' + ' qry ' + qry);
-    this.database.executeSql(qry, []).then((data) => {
-      console.log('Paragraph mode  toggle updtaed');
-    });
+    this.saveToggle(4, 'paragraphMode', this.paragraphToggle);
 
     this.authservice.paragraphMode = this.paragraphToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
@@ -502,17 +483,9 @@ export class SettingsPage implements OnInit {
 
   setSelectedFullscreenMode(selectedValue: any) {
     this.fullscreenModeToggle = selectedValue.detail.checked;
+    this.saveToggle(31, 'fullscreenMode', this.fullscreenModeToggle);
 
-    var qry =
-      "update config set value = '" +
-      (this.fullscreenModeToggle ? '1' : '0') +
-      "' where id=31";
-    console.log(selectedValue.currentTarget.value + ' - ' + ' qry ' + qry);
-    this.database.executeSql(qry, []).then((data) => {
-      console.log('Fullscreen mode  toggle updtaed');
-    });
-
-    this.authservice.fullscreenMode = this.fullscreenModeToggle;
+    this.authservice.fullscreenMode = this.fullscreenModeToggle ? '1' : '0';
     //this.authservice.dataLoaded=0;
   }
 

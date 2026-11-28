@@ -12,7 +12,6 @@ import {
   provideRouter,
   withPreloading,
 } from '@angular/router';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   IonicRouteStrategy,
   provideIonicAngular,
@@ -27,7 +26,6 @@ export const appConfig: ApplicationConfig = {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideRouter(routes, withPreloading(SelectivePreloadingStrategy)),
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
-    provideAnimations(),
     provideIonicAngular({
       innerHTMLTemplatesEnabled: true,
     }),

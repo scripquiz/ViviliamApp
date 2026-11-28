@@ -61,7 +61,6 @@ import { IonLoaderService } from '../app/ion-loader.service';
 import { WakeLockService } from './services/wake-lock.service';
 // Replace Cordova Network import with our new Capacitor NetworkService
 import { NetworkService } from './services/network.service';
-import { register } from 'swiper/element/bundle';
 // Capacitor imports
 import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
@@ -72,7 +71,6 @@ import { DarkModeService } from './services/dark-mode.service';
 import { AudioFocusService } from './services/audio-focus.service';
 import { Subscription } from 'rxjs';
 
-register();
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
