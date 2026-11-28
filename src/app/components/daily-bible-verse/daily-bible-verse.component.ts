@@ -5,6 +5,7 @@ import {
   Input,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  inject,
 } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
@@ -21,13 +22,18 @@ import {
 import { RatioDialogComponent } from '../../shared/ratio-dialog/ratio-dialog.component';
 
 @Component({
-    selector: 'app-daily-bible-verse',
-    templateUrl: './daily-bible-verse.component.html',
-    styleUrls: ['./daily-bible-verse.component.scss'],
-    imports: [IonicModule, FormsModule, RatioDialogComponent],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-daily-bible-verse',
+  templateUrl: './daily-bible-verse.component.html',
+  styleUrls: ['./daily-bible-verse.component.scss'],
+  imports: [IonicModule, FormsModule, RatioDialogComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DailyBibleVerseComponent implements OnInit, OnChanges {
+  private authservice = inject(AuthserviceProvider);
+  private shareService = inject(ShareService);
+  private cdr = inject(ChangeDetectorRef);
+  private verseImageService = inject(VerseImageService);
+
   // Inputs from parent component
   @Input() database: DatabaseConnection;
 
@@ -45,13 +51,6 @@ export class DailyBibleVerseComponent implements OnInit, OnChanges {
   public isLoading: boolean = true;
   public selectedColorTheme: number = 0; // Default to first theme
   public showRatioDialog: boolean = false;
-
-  constructor(
-    private authservice: AuthserviceProvider,
-    private shareService: ShareService,
-    private cdr: ChangeDetectorRef,
-    private verseImageService: VerseImageService
-  ) {}
 
   ngOnInit() {
     this.dailyVerseLanguage = this.authservice.dailyVerse;

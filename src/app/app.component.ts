@@ -50,6 +50,19 @@ register();
   imports: [CommonModule, FormsModule, RouterModule, IonicModule],
 })
 export class AppComponent implements OnDestroy {
+  darkModeService = inject(DarkModeService);
+  network = inject(NetworkService);
+  wakeLockService = inject(WakeLockService);
+  ionLoaderService = inject(IonLoaderService);
+  socialSharing = inject(ShareService);
+  router = inject(Router);
+  screenOrientation = inject(ScreenOrientationService);
+  authservice = inject(AuthserviceProvider);
+  platform = inject(Platform);
+  databaseService = inject(DatabaseService);
+  navctrl = inject(NavController);
+  private audioFocusService = inject(AudioFocusService);
+
   @ViewChild('mySelect') selectRef: IonSelect;
   @ViewChild('audio') audio;
   public fromid: any = '2';
@@ -244,22 +257,7 @@ export class AppComponent implements OnDestroy {
   public repeat_played_count: any = 0;
   public selectedFromBookCaption = '';
   public selectedToBookCaption = '';
-  constructor(
-    public darkModeService: DarkModeService,
-    public network: NetworkService,
-    // Replace Insomnia with WakeLockService
-    public wakeLockService: WakeLockService,
-    public ionLoaderService: IonLoaderService,
-    public socialSharing: ShareService,
-    public router: Router,
-    // Replace ScreenOrientation with ScreenOrientationService
-    public screenOrientation: ScreenOrientationService,
-    public authservice: AuthserviceProvider,
-    public platform: Platform,
-    public databaseService: DatabaseService,
-    public navctrl: NavController,
-    private audioFocusService: AudioFocusService
-  ) {
+  constructor() {
     this.audioFocusService.registerOwner('app', () => {
       this.stopAppAudioPlayback();
     });

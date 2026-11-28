@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import {
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { Component, NgZone, OnDestroy } from '@angular/core';
 import {
   DatabaseService,
@@ -26,6 +30,16 @@ import { Keyboard } from '@capacitor/keyboard';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class SearchPage implements OnDestroy {
+  appComponent = inject(AppComponent);
+  screenorientation = inject(ScreenOrientationService);
+  menuCtrl = inject(MenuController);
+  authservice = inject(AuthserviceProvider);
+  platform = inject(Platform);
+  databaseService = inject(DatabaseService);
+  navctrl = inject(NavController);
+  private ngZone = inject(NgZone);
+  private darkModeService = inject(DarkModeService);
+
   public currentpage: any = 1;
   public totalpages: any = 15;
   public showSearchNavigation: any = 'hide';
@@ -45,17 +59,7 @@ export class SearchPage implements OnDestroy {
   public isDarkMode: boolean = false;
   private darkModeSubscription: Subscription;
 
-  constructor(
-    public appComponent: AppComponent,
-    public screenorientation: ScreenOrientationService,
-    public menuCtrl: MenuController,
-    public authservice: AuthserviceProvider,
-    public platform: Platform,
-    public databaseService: DatabaseService,
-    public navctrl: NavController,
-    private ngZone: NgZone,
-    private darkModeService: DarkModeService
-  ) {
+  constructor() {
     this.setSearchData();
 
     // Subscribe to dark mode state changes

@@ -1,4 +1,8 @@
-import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import {
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
@@ -25,6 +29,15 @@ import { AppComponent } from '../../app/app.component';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class SettingsPage implements OnInit {
+  appComponent = inject(AppComponent);
+  menuCtrl = inject(MenuController);
+  screenorientation = inject(ScreenOrientationService);
+  authservice = inject(AuthserviceProvider);
+  platform = inject(Platform);
+  databaseService = inject(DatabaseService);
+  navctrl = inject(NavController);
+  private darkModeService = inject(DarkModeService);
+
   public bibleList: any = [];
   public fontListTamil: any = [];
   public fontListEnglish: any = [];
@@ -74,16 +87,7 @@ export class SettingsPage implements OnInit {
   // Dark mode properties
   public isGlobalDarkMode: boolean = false;
 
-  constructor(
-    public appComponent: AppComponent,
-    public menuCtrl: MenuController,
-    public screenorientation: ScreenOrientationService,
-    public authservice: AuthserviceProvider,
-    public platform: Platform,
-    public databaseService: DatabaseService,
-    public navctrl: NavController,
-    private darkModeService: DarkModeService
-  ) {
+  constructor() {
     console.log('Paragraph mode ' + this.paragraphModeSettings);
     this.platform.ready().then(() => {
       this.globalFontTamil = this.authservice.fontFamilyTamil;

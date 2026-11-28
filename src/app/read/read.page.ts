@@ -2,6 +2,7 @@ import {
   ViewEncapsulation,
   Renderer2,
   ChangeDetectionStrategy,
+  inject,
 } from '@angular/core';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
@@ -9,7 +10,12 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonContent, IonicModule } from '@ionic/angular';
+import {
+  Platform,
+  NavController,
+  IonContent,
+  IonicModule,
+} from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
@@ -46,6 +52,22 @@ import { AudioFocusService } from '../services/audio-focus.service';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class ReadPage implements OnInit, OnDestroy {
+  darkModeService = inject(DarkModeService);
+  renderer = inject(Renderer2);
+  network = inject(NetworkService);
+  wakeLock = inject(WakeLockService);
+  scroller = inject(ViewportScroller);
+  appComponent = inject(AppComponent);
+  screenorientation = inject(ScreenOrientationService);
+  menuCtrl = inject(MenuController);
+  shareService = inject(ShareService);
+  router = inject(Router);
+  databaseService = inject(DatabaseService);
+  platform = inject(Platform);
+  authservice = inject(AuthserviceProvider);
+  navctrl = inject(NavController);
+  private audioFocusService = inject(AudioFocusService);
+
   @ViewChild(IonContent, { static: false }) content: IonContent;
   @ViewChild('audio') audio;
   @ViewChild('header') header: HTMLElement;
@@ -108,23 +130,9 @@ export class ReadPage implements OnInit, OnDestroy {
   private progressInterval: any;
   private darkModeSubscription: Subscription;
 
-  constructor(
-    public darkModeService: DarkModeService,
-    public renderer: Renderer2,
-    public network: NetworkService,
-    public wakeLock: WakeLockService,
-    public scroller: ViewportScroller,
-    public appComponent: AppComponent,
-    public screenorientation: ScreenOrientationService,
-    public menuCtrl: MenuController,
-    public shareService: ShareService,
-    public router: Router,
-    public databaseService: DatabaseService,
-    public platform: Platform,
-    public authservice: AuthserviceProvider,
-    public navctrl: NavController,
-    private audioFocusService: AudioFocusService
-  ) {
+  constructor() {
+    const authservice = this.authservice;
+
     // Note: Removed toast from constructor parameters since Capacitor plugins don't need DI
 
     console.log('Constructor calleing :' + authservice.timerState);

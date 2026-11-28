@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Platform, NavController, IonicModule } from '@ionic/angular';
@@ -28,6 +28,15 @@ import { Browser } from '@capacitor/browser';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class Tab1Page {
+  private navctrl = inject(NavController);
+  private databaseService = inject(DatabaseService);
+  private plt = inject(Platform);
+  private authservice = inject(AuthserviceProvider);
+  private wakeLockService = inject(WakeLockService);
+  private network = inject(NetworkService);
+  private screenOrientation = inject(ScreenOrientationService);
+  private shareService = inject(ShareService);
+
   dateExample = new Date().toISOString();
   private database: any;
   CopyInputText: string = 'Hello World!';
@@ -38,17 +47,7 @@ export class Tab1Page {
     'create table if not exists bibles ( id integer PRIMARY KEY, title TEXT, description TEXT,language TEXT, defaultbible TEXT, color TEXT, isshow integer, seq integer)';
   public fromid: any = '2';
   public toid: any = '3';
-  constructor(
-    private navctrl: NavController,
-    private databaseService: DatabaseService,
-    private plt: Platform,
-    private authservice: AuthserviceProvider,
-    private wakeLockService: WakeLockService,
-    private network: NetworkService,
-    // Replace Cordova ScreenOrientation with our service
-    private screenOrientation: ScreenOrientationService,
-    private shareService: ShareService
-  ) {
+  constructor() {
     // Note: Removed toast from constructor parameters since Capacitor plugins don't need DI
 
     this.plt.ready().then(() => {

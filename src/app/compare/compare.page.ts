@@ -2,6 +2,7 @@ import {
   ViewEncapsulation,
   Renderer2,
   ChangeDetectionStrategy,
+  inject,
 } from '@angular/core';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {
@@ -10,7 +11,12 @@ import {
 } from 'src/app/services/database.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Platform, NavController, IonContent, IonicModule } from '@ionic/angular';
+import {
+  Platform,
+  NavController,
+  IonContent,
+  IonicModule,
+} from '@ionic/angular';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import { MenuController } from '@ionic/angular';
 // Replace Cordova ScreenOrientation with our Capacitor service
@@ -32,6 +38,16 @@ import { AppComponent } from '../../app/app.component';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class ComparePage implements OnInit, OnDestroy {
+  darkModeService = inject(DarkModeService);
+  renderer = inject(Renderer2);
+  appComponent = inject(AppComponent);
+  screenorientation = inject(ScreenOrientationService);
+  menuCtrl = inject(MenuController);
+  databaseService = inject(DatabaseService);
+  platform = inject(Platform);
+  authservice = inject(AuthserviceProvider);
+  navctrl = inject(NavController);
+
   @ViewChild(IonContent, { static: false }) content: IonContent;
   @ViewChild('header') header: HTMLElement;
   public paragraphModeClass: any = '';
@@ -63,17 +79,9 @@ export class ComparePage implements OnInit, OnDestroy {
   private suppressHeaderToggleUntil = 0;
   private darkModeSubscription: Subscription;
 
-  constructor(
-    public darkModeService: DarkModeService,
-    public renderer: Renderer2,
-    public appComponent: AppComponent,
-    public screenorientation: ScreenOrientationService,
-    public menuCtrl: MenuController,
-    public databaseService: DatabaseService,
-    public platform: Platform,
-    public authservice: AuthserviceProvider,
-    public navctrl: NavController
-  ) {
+  constructor() {
+    const authservice = this.authservice;
+
     console.log('Constructor calleing :' + authservice.timerState);
     //this.startTimer();
     this.selectedTheme = this.authservice.selectedTheme;

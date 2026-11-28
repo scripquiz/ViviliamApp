@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -54,6 +54,12 @@ interface BookRow {
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class LifeEventDetailPage {
+  private navctrl = inject(NavController);
+  private route = inject(ActivatedRoute);
+  private platform = inject(Platform);
+  private http = inject(HttpClient);
+  private databaseService = inject(DatabaseService);
+
   private readonly BSI_BIBLE_ID = 3;
   private readonly KJV_BIBLE_ID = 2;
   private database: DatabaseConnection;
@@ -65,14 +71,6 @@ export class LifeEventDetailPage {
 
   private eventId = 0;
   private eventItem: LifeEventItem | null = null;
-
-  constructor(
-    private navctrl: NavController,
-    private route: ActivatedRoute,
-    private platform: Platform,
-    private http: HttpClient,
-    private databaseService: DatabaseService
-  ) {}
 
   async ionViewWillEnter() {
     this.eventId = Number(this.route.snapshot.paramMap.get('id') || 0);

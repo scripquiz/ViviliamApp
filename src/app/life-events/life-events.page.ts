@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NavController, IonicModule } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 
@@ -34,12 +34,13 @@ interface LifeEventItem {
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class LifeEventsPage {
+  private navctrl = inject(NavController);
+  private http = inject(HttpClient);
+
   private readonly STORAGE_LANGUAGE_KEY = 'life_events_language';
 
   public selectedLanguage: 'ta' | 'en' = 'ta';
   public events: LifeEventItem[] = [];
-
-  constructor(private navctrl: NavController, private http: HttpClient) {}
 
   async ionViewWillEnter() {
     const saved = localStorage.getItem(this.STORAGE_LANGUAGE_KEY);

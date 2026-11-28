@@ -4,6 +4,7 @@ import {
   Component,
   ViewEncapsulation,
   ChangeDetectionStrategy,
+  inject,
 } from '@angular/core';
 import {
   DatabaseService,
@@ -22,6 +23,11 @@ import { AuthserviceProvider } from '../../providers/authservice/authservice';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class SetdefaultbiblePage {
+  databaseService = inject(DatabaseService);
+  platform = inject(Platform);
+  authservice = inject(AuthserviceProvider);
+  navctrl = inject(NavController);
+
   public database: DatabaseConnection;
   public bibleListTamil: Array<{
     id: number;
@@ -37,12 +43,7 @@ export class SetdefaultbiblePage {
     description: string;
     isaudioavailable: string;
   }> = [];
-  constructor(
-    public databaseService: DatabaseService,
-    public platform: Platform,
-    public authservice: AuthserviceProvider,
-    public navctrl: NavController
-  ) {
+  constructor() {
     this.platform.ready().then(() => {
       this.databaseService
         .create({

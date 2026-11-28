@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MenuController, NavController, IonicModule } from '@ionic/angular';
@@ -25,6 +25,15 @@ import { App } from '@capacitor/app';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class MorePage {
+  alertController = inject(AlertController);
+  ionLoaderService = inject(IonLoaderService);
+  shareService = inject(ShareService);
+  platform = inject(Platform);
+  databaseService = inject(DatabaseService);
+  navctrl = inject(NavController);
+  menuCtrl = inject(MenuController);
+  authservice = inject(AuthserviceProvider);
+
   public database: DatabaseConnection;
   public backupDate: string;
   public totalBackupRecords: any = 100;
@@ -36,16 +45,7 @@ export class MorePage {
   public restore_index = 0;
   public restoreData: any;
   public appversionText: any = '';
-  constructor(
-    public alertController: AlertController,
-    public ionLoaderService: IonLoaderService,
-    public shareService: ShareService,
-    public platform: Platform,
-    public databaseService: DatabaseService,
-    public navctrl: NavController,
-    public menuCtrl: MenuController,
-    public authservice: AuthserviceProvider
-  ) {
+  constructor() {
     this.authservice.currentPage = 'MORE';
     this.platform.ready().then(() => {
       this.databaseService
@@ -118,8 +118,8 @@ export class MorePage {
               'You are about to replace the backup data with your current data. All Bookmarks, Highlights and Notes in backup will be replaced with your current data. This operation cannot be reversed.',
             message: new IonicSafeString(
               'Last backup: <b>' +
-              objAllData[0]['backupdate'] +
-              '</b><br>Do you wish to continue?'
+                objAllData[0]['backupdate'] +
+                '</b><br>Do you wish to continue?'
             ),
             cssClass: 'custom-confirm',
             buttons: [
@@ -133,7 +133,7 @@ export class MorePage {
               {
                 text: 'No',
                 cssClass: 'cc',
-                handler: () => { },
+                handler: () => {},
               },
             ],
           })
@@ -225,7 +225,7 @@ export class MorePage {
       objthis.backuData.rows.item(objthis.backupProgressIndex)['vnumber'] +
       '&texthighlight=' +
       objthis.backuData.rows.item(objthis.backupProgressIndex)[
-      'texthighlight'
+        'texthighlight'
       ] +
       '&notes=' +
       objthis.backuData.rows.item(objthis.backupProgressIndex)['notes'] +
@@ -296,8 +296,8 @@ export class MorePage {
               'You are about to restore the data from backup file. All current Bookmarks, Highlights and Notes will be replaced by your last backup. This operation cannot be reversed.',
             message: new IonicSafeString(
               'Last backup: <b>' +
-              objAllData[0]['backupdate'] +
-              '</b><br>Do you wish to continue?'
+                objAllData[0]['backupdate'] +
+                '</b><br>Do you wish to continue?'
             ),
             cssClass: 'custom-confirm',
             buttons: [
@@ -311,7 +311,7 @@ export class MorePage {
               {
                 text: 'No',
                 cssClass: 'cc',
-                handler: () => { },
+                handler: () => {},
               },
             ],
           })

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Platform, NavController, IonicModule } from '@ionic/angular';
@@ -17,6 +17,12 @@ import { MenuController } from '@ionic/angular';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class StartupPage {
+  private menuCtrl = inject(MenuController);
+  private databaseService = inject(DatabaseService);
+  private platform = inject(Platform);
+  private navctrl = inject(NavController);
+  private authservice = inject(AuthserviceProvider);
+
   private database: DatabaseConnection;
   bibleData = [];
   bibleTable: string =
@@ -53,13 +59,7 @@ export class StartupPage {
     'create table if not exists eventsread(id integer PRIMARY KEY)';
   eventsInstructions: string =
     'create table if not exists eventinstructions(id integer PRIMARY KEY, type TEXT, instruction TEXT)';
-  constructor(
-    private menuCtrl: MenuController,
-    private databaseService: DatabaseService,
-    private platform: Platform,
-    private navctrl: NavController,
-    private authservice: AuthserviceProvider
-  ) {
+  constructor() {
     // this.router.navigateByUrl("/tabslink/home");
     console.log('App started...');
     this.platform.ready().then(() => {

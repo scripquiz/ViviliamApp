@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { timeout } from 'rxjs';
-import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import {
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import {
   DatabaseService,
@@ -37,6 +41,18 @@ import { AudioFocusService } from '../services/audio-focus.service';
   ],
 })
 export class HomePage implements OnDestroy {
+  private http = inject(HttpClient);
+  network = inject(NetworkService);
+  private wakeLockService = inject(WakeLockService);
+  private screenorientation = inject(ScreenOrientationService);
+  private ionLoaderService = inject(IonLoaderService);
+  menuCtrl = inject(MenuController);
+  private authservice = inject(AuthserviceProvider);
+  private platform = inject(Platform);
+  private databaseService = inject(DatabaseService);
+  private logger = inject(LoggerService);
+  private audioFocusService = inject(AudioFocusService);
+
   @ViewChild('audioPlayer') audio: any;
   private lastConnectivityResult: boolean = false;
   private lastConnectivityCheck: number = 0;
@@ -70,19 +86,7 @@ export class HomePage implements OnDestroy {
   // Date (YYYY-MM-DD) that todayAudioFiles was loaded for
   private loadedAudioDate: string = '';
   public segmentSelected: string = '0';
-  constructor(
-    private http: HttpClient,
-    public network: NetworkService,
-    private wakeLockService: WakeLockService,
-    private screenorientation: ScreenOrientationService,
-    private ionLoaderService: IonLoaderService,
-    public menuCtrl: MenuController,
-    private authservice: AuthserviceProvider,
-    private platform: Platform,
-    private databaseService: DatabaseService,
-    private logger: LoggerService,
-    private audioFocusService: AudioFocusService
-  ) {
+  constructor() {
     this.getAppVersionInfo();
 
     this.audioFocusService.registerOwner('home', () => {
@@ -735,7 +739,8 @@ export class HomePage implements OnDestroy {
       now - this.lastConnectivityCheck < this.connectivityCacheDuration
     ) {
       this.logger.network(
-        `Using cached connectivity result (${now - this.lastConnectivityCheck
+        `Using cached connectivity result (${
+          now - this.lastConnectivityCheck
         }ms old): ${this.lastConnectivityResult}`
       );
 
@@ -918,35 +923,38 @@ export class HomePage implements OnDestroy {
     const apiUrl = `https://api.viviliam.com/api/audio?date=${dateStr}`;
 
     // Make API request; timeout() cancels it and raises an error after 15s
-    this.http.get(apiUrl).pipe(timeout(15000)).subscribe(
-      (data: any) => {
-        this.audioLoadInProgress = false;
-        this.logger.log('Received audio data from API');
-        try {
-          if (!this.processNewAudioData(data, dateStr)) {
-            this.tryLoadFromCache();
-            return;
+    this.http
+      .get(apiUrl)
+      .pipe(timeout(15000))
+      .subscribe(
+        (data: any) => {
+          this.audioLoadInProgress = false;
+          this.logger.log('Received audio data from API');
+          try {
+            if (!this.processNewAudioData(data, dateStr)) {
+              this.tryLoadFromCache();
+              return;
+            }
+            this.setStableErrorState(false, '');
+            // Cache only a validated, non-empty response
+            if (data.audio.length) {
+              localStorage.setItem('todayAudioCache', JSON.stringify(data));
+              localStorage.setItem('todayAudioCacheDate', dateStr);
+            }
+          } catch (error) {
+            // The list is already processed; only the cache write can fail here
+            this.logger.error('Error caching API response:', error);
           }
-          this.setStableErrorState(false, '');
-          // Cache only a validated, non-empty response
-          if (data.audio.length) {
-            localStorage.setItem('todayAudioCache', JSON.stringify(data));
-            localStorage.setItem('todayAudioCacheDate', dateStr);
-          }
-        } catch (error) {
-          // The list is already processed; only the cache write can fail here
-          this.logger.error('Error caching API response:', error);
+        },
+        (error) => {
+          this.audioLoadInProgress = false;
+          this.logger.error('HTTP error:', error);
+          this.isAudioLoading = false;
+          this.audioLoadError = !this.todayAudioFiles.length;
+          this.setStableErrorState(true, this.authservice.serverDownMessage);
+          this.tryLoadFromCache();
         }
-      },
-      (error) => {
-        this.audioLoadInProgress = false;
-        this.logger.error('HTTP error:', error);
-        this.isAudioLoading = false;
-        this.audioLoadError = !this.todayAudioFiles.length;
-        this.setStableErrorState(true, this.authservice.serverDownMessage);
-        this.tryLoadFromCache();
-      }
-    );
+      );
   }
   // Returns false when the data is invalid; an empty list is a valid result.
   processNewAudioData(data, dateStr): boolean {

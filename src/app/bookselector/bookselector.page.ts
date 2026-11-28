@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import {
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { Component } from '@angular/core';
 import {
   DatabaseService,
@@ -19,6 +23,11 @@ import { AuthserviceProvider } from '../../providers/authservice/authservice';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class BookselectorPage {
+  databaseService = inject(DatabaseService);
+  platform = inject(Platform);
+  authservice = inject(AuthserviceProvider);
+  navctrl = inject(NavController);
+
   public database: DatabaseConnection;
   public selectedsegmentemode: any = 'books';
 
@@ -42,13 +51,6 @@ export class BookselectorPage {
   public showsearchbar: any = 'show';
   public showchapterverseinfobar: any = 'hide';
   public chapterverseinfo: any = '';
-
-  constructor(
-    public databaseService: DatabaseService,
-    public platform: Platform,
-    public authservice: AuthserviceProvider,
-    public navctrl: NavController
-  ) {}
 
   ionViewDidEnter() {
     this.authservice.readMode = 'CHAPTER';

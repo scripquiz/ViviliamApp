@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import { Router } from '@angular/router';
@@ -19,6 +19,13 @@ import { AppComponent } from '../../app/app.component';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class AddnotesPage {
+  private router = inject(Router);
+  navctrl = inject(NavController);
+  databaseService = inject(DatabaseService);
+  private appComponent = inject(AppComponent);
+  platform = inject(Platform);
+  authservice = inject(AuthserviceProvider);
+
   private database: DatabaseConnection;
   public selected_fornotes_bookname: any;
   public selected_fornotes_cnumber: any;
@@ -32,14 +39,6 @@ export class AddnotesPage {
   public booktitlefont: any = '';
   public font: any = '';
   public isContentLoaded: any = 0;
-  constructor(
-    private router: Router,
-    public navctrl: NavController,
-    public databaseService: DatabaseService,
-    private appComponent: AppComponent,
-    public platform: Platform,
-    public authservice: AuthserviceProvider
-  ) {}
   goBack() {
     for (var i = 0; i < this.authservice.verseList.length; i++)
       this.authservice.verseList[i].isSelected = false;

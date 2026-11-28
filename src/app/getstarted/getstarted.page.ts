@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -24,6 +24,15 @@ import { ScreenOrientationService } from '../services/screen-orientation.service
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class GetstartedPage {
+  screenorientation = inject(ScreenOrientationService);
+  appComponent = inject(AppComponent);
+  authservice = inject(AuthserviceProvider);
+  http = inject(HttpClient);
+  sqlporter = inject(DatabaseImportService);
+  databaseService = inject(DatabaseService);
+  platform = inject(Platform);
+  navctrl = inject(NavController);
+
   public orientation: any;
   public fileSeq: any = 1;
   public totalImports: any = 13;
@@ -52,17 +61,9 @@ export class GetstartedPage {
   public readyMesasge: any = 'Getting ready... Please wait...';
   private isImportInProgress = false;
 
-  constructor(
-    // Update to use ScreenOrientationService instead of ScreenOrientation
-    public screenorientation: ScreenOrientationService,
-    public appComponent: AppComponent,
-    public authservice: AuthserviceProvider,
-    public http: HttpClient,
-    public sqlporter: DatabaseImportService,
-    public databaseService: DatabaseService,
-    public platform: Platform,
-    public navctrl: NavController
-  ) {
+  constructor() {
+    const authservice = this.authservice;
+
     console.log('Constructor fired');
     if (authservice._IS_UPDATE_BIBLE == 0) {
       this.authservice.selectedTheme = '1';

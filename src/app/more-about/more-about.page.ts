@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavController, IonicModule } from '@ionic/angular';
@@ -14,8 +14,10 @@ import { App } from '@capacitor/app';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class MoreAboutPage {
+  navctrl = inject(NavController);
+
   public appversionText: any;
-  constructor(public navctrl: NavController) {
+  constructor() {
     // Get app version using Capacitor App plugin
     this.getAppVersion();
   }

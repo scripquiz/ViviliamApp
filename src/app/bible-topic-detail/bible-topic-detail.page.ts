@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, Platform, IonicModule } from '@ionic/angular';
 import {
@@ -27,6 +27,11 @@ interface TopicSection {
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class BibleTopicDetailPage {
+  private navctrl = inject(NavController);
+  private route = inject(ActivatedRoute);
+  private platform = inject(Platform);
+  private databaseService = inject(DatabaseService);
+
   private readonly BSI_BIBLE_ID = 3;
   private readonly KJV_BIBLE_ID = 2;
   private database: DatabaseConnection;
@@ -36,13 +41,6 @@ export class BibleTopicDetailPage {
   public selectedTopicTitle = '';
   public topicSections: TopicSection[] = [];
   public isLoadingVerses = false;
-
-  constructor(
-    private navctrl: NavController,
-    private route: ActivatedRoute,
-    private platform: Platform,
-    private databaseService: DatabaseService
-  ) {}
 
   async ionViewWillEnter() {
     this.selectedTopicId = Number(this.route.snapshot.paramMap.get('id') || 0);

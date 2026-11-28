@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavController, IonicModule } from '@ionic/angular';
@@ -13,11 +13,9 @@ import { IonLoaderService } from '../ion-loader.service';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class MorePrivatePolicyPage {
-  constructor(
-    private ionLoaderService: IonLoaderService,
-    private navctrl: NavController,
-    private authservice: AuthserviceProvider
-  ) {}
+  private ionLoaderService = inject(IonLoaderService);
+  private navctrl = inject(NavController);
+  private authservice = inject(AuthserviceProvider);
 
   navBack() {
     this.navctrl.back();

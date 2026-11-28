@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,11 +13,9 @@ import { MenuController, IonicModule } from '@ionic/angular';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class StartupLanguagePage {
-  constructor(
-    private menuCtrl: MenuController,
-    private router: Router,
-    private authservice: AuthserviceProvider
-  ) {}
+  private menuCtrl = inject(MenuController);
+  private router = inject(Router);
+  private authservice = inject(AuthserviceProvider);
 
   navigateto_defaultbible(defaultlanguage) {
     this.authservice.default_language = defaultlanguage;

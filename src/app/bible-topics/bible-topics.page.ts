@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NavController, Platform, IonicModule } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -51,6 +51,11 @@ interface BookFilterOption {
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class BibleTopicsPage {
+  private navctrl = inject(NavController);
+  private platform = inject(Platform);
+  private http = inject(HttpClient);
+  private databaseService = inject(DatabaseService);
+
   private readonly STORAGE_LANGUAGE_KEY = 'bible_topics_language';
   private readonly STORAGE_SCOPE_KEY = 'bible_topics_scope';
   private database: DatabaseConnection;
@@ -60,13 +65,6 @@ export class BibleTopicsPage {
   public filterBooks: BookFilterOption[] = [];
   private topicBookNumbers = new Map<number, Set<number>>();
   public selectedLanguage: 'ta' | 'en' = 'ta';
-
-  constructor(
-    private navctrl: NavController,
-    private platform: Platform,
-    private http: HttpClient,
-    private databaseService: DatabaseService
-  ) {}
 
   async ionViewWillEnter() {
     this.restoreUiState();

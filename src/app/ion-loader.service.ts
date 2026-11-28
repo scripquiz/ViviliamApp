@@ -1,36 +1,37 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IonLoaderService {
-
-  constructor(public loadingController: LoadingController) { }
+  loadingController = inject(LoadingController);
 
   // Updated simpleLoader with safety timeout and existing loader check
-  simpleLoader(message: string = "Please wait...") {
+  simpleLoader(message: string = 'Please wait...') {
     // First check if a loader is already present
-    this.loadingController.getTop().then(loader => {
+    this.loadingController.getTop().then((loader) => {
       // Dismiss any existing loaders first
       if (loader) {
         this.dismissLoader();
       }
 
       // Create and present the new loader
-      this.loadingController.create({
-        message: message,
-        cssClass: 'custom-loader-class',
-        backdropDismiss: false
-      }).then((response) => {
-        response.present();
+      this.loadingController
+        .create({
+          message: message,
+          cssClass: 'custom-loader-class',
+          backdropDismiss: false,
+        })
+        .then((response) => {
+          response.present();
 
-        // Safety timeout - never show loader for more than 10 seconds
-        // This prevents loaders from being stuck forever
-        setTimeout(() => {
-          this.dismissLoader();
-        }, 10000);
-      });
+          // Safety timeout - never show loader for more than 10 seconds
+          // This prevents loaders from being stuck forever
+          setTimeout(() => {
+            this.dismissLoader();
+          }, 10000);
+        });
     });
   }
 

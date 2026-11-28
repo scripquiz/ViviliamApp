@@ -5,6 +5,7 @@ import {
   Input,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  inject,
 } from '@angular/core';
 
 import { IonicModule } from '@ionic/angular';
@@ -29,6 +30,11 @@ import { RatioDialogComponent } from '../../shared/ratio-dialog/ratio-dialog.com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DailyBibleQuoteComponent implements OnInit, OnChanges {
+  private authservice = inject(AuthserviceProvider);
+  private shareService = inject(ShareService);
+  private cdr = inject(ChangeDetectorRef);
+  private verseImageService = inject(VerseImageService);
+
   // Inputs from parent component
   @Input() database: DatabaseConnection;
 
@@ -44,13 +50,6 @@ export class DailyBibleQuoteComponent implements OnInit, OnChanges {
   public isLoading: boolean = true;
   public selectedColorTheme: number = 0; // Default to first theme
   public showRatioDialog: boolean = false;
-
-  constructor(
-    private authservice: AuthserviceProvider,
-    private shareService: ShareService,
-    private cdr: ChangeDetectorRef,
-    private verseImageService: VerseImageService
-  ) {}
 
   ngOnInit() {
     // Initialize quote language preference

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
@@ -16,6 +16,10 @@ import { MenuController } from '@ionic/angular';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class StartupDefaultBiblePage {
+  private menuCtrl = inject(MenuController);
+  private authserivce = inject(AuthserviceProvider);
+  private navctrl = inject(NavController);
+
   bibleData = [];
   public default_language: any;
   public Bibles_In_Language: Array<{
@@ -28,12 +32,6 @@ export class StartupDefaultBiblePage {
   public Sample_Verse: Array<{ id: number; verse: string }> = [];
   public sampleVerse: any = '';
   public selected_versiontext: any = '';
-
-  constructor(
-    private menuCtrl: MenuController,
-    private authserivce: AuthserviceProvider,
-    private navctrl: NavController
-  ) {}
 
   ionViewDidEnter() {
     this.default_language = this.authserivce.default_language;

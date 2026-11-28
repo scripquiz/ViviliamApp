@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { timeout } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthserviceProvider {
+  private http = inject(HttpClient);
+  alertController = inject(AlertController);
+
   API_URL = 'https://api.viviliam.com/api/';
   //API_URL="http://apitest.viviliam.com/api/";
   //API_URL="https://gracematrimony.com/api/";
@@ -124,10 +127,7 @@ export class AuthserviceProvider {
   public audio_available_bibles: any = '2,3,5';
   selectedVerseTextForCopy: string;
   selectedVersesArray: any[];
-  constructor(
-    private http: HttpClient,
-    public alertController: AlertController
-  ) {
+  constructor() {
     console.log('Authservice constructor entered');
   }
 

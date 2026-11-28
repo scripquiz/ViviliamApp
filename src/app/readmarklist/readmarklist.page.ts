@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import {
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { Component, ViewChild } from '@angular/core';
 // Replace Cordova Toast with Capacitor Toast
 import { Toast } from '@capacitor/toast';
@@ -10,7 +14,12 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonContent, IonicModule } from '@ionic/angular';
+import {
+  Platform,
+  NavController,
+  IonContent,
+  IonicModule,
+} from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { AppComponent } from '../../app/app.component';
 import { NetworkService } from '../services/network.service';
@@ -25,6 +34,15 @@ import { NetworkService } from '../services/network.service';
   imports: [CommonModule, FormsModule, IonicModule],
 })
 export class ReadmarklistPage {
+  private network = inject(NetworkService);
+  private appComponent = inject(AppComponent);
+  alertController = inject(AlertController);
+  navctrl = inject(NavController);
+  router = inject(Router);
+  databaseService = inject(DatabaseService);
+  platform = inject(Platform);
+  authservice = inject(AuthserviceProvider);
+
   @ViewChild(IonContent, { static: false }) content: IonContent;
   @ViewChild('audio') audio;
 
@@ -57,16 +75,7 @@ export class ReadmarklistPage {
   public startTime: any;
   public endTime: any;
   public interval: any;
-  constructor(
-    private network: NetworkService,
-    private appComponent: AppComponent,
-    public alertController: AlertController,
-    public navctrl: NavController,
-    public router: Router,
-    public databaseService: DatabaseService,
-    public platform: Platform,
-    public authservice: AuthserviceProvider
-  ) {
+  constructor() {
     // Note: Removed toast from constructor parameters since Capacitor plugins don't need DI
 
     this.drawer_highlightedit_show = new Date();
