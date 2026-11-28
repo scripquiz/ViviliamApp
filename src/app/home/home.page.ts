@@ -166,10 +166,6 @@ export class HomePage {
   }
   playAllAudiosDirect() {
     if (this.playAll) {
-      this.playAll = false;
-      this.audio.nativeElement.pause();
-      this.audioPlaying = false;
-      this.playAllText = 'Play All';
       this.stopAllAudioDirect();
       // Wake lock is released in stopAllAudioDirect
     } else {
@@ -184,14 +180,9 @@ export class HomePage {
         );
       }
       this.playAll = true;
-      this.currentAudioIndex = 0;
       this.repeat_played_count_all = 0;
       this.startAudioDirect(0);
       this.playAllText = 'Stop Playing';
-      this.wakeLockService.keepAwake().then(
-        () => { },
-        () => this.logger.log('error keeping device awake')
-      );
     }
   }
   stopAllAudioDirect() {
@@ -532,12 +523,9 @@ export class HomePage {
         ) {
           this.repeat_played_count_all++;
           this.logger.log(`Starting repeat ${this.repeat_played_count_all}`);
-          this.currentAudioIndex = 0;
           this.startAudioDirect(0);
         } else {
           this.stopAudioDirect(this.currentAudioIndex);
-          this.playAll = false;
-          this.playAllText = 'Play All';
           this.repeat_state_all = 0;
           this.repeat_played_count_all = 0;
         }
