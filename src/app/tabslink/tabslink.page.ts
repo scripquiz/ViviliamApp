@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 // import {
@@ -12,7 +12,7 @@ import { IonicModule } from '@ionic/angular';
   styleUrls: ['./tabslink.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class TabslinkPage {
   //Look the index to see which direction to go (if you have more than 3 tabs)

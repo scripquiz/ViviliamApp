@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
@@ -31,7 +30,7 @@ interface LifeEventItem {
   styleUrls: ['./life-events.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class LifeEventsPage {
   private navctrl = inject(NavController);

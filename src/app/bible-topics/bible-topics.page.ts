@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
@@ -48,7 +47,7 @@ interface BookFilterOption {
   styleUrls: ['./bible-topics.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class BibleTopicsPage {
   private navctrl = inject(NavController);

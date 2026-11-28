@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
@@ -26,7 +26,7 @@ import { AppComponent } from '../../app/app.component';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class SettingsPage implements OnInit {
   appComponent = inject(AppComponent);

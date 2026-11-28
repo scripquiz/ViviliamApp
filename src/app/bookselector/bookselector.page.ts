@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   ViewEncapsulation,
@@ -20,7 +19,7 @@ import { AuthserviceProvider } from '../../providers/authservice/authservice';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class BookselectorPage {
   databaseService = inject(DatabaseService);

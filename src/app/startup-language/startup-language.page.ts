@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
@@ -10,7 +10,7 @@ import { MenuController, IonicModule } from '@ionic/angular';
   styleUrls: ['./startup-language.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class StartupLanguagePage {
   private menuCtrl = inject(MenuController);

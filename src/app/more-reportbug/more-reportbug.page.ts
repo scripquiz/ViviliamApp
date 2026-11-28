@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { NavController, IonicModule } from '@ionic/angular';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
@@ -10,7 +10,7 @@ import { IonLoaderService } from '../ion-loader.service';
   styleUrls: ['./more-reportbug.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class MoreReportbugPage {
   ionLoaderService = inject(IonLoaderService);

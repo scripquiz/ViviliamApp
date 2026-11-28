@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
@@ -10,6 +10,6 @@ import { ExploreContainerComponent } from '../explore-container/explore-containe
   styleUrls: ['tab2.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, ExploreContainerComponent],
+  imports: [FormsModule, IonicModule, ExploreContainerComponent],
 })
 export class Tab2Page {}

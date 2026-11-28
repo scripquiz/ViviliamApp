@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { NavController, IonicModule } from '@ionic/angular';
 import { App } from '@capacitor/app';
@@ -11,7 +11,7 @@ import { App } from '@capacitor/app';
   styleUrls: ['./more-about.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class MoreAboutPage {
   navctrl = inject(NavController);

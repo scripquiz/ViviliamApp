@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, Platform, IonicModule } from '@ionic/angular';
@@ -51,7 +51,7 @@ interface BookRow {
   styleUrls: ['./life-event-detail.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class LifeEventDetailPage {
   private navctrl = inject(NavController);

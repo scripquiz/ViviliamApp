@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import {
   DatabaseService,
@@ -21,7 +21,7 @@ import { ScreenOrientationService } from '../services/screen-orientation.service
   styleUrls: ['./getstarted.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [FormsModule, IonicModule],
 })
 export class GetstartedPage {
   screenorientation = inject(ScreenOrientationService);
