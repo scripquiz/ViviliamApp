@@ -474,10 +474,10 @@ export class SettingsPage implements OnInit {
     var qry =
       "update config set value = '" +
       (this.CompareShowLabelToggle ? '1' : '0') +
-      "' where id=25";
+      "' where id=30";
     console.log(selectedValue.currentTarget.value + ' - ' + ' qry ' + qry);
     this.database.executeSql(qry, []).then((data) => {
-      console.log('BSI Number showtoggle updtaed');
+      console.log('Compare label showtoggle updated');
     });
 
     this.authservice.CompareShowLabel = this.CompareShowLabelToggle ? '1' : '0';
