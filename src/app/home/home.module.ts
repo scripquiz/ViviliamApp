@@ -7,7 +7,6 @@ import { DailyBibleVerseComponent } from '../components/daily-bible-verse/daily-
 import { DailyBibleQuoteComponent } from '../components/daily-bible-quote/daily-bible-quote.component';
 
 import { HomePageRoutingModule } from './home-routing.module';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
 @NgModule({
@@ -20,6 +19,5 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     DailyBibleQuoteComponent
   ],
   declarations: [HomePage],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomePageModule { }

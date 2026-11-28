@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { timeout } from 'rxjs';
 import { ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { Component, ViewChild } from '@angular/core';
 import {
@@ -6,7 +7,7 @@ import {
   DatabaseConnection,
 } from 'src/app/services/database.service';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
-import { IonContent, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 import { IonLoaderService } from '../ion-loader.service';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
@@ -15,7 +16,6 @@ import { WakeLockService } from '../services/wake-lock.service';
 import { NetworkService } from '../services/network.service';
 import { Browser } from '@capacitor/browser';
 import { LoggerService } from '../services/logger.service';
-import { DarkModeService } from '../services/dark-mode.service';
 import { AudioFocusService } from '../services/audio-focus.service';
 @Component({
   selector: 'app-home',
@@ -26,60 +26,39 @@ import { AudioFocusService } from '../services/audio-focus.service';
   standalone: false,
 })
 export class HomePage {
-  @ViewChild(IonContent, { static: false }) content: IonContent;
   @ViewChild('audioPlayer') audio: any;
   private lastConnectivityResult: boolean = false;
   private lastConnectivityCheck: number = 0;
   private connectivityCacheDuration: number = 30000; // 30 seconds
   public networkSubscription: any;
+  private orientationSubscription: any;
   private networkStateChangeDebounceTime = 3000; // 3 seconds
   private networkDebounceTimer: any = null;
   private lastReportedNetworkState: boolean | null = null;
 
-  public slideOpts = {
-    initialSlide: 0,
-    speed: 300,
-    effect: 'flip',
-    autoplay: { delay: 5000 },
-    allowTouchMove: false,
-  };
   public APIMessage: any = '';
-  public todayDate: any = '';
   public database: DatabaseConnection;
-  public unread: any = 0;
-  public todayTabSelected: any = 'today';
-  public notificationsTabSelected: any = '';
   public tabRowitemSelected: any = '0';
   public orientation: any;
-  public isNetworkAvailable: any = 0;
-  public notificationsHomeCount: any;
-  public selectedAudioSource: any = '';
   public currentAudioIndex: any = 0;
   public audioPlaying: any;
+  public isSeeking = false;
   public playAll: any = false;
   public playAllText: any = 'Play All';
-  public notificationUpdateIndex: any = 0;
   public appversionText: any = '';
   public resumeListener: any;
-  public pauseListener: any;
   public repeat_state_all: any = 0;
   public repeat_played_count_all: any = 0;
-  public showNetworkOrAPIErrorMessage: any = 0;
   public todayAudioFiles: any[] = [];
   public isAudioLoading: boolean = true;
   public audioLoadError: boolean = false;
-  public hasInternetConnection: boolean = true;
-  public errorStateTimer: any = null;
-  public stableErrorDetected: boolean = false;
   private isActivelyTesting: boolean = false;
-  private _skipNetworkCheck: boolean = false;
   private audioLoadInProgress: boolean = false;
-  public get isServerError(): boolean {
-    return this.APIMessage === this.authservice.serverDownMessage;
-  }
+  // True while the list on screen came from the local cache
+  public isShowingCachedAudio: boolean = false;
+  // Date (YYYY-MM-DD) that todayAudioFiles was loaded for
+  private loadedAudioDate: string = '';
   public segmentSelected: string = '0';
-  public isDarkMode: boolean = false;
-  private darkModeSubscription: any;
   constructor(
     private http: HttpClient,
     public network: NetworkService,
@@ -91,24 +70,13 @@ export class HomePage {
     private platform: Platform,
     private databaseService: DatabaseService,
     private logger: LoggerService,
-    private darkModeService: DarkModeService,
     private audioFocusService: AudioFocusService
   ) {
-    this.errorStateTimer = null;
-    this.stableErrorDetected = false;
-    this.todayDate = Date.now();
     this.getAppVersionInfo();
 
     this.audioFocusService.registerOwner('home', () => {
       this.stopHomeAudioPlayback();
     });
-
-    // Subscribe to dark mode changes
-    this.darkModeSubscription = this.darkModeService.darkModeState$.subscribe(
-      (state) => {
-        this.isDarkMode = state.globalDarkMode;
-      }
-    );
 
     this.platform
       .ready()
@@ -122,7 +90,6 @@ export class HomePage {
             this.logger.error('Failed to load audio bibles:', error);
           });
         this.resumeListener = this.platform.resume.subscribe(() => {
-          this.notificationUpdateIndex = 0;
           this.logger.network('App resumed - checking active connectivity');
           this.testActiveConnectivity().then((isConnected) => {
             if (isConnected) {
@@ -131,7 +98,7 @@ export class HomePage {
               );
               this.setStableErrorState(false, '');
               if (!this.audioPlaying) {
-                if (this.audioLoadError) {
+                if (this.needsAudioLoad()) {
                   this.loadAudioDirectly();
                 }
               }
@@ -142,22 +109,8 @@ export class HomePage {
               this.setStableErrorState(true, this.authservice.noNetWorkMessage);
             }
           });
-          if (this.screenorientation.type == 'landscape-primary') {
-            this.orientation = 'landscape';
-            this.authservice.orientation = this.orientation;
-          } else {
-            this.orientation = 'portrait';
-            this.authservice.orientation = this.orientation;
-          }
-        });
-        this.pauseListener = this.platform.pause.subscribe(() => { });
-        this.orientation = this.authservice.orientation;
-        this.screenorientation.onChange().subscribe(() => {
-          this.logger.log(
-            'Orientation changed to ' + this.screenorientation.type
-          );
           if (
-            this.screenorientation.type == 'landscape-primary' ||
+            this.screenorientation.type === 'landscape-primary' ||
             this.screenorientation.type === 'landscape-secondary'
           ) {
             this.orientation = 'landscape';
@@ -167,6 +120,24 @@ export class HomePage {
             this.authservice.orientation = this.orientation;
           }
         });
+        this.orientation = this.authservice.orientation;
+        this.orientationSubscription = this.screenorientation
+          .onChange()
+          .subscribe(() => {
+            this.logger.log(
+              'Orientation changed to ' + this.screenorientation.type
+            );
+            if (
+              this.screenorientation.type == 'landscape-primary' ||
+              this.screenorientation.type === 'landscape-secondary'
+            ) {
+              this.orientation = 'landscape';
+              this.authservice.orientation = this.orientation;
+            } else {
+              this.orientation = 'portrait';
+              this.authservice.orientation = this.orientation;
+            }
+          });
         this.databaseService
           .create({
             name: 'viviliam.db',
@@ -174,43 +145,6 @@ export class HomePage {
           })
           .then((db: DatabaseConnection) => {
             this.database = db;
-            setInterval(() => {
-              if (this.audioPlaying) {
-                const activeAudioArray = this.todayAudioFiles;
-                if (
-                  activeAudioArray &&
-                  activeAudioArray.length > 0 &&
-                  this.currentAudioIndex < activeAudioArray.length
-                ) {
-                  if (
-                    this.audio.nativeElement.currentTime >=
-                    activeAudioArray[this.currentAudioIndex].duration - 0.5
-                  ) {
-                    this.logger.log('End of audio detected by time comparison');
-                    this.handleAudioEnded();
-                  } else {
-                    activeAudioArray[this.currentAudioIndex].ctime = parseInt(
-                      this.audio.nativeElement.currentTime.toString()
-                    );
-                    activeAudioArray[this.currentAudioIndex].ctimeintime =
-                      this.convertHMS(
-                        parseInt(
-                          this.audio.nativeElement.currentTime.toString()
-                        )
-                      );
-                    activeAudioArray[this.currentAudioIndex].durationintime =
-                      this.convertHMS(
-                        parseInt(
-                          activeAudioArray[this.currentAudioIndex].duration
-                        ) -
-                        parseInt(
-                          this.audio.nativeElement.currentTime.toString()
-                        )
-                      );
-                  }
-                }
-              }
-            }, 1000);
           })
           .catch((error) => {
             this.logger.error('Database creation error:', error);
@@ -224,23 +158,17 @@ export class HomePage {
   handleLoadingError(message) {
     this.logger.error('Audio loading error:', message);
     this.isAudioLoading = false;
-    this.audioLoadError = true;
+    this.audioLoadError = !this.todayAudioFiles.length;
     this.audioLoadInProgress = false;
-    const connectionType = this.network.connectionType;
-    if (connectionType !== 'none' && connectionType !== 'unknown') {
+    if (this.network.isConnected) {
       this.setStableErrorState(true, this.authservice.serverDownMessage);
       this.logger.log('Setting server error flag for audio loading');
     } else {
       this.setStableErrorState(true, this.authservice.noNetWorkMessage);
     }
-    this.logger.log('Falling back to database audio loading');
   }
   playAllAudiosDirect() {
     if (this.playAll) {
-      this.playAll = false;
-      this.audio.nativeElement.pause();
-      this.audioPlaying = false;
-      this.playAllText = 'Play All';
       this.stopAllAudioDirect();
       // Wake lock is released in stopAllAudioDirect
     } else {
@@ -255,14 +183,9 @@ export class HomePage {
         );
       }
       this.playAll = true;
-      this.currentAudioIndex = 0;
       this.repeat_played_count_all = 0;
       this.startAudioDirect(0);
       this.playAllText = 'Stop Playing';
-      this.wakeLockService.keepAwake().then(
-        () => { },
-        () => this.logger.log('error keeping device awake')
-      );
     }
   }
   stopAllAudioDirect() {
@@ -302,8 +225,11 @@ export class HomePage {
     }
   }
 
-  setRepeatStateDirect(i, repeat_state) {
-    this.stopAudioDirect(this.currentAudioIndex);
+  setRepeatStateDirect(i) {
+    // A track repeat replaces Play All; a single track keeps playing.
+    if (this.playAll) {
+      this.stopAudioDirect(this.currentAudioIndex);
+    }
     const currentRepeatState =
       Number(this.todayAudioFiles[i].repeat_state) || 0;
     const nextRepeatState =
@@ -333,60 +259,21 @@ export class HomePage {
         item.state = 'pause';
       });
     }
+
+    this.wakeLockService
+      .allowSleepAgain()
+      .then(() => this.logger.log('Wake lock released'))
+      .catch(() => this.logger.log('Wake lock release failed'));
   }
 
-  async openURLWeb(url: string) {
-    try {
-      await Browser.open({
-        url: url,
-        toolbarColor: '#c94b18',
-        presentationStyle: 'popover',
-      });
-    } catch (error) {
-      this.logger.error('Error opening URL:', error);
-      this.authservice.showAlert(
-        'Error',
-        '',
-        'Failed to open the page. Please check your connection.'
-      );
-    }
-  }
-  ngAfterViewInit() {
-    this.logger.log('Audio Debug Info:');
-    this.logger.log('isAudioLoading:', this.isAudioLoading);
-    this.logger.log('audioLoadError:', this.audioLoadError);
-    this.logger.log('todayAudioFiles length:', this.todayAudioFiles.length);
-    this.logger.log('todayAudioFiles:', this.todayAudioFiles);
-    this.logger.log('segmentSelected:', this.segmentSelected);
-    this.logger.log('tabRowitemSelected:', this.tabRowitemSelected);
-  }
   ionViewWillEnter() {
     this.menuCtrl.enable(false);
-    setTimeout(() => {
-      const rowTabElement = document.querySelector(
-        '.row-tab-home'
-      ) as HTMLElement;
-      if (rowTabElement) {
-        rowTabElement.style.position = 'fixed';
-        rowTabElement.style.zIndex = '999';
-        rowTabElement.style.top = '56px';
-        rowTabElement.style.backgroundColor = '#fff';
-      }
-    }, 100);
     this.setupNetworkListeners();
   }
 
   ionViewWillLeave() {
+    this.removeNetworkListeners();
     this.stopHomeAudioPlayback();
-    this.audioFocusService.releaseFocus('home');
-
-    // Release wake lock when leaving the page
-    if (this.wakeLockService.isActive()) {
-      this.wakeLockService
-        .allowSleepAgain()
-        .then(() => this.logger.log('Wake lock released on page leave'))
-        .catch(() => this.logger.log('Wake lock release failed on page leave'));
-    }
   }
 
   ionViewDidEnter() {
@@ -403,8 +290,6 @@ export class HomePage {
         this.logger.network(
           'Active internet connection confirmed - initializing page'
         );
-        this.isNetworkAvailable = '1';
-        this.hasInternetConnection = true;
         this.setStableErrorState(false, '');
         if (this.isTodayTabActive()) {
           this.loadAudioDirectly();
@@ -412,33 +297,10 @@ export class HomePage {
       }
     });
     this.authservice.currentPage = 'HOME';
-    var slideIndex = this.authservice.promoslide;
-    this.slideOpts = {
-      initialSlide: slideIndex,
-      speed: 300,
-      effect: 'flip',
-      autoplay: { delay: 5000 },
-      allowTouchMove: false,
-    };
-    this.authservice.promoslide++;
-    if (this.authservice.promoslide == 4) this.authservice.promoslide = 0;
-    this.authservice.showsign = 1;
-    this.notificationUpdateIndex = 0;
-    this.authservice.currentPage = 'HOME';
     this.platform.ready().then(() => {
       this.orientation = this.authservice.orientation;
-      this.databaseService
-        .create({
-          name: 'viviliam.db',
-          location: 'default',
-        })
-        .then((db: DatabaseConnection) => {
-          this.logger.log('DB created');
-          this.database = db;
-        });
     });
     this.logger.log('View did enter');
-    this.segmentSelected = this.tabRowitemSelected.toString();
   }
   segmentChanged(event) {
     this.segmentSelected = event.detail.value;
@@ -448,21 +310,7 @@ export class HomePage {
     this.tabRowitemSelected = tabitem;
     this.segmentSelected = tabitem.toString();
     if (tabitem.toString() === '0') {
-      this.todayTabSelected = 'today';
-      this.notificationsTabSelected = '';
       this.checkNetworkForAudio();
-    } else if (tabitem.toString() === '1') {
-      this.unread = 0;
-      this.notificationsTabSelected = 'notifications';
-      this.todayTabSelected = '';
-      this.showNetworkOrAPIErrorMessage = 0;
-      if (this.network && this.network.hasInternetConnectivity) {
-        this.logger.log('Misc tab selected - ensuring content visibility');
-      }
-    } else if (tabitem.toString() === '2') {
-      this.notificationsTabSelected = '';
-      this.todayTabSelected = '';
-      this.showNetworkOrAPIErrorMessage = 0;
     }
   }
   convertHMS(value) {
@@ -472,9 +320,6 @@ export class HomePage {
     var seconds: any = sec - hours * 3600 - minutes * 60;
     if (hours < 10) {
       hours = '0' + hours;
-    }
-    if (minutes < 10) {
-      minutes = minutes;
     }
     if (seconds < 10) {
       seconds = '0' + seconds;
@@ -486,23 +331,13 @@ export class HomePage {
     this.audioFocusService.releaseFocus('home');
     this.audioFocusService.unregisterOwner('home');
 
-    if (this.networkSubscription) {
-      this.networkSubscription.unsubscribe();
+    this.removeNetworkListeners();
+    if (this.orientationSubscription) {
+      this.orientationSubscription.unsubscribe();
     }
     if (this.resumeListener) {
       this.resumeListener.unsubscribe();
     }
-    if (this.pauseListener) {
-      this.pauseListener.unsubscribe();
-    }
-    if (this.darkModeSubscription) {
-      this.darkModeSubscription.unsubscribe();
-    }
-  }
-  padLeadingZeros(num: number, size: number): string {
-    let s = num + '';
-    while (s.length < size) s = '0' + s;
-    return s;
   }
   setRepeatStateAll() {
     this.repeat_state_all = (Number(this.repeat_state_all) || 0) + 1;
@@ -514,31 +349,10 @@ export class HomePage {
 
     this.logger.log(`Repeat all set to ${this.repeat_state_all}`);
   }
-  init_loadNotifications(flag) {
-    if (flag == 1) this.ionLoaderService.simpleLoader('Please wait...');
-    let type = this.network.connectionType;
-    if (type == 'unknown' || type == 'none' || type == undefined) {
-      this.isNetworkAvailable = 0;
-      this.APIMessage = this.authservice.noNetWorkMessage;
-      this.showNetworkOrAPIErrorMessage = 1;
-    } else {
-      this.isNetworkAvailable = '1';
-    }
-    this.ionLoaderService.dismissLoader();
-  }
-  playAudioDirect(idx, caption, state) {
-    var tempdta;
-    this.wakeLockService.keepAwake().then(
-      () => (tempdta = ''),
-      () => this.logger.error('error')
-    );
+  playAudioDirect(idx) {
     this.playAll = false;
     this.playAllText = 'Play All';
     this.startAudioDirect(idx);
-    localStorage.setItem(
-      `audio_played_${this.todayAudioFiles[idx].id}`,
-      'true'
-    );
   }
   startAudioDirect(idx) {
     this.audioFocusService.requestFocus('home');
@@ -558,7 +372,6 @@ export class HomePage {
       return;
     }
 
-    this.selectedAudioSource = this.todayAudioFiles[idx].url;
     audioElement.preload = 'auto';
     audioElement.src = this.todayAudioFiles[idx].url;
     audioElement.load();
@@ -570,18 +383,118 @@ export class HomePage {
       );
     };
     audioElement.currentTime = this.todayAudioFiles[idx].ctime;
-    void audioElement.play().catch((error) => {
-      this.logger.error('Error starting audio playback:', error);
-    });
     this.audioPlaying = true;
+    this.playCurrentAudio();
     // Reset wake lock activity timer on audio play
     this.wakeLockService.resetActivity();
-    audioElement.onended = () => {
-      this.handleAudioEnded();
-    };
   }
+  private playCurrentAudio(): void {
+    const audioElement = this.audio.nativeElement;
+    const url = this.todayAudioFiles[this.currentAudioIndex]?.url;
+    void audioElement.play()?.catch((error) => {
+      // AbortError: a pause or a newer track interrupted this request
+      if (
+        error?.name === 'AbortError' ||
+        url !== this.todayAudioFiles[this.currentAudioIndex]?.url
+      ) {
+        return;
+      }
+      this.handlePlaybackFailure(error);
+    });
+  }
+  // Bound to the <audio> element's error event
+  onAudioError(): void {
+    const error = this.audio.nativeElement.error;
+    // No error on the element means the event is from a replaced source
+    if (error) {
+      this.handlePlaybackFailure(error);
+    }
+  }
+  private handlePlaybackFailure(error: unknown): void {
+    this.logger.error('Audio playback failed:', error);
+    // Also guards against reporting one failure twice
+    if (!this.audioPlaying || !this.todayAudioFiles[this.currentAudioIndex]) {
+      return;
+    }
+    this.stopAudioDirect(this.currentAudioIndex);
+    this.authservice.showAlert(
+      'Error',
+      '',
+      this.network.isConnected
+        ? 'Unable to play this audio. Please try again.'
+        : this.authservice.noNetWorkMessage
+    );
+  }
+  // Bound to the <audio> element's pause event. Pauses made by this page have
+  // already cleared audioPlaying, so only outside ones (call, headset) remain.
+  onAudioPause(): void {
+    const audioElement = this.audio.nativeElement;
+    if (
+      !this.audioPlaying ||
+      !audioElement.paused ||
+      audioElement.ended || // handled by handleAudioEnded
+      !this.todayAudioFiles[this.currentAudioIndex]
+    ) {
+      return;
+    }
+    this.stopAudioDirect(this.currentAudioIndex);
+  }
+  // Bound to the <audio> element's play event; covers playback resumed from
+  // outside the page, e.g. a headset button.
+  onAudioPlay(): void {
+    const audioElement = this.audio.nativeElement;
+    if (this.audioPlaying || audioElement.paused) {
+      return;
+    }
+    const idx = this.todayAudioFiles.findIndex(
+      (item) => item.url === audioElement.getAttribute('src')
+    );
+    if (idx < 0) {
+      audioElement.pause();
+      return;
+    }
+    this.audioFocusService.requestFocus('home');
+    this.currentAudioIndex = idx;
+    this.todayAudioFiles[idx].state = 'play';
+    this.audioPlaying = true;
+    this.holdWakeLock();
+  }
+  // The wake lock service drops the lock after 5 minutes without activity,
+  // after 30 minutes, and when the app is paused, so keep renewing it.
+  private holdWakeLock(): void {
+    if (document.visibilityState !== 'visible') {
+      return;
+    }
+    if (this.wakeLockService.isActive()) {
+      this.wakeLockService.resetActivity();
+    } else {
+      this.wakeLockService
+        .keepAwake()
+        .catch(() => this.logger.log('Wake lock acquisition failed'));
+    }
+  }
+  // Bound to the <audio> element's timeupdate event
+  onTimeUpdate(): void {
+    if (this.audioPlaying) {
+      this.holdWakeLock();
+    }
+    const track = this.todayAudioFiles[this.currentAudioIndex];
+    if (!this.audioPlaying || this.isSeeking || !track) {
+      return;
+    }
+    const currentTime = this.audio.nativeElement.currentTime;
+    track.ctime = currentTime;
+    track.ctimeintime = this.convertHMS(currentTime);
+    track.durationintime = this.convertHMS(
+      Math.max(0, Math.floor(track.duration) - Math.floor(currentTime))
+    );
+  }
+  // Bound to the <audio> element's ended event
   handleAudioEnded() {
     const activeAudioArray = this.todayAudioFiles;
+    if (!activeAudioArray[this.currentAudioIndex]) {
+      return;
+    }
     activeAudioArray[this.currentAudioIndex].ctime = 0;
     activeAudioArray[this.currentAudioIndex].ctimeintime = '0:00';
     activeAudioArray[this.currentAudioIndex].durationintime = this.convertHMS(
@@ -602,12 +515,10 @@ export class HomePage {
         ) {
           this.repeat_played_count_all++;
           this.logger.log(`Starting repeat ${this.repeat_played_count_all}`);
-          this.currentAudioIndex = 0;
           this.startAudioDirect(0);
         } else {
           this.stopAudioDirect(this.currentAudioIndex);
-          this.playAll = false;
-          this.playAllText = 'Play All';
+          this.repeat_state_all = 0;
           this.repeat_played_count_all = 0;
         }
       }
@@ -618,7 +529,7 @@ export class HomePage {
       ) {
         activeAudioArray[this.currentAudioIndex].repeat_played_count++;
         this.audio.nativeElement.currentTime = 0;
-        this.audio.nativeElement.play();
+        this.playCurrentAudio();
       } else {
         this.stopAudioDirect(this.currentAudioIndex);
         activeAudioArray[this.currentAudioIndex].repeat_state = 0;
@@ -641,27 +552,40 @@ export class HomePage {
       .catch(() => this.logger.log('Wake lock release failed'));
   }
   onChangePlayTimeDirect(idx, obj) {
-    if (!this.playAll && this.audioPlaying) {
-      if (idx != this.currentAudioIndex) {
-        this.todayAudioFiles[idx].ctime = obj.currentTarget.value;
-        this.todayAudioFiles[idx].ctimeintime = this.convertHMS(
-          obj.currentTarget.value
-        );
-        this.todayAudioFiles[idx].durationintime = this.convertHMS(
-          parseInt(this.todayAudioFiles[idx].duration) -
-          parseInt(obj.currentTarget.value)
-        );
-        this.startAudioDirect(idx);
-      } else {
-        this.audio.nativeElement.currentTime = obj.currentTarget.value;
-        this.audio.nativeElement.play();
-      }
+    const position = Number(obj.currentTarget.value) || 0;
+
+    // Nothing playing: remember the position; it applies when this track is played
+    if (!this.audioPlaying) {
+      this.setTrackPosition(idx, position);
+      return;
     }
+
+    if (idx === this.currentAudioIndex) {
+      this.setTrackPosition(idx, position);
+      this.audio.nativeElement.currentTime = position;
+      this.playCurrentAudio();
+      return;
+    }
+
+    // Jumping to another track. In Play All, rewind the one being left so a
+    // repeat of the playlist doesn't resume it halfway.
+    if (this.playAll) {
+      this.setTrackPosition(this.currentAudioIndex, 0);
+    }
+    this.setTrackPosition(idx, position);
+    this.startAudioDirect(idx);
   }
-  async openExternalURLDirectly(url: string, title: string, urlplace?: string) {
+  private setTrackPosition(idx: number, position: number): void {
+    const track = this.todayAudioFiles[idx];
+    track.ctime = position;
+    track.ctimeintime = this.convertHMS(position);
+    track.durationintime = this.convertHMS(
+      Math.max(0, Math.floor(track.duration) - Math.floor(position))
+    );
+  }
+  async openExternalURLDirectly(url: string) {
     if (url != '') {
-      const connectionType = this.network.connectionType;
-      if (connectionType === 'none' || connectionType === 'unknown') {
+      if (!this.network.isConnected) {
         this.authservice.showAlert('', '', this.authservice.noNetWorkMessage);
         return;
       }
@@ -687,10 +611,6 @@ export class HomePage {
     }
   }
   setStableErrorState(isError: boolean, message: string) {
-    if (this.errorStateTimer) {
-      clearTimeout(this.errorStateTimer);
-      this.errorStateTimer = null;
-    }
     if (isError) {
       const isServerErr =
         this.network.hasInternetConnectivity &&
@@ -698,18 +618,7 @@ export class HomePage {
       if (isServerErr || message === this.authservice.noNetWorkMessage) {
         this.APIMessage = message;
       }
-      this.showNetworkOrAPIErrorMessage = 1;
-      this.stableErrorDetected = false;
-      this.errorStateTimer = setTimeout(() => {
-        this.logger.log(
-          'Error state stabilized - showing error message:',
-          this.APIMessage
-        );
-        this.stableErrorDetected = true;
-      }, 3000);
     } else {
-      this.showNetworkOrAPIErrorMessage = 0;
-      this.stableErrorDetected = false;
       this.APIMessage = '';
     }
   }
@@ -723,15 +632,24 @@ export class HomePage {
       this.appversionText = '4.9.0';
     }
   }
+  private removeNetworkListeners() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
+      this.networkSubscription = null;
+    }
+    if (this.networkDebounceTimer) {
+      clearTimeout(this.networkDebounceTimer);
+      this.networkDebounceTimer = null;
+    }
+  }
   setupNetworkListeners() {
     this.logger.network('Setting up network listeners in HomePage');
 
     // Initial connectivity state
-    this.hasInternetConnection = this.network.isConnected;
-    this.isNetworkAvailable = this.network.isConnected ? '1' : '0';
     this.lastReportedNetworkState = this.network.isConnected;
 
     // Single network subscription with debouncing
+    this.removeNetworkListeners();
     this.networkSubscription = this.network.actualConnectivity$.subscribe(
       (hasConnectivity) => {
         this.logger.network(
@@ -753,27 +671,15 @@ export class HomePage {
             );
             this.lastReportedNetworkState = hasConnectivity;
 
-            // Update network state properties
-            this.hasInternetConnection = hasConnectivity;
-            this.isNetworkAvailable = hasConnectivity ? '1' : '0';
-
             if (hasConnectivity) {
               this.logger.network('Stable network connectivity established');
               this.setStableErrorState(false, '');
 
               // Load audio if needed
-              if (
-                this.isTodayTabActive() &&
-                (this.audioLoadError || !this.todayAudioFiles?.length)
-              ) {
+              if (this.isTodayTabActive() && this.needsAudioLoad()) {
                 this.logger.network('Network restored - loading audio content');
                 this.loadAudioDirectly();
               }
-
-              // Reload notifications after a delay
-              setTimeout(() => {
-                this.init_loadNotifications(0);
-              }, 1000);
             } else {
               this.logger.network('Stable network connectivity lost');
               if (this.isTodayTabActive()) {
@@ -785,9 +691,7 @@ export class HomePage {
 
               // Try loading from cache if on audio tab
               if (this.isTodayTabActive()) {
-                this.isAudioLoading = false;
-                this.audioLoadError = true;
-                this.tryLoadFromCache();
+                this.showCachedAudioIfEmpty();
               }
             }
           }
@@ -804,18 +708,10 @@ export class HomePage {
       source?: string;
       priority?: boolean;
       loadAudio?: boolean;
-      showLoader?: boolean;
-      timeout?: number;
     } = {}
   ): Promise<boolean> {
     // Set defaults
-    const {
-      source = 'general',
-      priority = false,
-      loadAudio = false,
-      showLoader = false,
-      timeout = 10000,
-    } = options;
+    const { source = 'general', priority = false, loadAudio = false } = options;
 
     this.logger.network(
       `Network check (${source}${priority ? ', priority' : ''})`
@@ -848,19 +744,6 @@ export class HomePage {
       return Promise.resolve(this.network.isConnected);
     }
 
-    // Skip if explicitly configured to do so (for testing)
-    if (this._skipNetworkCheck) {
-      this.logger.network(
-        `Network check skipped per configuration (${source})`
-      );
-      return Promise.resolve(true);
-    }
-
-    // Show loader if requested
-    if (showLoader) {
-      this.ionLoaderService.simpleLoader('Checking connection...');
-    }
-
     this.isActivelyTesting = true;
 
     // Basic check - if device reports no connection, don't bother with full check
@@ -868,7 +751,6 @@ export class HomePage {
       this.logger.network(`Device reports disconnected (${source})`);
       this.handleNetworkResult(false, loadAudio);
       this.isActivelyTesting = false;
-      if (showLoader) this.ionLoaderService.dismissLoader();
 
       // Update cached result
       this.lastConnectivityCheck = now;
@@ -892,7 +774,7 @@ export class HomePage {
 
           resolve(false);
         }
-      }, timeout);
+      }, 10000);
     });
 
     // Perform actual connectivity check
@@ -923,7 +805,6 @@ export class HomePage {
       if (timeoutId) clearTimeout(timeoutId);
 
       this.isActivelyTesting = false;
-      if (showLoader) this.ionLoaderService.dismissLoader();
       this.handleNetworkResult(isConnected, loadAudio);
       return isConnected;
     });
@@ -949,23 +830,34 @@ export class HomePage {
       priority: true,
     });
   }
+  // Local date as YYYY-MM-DD
+  private getTodayDateString(): string {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
+      2,
+      '0'
+    )}-${String(today.getDate()).padStart(2, '0')}`;
+  }
+  private needsAudioLoad(): boolean {
+    return (
+      this.audioLoadError ||
+      !this.todayAudioFiles.length ||
+      this.loadedAudioDate !== this.getTodayDateString()
+    );
+  }
   tryLoadFromCache() {
     this.logger.log('Attempting to load audio from cache...');
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}-${String(
-      today.getMonth() + 1
-    ).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const dateStr = this.getTodayDateString();
     const cachedData = localStorage.getItem('todayAudioCache');
     const cacheDate = localStorage.getItem('todayAudioCacheDate');
     if (cachedData && cacheDate === dateStr) {
       try {
         this.logger.log('Found valid cached audio data for today');
         const data = JSON.parse(cachedData);
-        this.processNewAudioData(data, dateStr);
-        this.setStableErrorState(
-          true,
-          'Using cached data - no internet connection'
-        );
+        if (!this.processNewAudioData(data, dateStr)) {
+          return false;
+        }
+        this.isShowingCachedAudio = true;
         return true;
       } catch (error) {
         this.logger.error('Error loading from cache:', error);
@@ -976,8 +868,19 @@ export class HomePage {
       return false;
     }
   }
+  // Used when offline: never replaces or hides a list that is already loaded.
+  private showCachedAudioIfEmpty(): void {
+    if (this.todayAudioFiles.length || this.tryLoadFromCache()) {
+      return;
+    }
+    // A request still in flight reports its own result. Only the initial,
+    // never-loaded state needs to become an error here.
+    if (!this.audioLoadInProgress && this.isAudioLoading) {
+      this.isAudioLoading = false;
+      this.audioLoadError = true;
+    }
+  }
   loadAudioDirectly() {
-    // Skip if audio already loaded
     if (this.audioLoadInProgress) {
       this.logger.log(
         'Audio load already in progress - skipping duplicate request'
@@ -985,7 +888,12 @@ export class HomePage {
       return;
     }
 
-    if (this.todayAudioFiles && this.todayAudioFiles.length > 0) {
+    // Reload a list from an earlier day, but never swap it during playback
+    const dateStr = this.getTodayDateString();
+    if (
+      this.todayAudioFiles.length &&
+      (this.loadedAudioDate === dateStr || this.audioPlaying)
+    ) {
       this.logger.log('Audio already loaded - skipping reload');
       return;
     }
@@ -996,65 +904,50 @@ export class HomePage {
     this.audioLoadError = false;
     this.logger.log('Starting audio loading process...');
 
-    // Set timeout for loading
-    const audioLoadTimeout = setTimeout(() => {
-      if (this.isAudioLoading) {
-        this.logger.log('Audio loading timed out');
-        this.isAudioLoading = false;
-        this.audioLoadError = true;
-        this.audioLoadInProgress = false;
-        this.setStableErrorState(true, this.authservice.serverDownMessage);
-      }
-    }, 15000);
-
-    // Prepare date for API request
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}-${String(
-      today.getMonth() + 1
-    ).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const apiUrl = `https://api.viviliam.com/api/audio?date=${dateStr}`;
 
-    // Make API request
-    this.http.get(apiUrl).subscribe(
+    // Make API request; timeout() cancels it and raises an error after 15s
+    this.http.get(apiUrl).pipe(timeout(15000)).subscribe(
       (data: any) => {
-        clearTimeout(audioLoadTimeout);
         this.audioLoadInProgress = false;
         this.logger.log('Received audio data from API');
         try {
-          localStorage.setItem('todayAudioCache', JSON.stringify(data));
-          localStorage.setItem('todayAudioCacheDate', dateStr);
-          this.processNewAudioData(data, dateStr);
+          if (!this.processNewAudioData(data, dateStr)) {
+            this.tryLoadFromCache();
+            return;
+          }
           this.setStableErrorState(false, '');
+          // Cache only a validated, non-empty response
+          if (data.audio.length) {
+            localStorage.setItem('todayAudioCache', JSON.stringify(data));
+            localStorage.setItem('todayAudioCacheDate', dateStr);
+          }
         } catch (error) {
-          this.logger.error('Error processing API response:', error);
-          this.isAudioLoading = false;
-          this.audioLoadError = true;
-          this.setStableErrorState(true, this.authservice.serverDownMessage);
+          // The list is already processed; only the cache write can fail here
+          this.logger.error('Error caching API response:', error);
         }
       },
       (error) => {
-        clearTimeout(audioLoadTimeout);
         this.audioLoadInProgress = false;
         this.logger.error('HTTP error:', error);
         this.isAudioLoading = false;
-        this.audioLoadError = true;
+        this.audioLoadError = !this.todayAudioFiles.length;
         this.setStableErrorState(true, this.authservice.serverDownMessage);
         this.tryLoadFromCache();
       }
     );
   }
-  processNewAudioData(data, dateStr) {
+  // Returns false when the data is invalid; an empty list is a valid result.
+  processNewAudioData(data, dateStr): boolean {
     this.logger.log(`Processing new API audio data for date: ${dateStr}`);
     try {
       const todaysAudio = [];
       if (data.audio && Array.isArray(data.audio)) {
         this.logger.log(`Found ${data.audio.length} audio items from new API`);
-        data.audio.forEach((item, index) => {
+        data.audio.forEach((item) => {
           this.logger.log(`Processing ${item.type} audio for today`);
           todaysAudio.push({
-            id: item.type + '_' + dateStr + '_' + index,
             type: item.type,
-            subtitle: item.type + ' - ' + item.formattedDuration,
             url: item.url,
             duration: parseInt(item.duration || '0'),
             durationintime:
@@ -1067,51 +960,50 @@ export class HomePage {
             repeat_played_count: 0,
           });
         });
-        if (todaysAudio.length > 0) {
-          this.todayAudioFiles = todaysAudio;
-          this.notificationsHomeCount = this.todayAudioFiles.length;
-          this.isAudioLoading = false;
-          this.audioLoadError = false;
-          this.logger.log(
-            `Successfully loaded ${todaysAudio.length} audio files from new API`
-          );
-        } else {
-          this.logger.log('No audio items found in API response');
-          this.handleLoadingError('No audio found for today');
+        // A late response can arrive while an earlier day's list is in use
+        if (this.todayAudioFiles.length && this.loadedAudioDate !== dateStr) {
+          this.stopAllAudioDirect();
         }
+        // An empty list also replaces the old one, to show "No audio today"
+        this.todayAudioFiles = todaysAudio;
+        this.loadedAudioDate = dateStr;
+        // tryLoadFromCache sets this again after calling this method
+        this.isShowingCachedAudio = false;
+        this.isAudioLoading = false;
+        this.audioLoadError = false;
+        this.logger.log(
+          `Loaded ${todaysAudio.length} audio files from new API`
+        );
+        return true;
       } else {
         this.logger.log('Invalid API response format');
         this.handleLoadingError('Invalid API response');
+        return false;
       }
     } catch (error) {
       this.logger.error('Error processing new API data:', error);
       this.handleLoadingError('API processing error');
+      return false;
     }
   }
 
   private handleNetworkResult(isConnected: boolean, loadAudio: boolean): void {
     // Update app state based on connectivity
     if (isConnected) {
-      this.isNetworkAvailable = '1';
-      this.hasInternetConnection = true;
       this.setStableErrorState(false, '');
 
       // Load audio if requested and needed
-      if (loadAudio && (this.audioLoadError || !this.todayAudioFiles?.length)) {
+      if (loadAudio && this.needsAudioLoad()) {
         this.logger.network('Network available - loading audio content');
         this.loadAudioDirectly();
       }
     } else {
-      this.isNetworkAvailable = '0';
-      this.hasInternetConnection = false;
       this.APIMessage = this.authservice.noNetWorkMessage;
       this.setStableErrorState(true, this.authservice.noNetWorkMessage);
 
       // Try loading from cache if audio was requested
       if (loadAudio) {
-        this.isAudioLoading = false;
-        this.audioLoadError = true;
-        this.tryLoadFromCache();
+        this.showCachedAudioIfEmpty();
       }
     }
   }
