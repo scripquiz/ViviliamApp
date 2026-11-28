@@ -3,116 +3,116 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: '',
-        loadChildren: () => import('./startup/startup.module').then(m => m.StartupPageModule),
+        loadComponent: () => import('./startup/startup.page').then(m => m.StartupPage),
         data: { preload: true }
     },
     {
         path: 'tabs',
-        loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+        loadChildren: () => import('./tabs/tabs.routes').then(m => m.routes)
     },
     {
         path: 'tab1',
-        loadChildren: () => import('./tab1/tab1.module').then(m => m.Tab1PageModule)
+        loadComponent: () => import('./tab1/tab1.page').then(m => m.Tab1Page)
     },
     {
         path: 'startup',
-        loadChildren: () => import('./startup/startup.module').then(m => m.StartupPageModule)
+        loadComponent: () => import('./startup/startup.page').then(m => m.StartupPage)
     },
     {
         path: 'startup-language',
-        loadChildren: () => import('./startup-language/startup-language.module').then(m => m.StartupLanguagePageModule)
+        loadComponent: () => import('./startup-language/startup-language.page').then(m => m.StartupLanguagePage)
     },
     {
         path: 'addnotes',
-        loadChildren: () => import('./addnotes/addnotes.module').then(m => m.AddnotesPageModule)
+        loadComponent: () => import('./addnotes/addnotes.page').then(m => m.AddnotesPage)
     },
     {
         path: 'startup-default-bible',
-        loadChildren: () => import('./startup-default-bible/startup-default-bible.module').then(m => m.StartupDefaultBiblePageModule)
+        loadComponent: () => import('./startup-default-bible/startup-default-bible.page').then(m => m.StartupDefaultBiblePage)
     },
     {
         path: 'getstarted',
-        loadChildren: () => import('./getstarted/getstarted.module').then(m => m.GetstartedPageModule)
+        loadComponent: () => import('./getstarted/getstarted.page').then(m => m.GetstartedPage)
     },
     {
         path: 'tabslink',
-        loadChildren: () => import('./tabslink/tabslink.module').then(m => m.TabslinkPageModule)
+        loadChildren: () => import('./tabslink/tabslink.routes').then(m => m.routes)
     },
     {
         path: 'home',
-        loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
+        loadComponent: () => import('./home/home.page').then(m => m.HomePage),
         data: { preload: true }
     },
     {
         path: 'read/:counter',
-        loadChildren: () => import('./read/read.module').then(m => m.ReadPageModule)
+        loadComponent: () => import('./read/read.page').then(m => m.ReadPage)
     },
     {
         path: 'compare',
-        loadChildren: () => import('./compare/compare.module').then(m => m.ComparePageModule)
+        loadComponent: () => import('./compare/compare.page').then(m => m.ComparePage)
     },
     {
         path: 'bookselector',
-        loadChildren: () => import('./bookselector/bookselector.module').then(m => m.BookselectorPageModule)
+        loadComponent: () => import('./bookselector/bookselector.page').then(m => m.BookselectorPage)
     },
     {
         path: 'readmarklist/:counter',
-        loadChildren: () => import('./readmarklist/readmarklist.module').then(m => m.ReadmarklistPageModule)
+        loadComponent: () => import('./readmarklist/readmarklist.page').then(m => m.ReadmarklistPage)
     },
     {
         path: 'setdefaultbible',
-        loadChildren: () => import('./setdefaultbible/setdefaultbible.module').then(m => m.SetdefaultbiblePageModule)
+        loadComponent: () => import('./setdefaultbible/setdefaultbible.page').then(m => m.SetdefaultbiblePage)
     },
     {
         path: 'search',
-        loadChildren: () => import('./search/search.module').then(m => m.SearchPageModule)
+        loadComponent: () => import('./search/search.page').then(m => m.SearchPage)
     },
     {
         path: 'more',
-        loadChildren: () => import('./more/more.module').then(m => m.MorePageModule)
+        loadComponent: () => import('./more/more.page').then(m => m.MorePage)
     },
     {
         path: 'settings',
-        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsPageModule)
+        loadComponent: () => import('./settings/settings.page').then(m => m.SettingsPage)
     },
     {
         path: 'more-terms',
-        loadChildren: () => import('./more-terms/more-terms.module').then(m => m.MoreTermsPageModule)
+        loadComponent: () => import('./more-terms/more-terms.page').then(m => m.MoreTermsPage)
     },
     {
         path: 'more-about',
-        loadChildren: () => import('./more-about/more-about.module').then(m => m.MoreAboutPageModule)
+        loadComponent: () => import('./more-about/more-about.page').then(m => m.MoreAboutPage)
     },
     {
         path: 'more-contact',
-        loadChildren: () => import('./more-contact/more-contact.module').then(m => m.MoreContactPageModule)
+        loadComponent: () => import('./more-contact/more-contact.page').then(m => m.MoreContactPage)
     },
     {
         path: 'more-reportbug',
-        loadChildren: () => import('./more-reportbug/more-reportbug.module').then(m => m.MoreReportbugPageModule)
+        loadComponent: () => import('./more-reportbug/more-reportbug.page').then(m => m.MoreReportbugPage)
     },
     {
         path: 'more-volunteer',
-        loadChildren: () => import('./more-volunteer/more-volunteer.module').then(m => m.MoreVolunteerPageModule)
+        loadComponent: () => import('./more-volunteer/more-volunteer.page').then(m => m.MoreVolunteerPage)
     },
     {
         path: 'more-private-policy',
-        loadChildren: () => import('./more-private-policy/more-private-policy.module').then(m => m.MorePrivatePolicyPageModule)
+        loadComponent: () => import('./more-private-policy/more-private-policy.page').then(m => m.MorePrivatePolicyPage)
     },
     {
         path: 'bible-topics',
-        loadChildren: () => import('./bible-topics/bible-topics.module').then(m => m.BibleTopicsPageModule)
+        loadComponent: () => import('./bible-topics/bible-topics.page').then(m => m.BibleTopicsPage)
     },
     {
         path: 'bible-topics/:id',
-        loadChildren: () => import('./bible-topic-detail/bible-topic-detail.module').then(m => m.BibleTopicDetailPageModule)
+        loadComponent: () => import('./bible-topic-detail/bible-topic-detail.page').then(m => m.BibleTopicDetailPage)
     },
     {
         path: 'life-events',
-        loadChildren: () => import('./life-events/life-events.module').then(m => m.LifeEventsPageModule)
+        loadComponent: () => import('./life-events/life-events.page').then(m => m.LifeEventsPage)
     },
     {
         path: 'life-events/:id',
-        loadChildren: () => import('./life-event-detail/life-event-detail.module').then(m => m.LifeEventDetailPageModule)
+        loadComponent: () => import('./life-event-detail/life-event-detail.page').then(m => m.LifeEventDetailPage)
     },
 ];

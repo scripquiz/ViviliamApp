@@ -1,6 +1,6 @@
 # NgModule → Standalone Migration Plan
 
-## Current state
+## Current state (before migration — see progress log for what has changed)
 
 | Area | State |
 |---|---|
@@ -75,6 +75,6 @@ Each page → `standalone: true`, `imports: [CommonModule, FormsModule, IonicMod
   - [x] Batch 2 — `startup`, `startup-language`, `startup-default-bible`, `getstarted` → standalone. Unused auth pages (`login`, `signup`, `forgot-password`, `change-password`, `myaccount`) deleted with their routes, plus the dead signup/account popup and its methods/styles in `AppComponent` (`AuthserviceProvider` kept; account-field cleanup is a later task). Lint 322 → 276, build OK, 41/41 (5 specs removed with the pages). Needs device smoke test.
   - [x] Batch 3 — `bible-topics`, `bible-topic-detail`, `life-events`, `bookselector`, `setdefaultbible`, `search`, `readmarklist`, `addnotes` → standalone. Page modules import the page; specs use `imports: [XPage, …]`. Lint 276 → 268 (9 `prefer-standalone` left for Batches 4–5), build OK, 41/41. Needs device smoke test.
   - [x] Batch 4 — `tabs`, `tab1`, `tab2`, `tab3`, `ExploreContainerComponent` → standalone. `ExploreContainerComponentModule` deleted (tab2/tab3 import the component directly). Tab modules import the page; specs use `imports: [XPage, PageTestingModule]` (`CUSTOM_ELEMENTS_SCHEMA` dropped from tabs spec). Lint 268 → 263 (4 `prefer-standalone` left for Batch 5), build OK, 41/41. Needs device smoke test.
-  - [x] Batch 5 — `home` (imports `DailyBibleVerseComponent`, `DailyBibleQuoteComponent`), `read`, `compare`, `life-event-detail` → standalone. `ViewEncapsulation.None` and Eager CD kept; `AppComponent` injection in read/compare unchanged. Lint 263 → 259 (0 `prefer-standalone`), build OK, 41/41. Needs device smoke test (highest-risk pages).
-- [ ] Phase 3
+  - [x] Batch 5 — `home` (imports `DailyBibleVerseComponent`, `DailyBibleQuoteComponent`), `read`, `compare`, `life-event-detail` → standalone. `ViewEncapsulation.None` and Eager CD kept; `AppComponent` injection in read/compare unchanged. Lint 263 → 259 (0 `prefer-standalone`), build OK, 41/41. Device smoke test passed.
+- [x] Phase 3 — all routes use `loadComponent`; `tabs` and `tabslink` use `loadChildren` → `tabs.routes.ts` / `tabslink.routes.ts` (same paths, incl. nested `/tabs/tabs/tabN`; `preload` data kept on `''` and `home`). All 58 `X.module.ts` / `X-routing.module.ts` files deleted (`src/testing/page-testing.module.ts` kept for Phase 4). Build OK, 41/41, lint unchanged (259). Needs device navigation test.
 - [ ] Phase 4
