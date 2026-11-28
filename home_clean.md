@@ -61,4 +61,4 @@ This file is global (`ViewEncapsulation.None`). Keep `.title`, `.card`, `.card-i
 
 ## Side note (possible bug, not cleanup)
 
-The resume handler (143) checks only `landscape-primary`; `onChange` (158-160) also checks `landscape-secondary`.
+Fixed: the resume handler (143) checked only `landscape-primary`; it now also checks `landscape-secondary`, like `onChange` (158-160).

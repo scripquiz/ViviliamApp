@@ -109,7 +109,10 @@ export class HomePage {
               this.setStableErrorState(true, this.authservice.noNetWorkMessage);
             }
           });
-          if (this.screenorientation.type == 'landscape-primary') {
+          if (
+            this.screenorientation.type === 'landscape-primary' ||
+            this.screenorientation.type === 'landscape-secondary'
+          ) {
             this.orientation = 'landscape';
             this.authservice.orientation = this.orientation;
           } else {
