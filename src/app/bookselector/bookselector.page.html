@@ -60,7 +60,7 @@
         >
           <h3
             id="book{{ bookItem.number }}"
-            class="showitemBook  {{ (bookItem.number==selectedBookNumber?'bold':'normal') }} "
+            class="showitemBook  {{ (+bookItem.number === +selectedBookNumber?'bold':'normal') }} "
           >
             <span class="book-number" style="font-size: 10px"
               >{{ bookItem.number }}
@@ -86,7 +86,7 @@
           (click)="navigate(chapterItem.number, chapterItem.item);"
         >
           <h3
-            class="showitem  {{ (chapterItem.number==selectedChapterNumber?'bold':'normal') }} "
+            class="showitem  {{ (+chapterItem.number === +selectedChapterNumber?'bold':'normal') }} "
           >
             {{ chapterItem.item }}
           </h3>

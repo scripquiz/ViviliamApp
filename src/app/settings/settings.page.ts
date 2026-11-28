@@ -413,7 +413,7 @@ export class SettingsPage implements OnInit {
       console.log('Versenumber sow toggle updtaed');
     });
 
-    this.authservice.versenumberShow = this.verseNumberToggle;
+    this.authservice.versenumberShow = this.verseNumberToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
   }
   setSelectedBSINumberShow(selectedValue: any) {
@@ -480,7 +480,7 @@ export class SettingsPage implements OnInit {
       console.log('BSI Number showtoggle updtaed');
     });
 
-    this.authservice.CompareShowLabel = this.CompareShowLabelToggle;
+    this.authservice.CompareShowLabel = this.CompareShowLabelToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
     this.authservice.dataLoadedCompare = 0;
   }
@@ -496,7 +496,7 @@ export class SettingsPage implements OnInit {
       console.log('Paragraph mode  toggle updtaed');
     });
 
-    this.authservice.paragraphMode = this.paragraphToggle;
+    this.authservice.paragraphMode = this.paragraphToggle ? '1' : '0';
     this.authservice.dataLoaded = 0;
   }
 

@@ -14,7 +14,7 @@
 
     <div class="home-content">
       <!-- Today Tab Content -->
-      <div [ngStyle]="{'display': tabRowitemSelected=='0' ? 'block' : 'none'}">
+      <div [ngStyle]="{'display': tabRowitemSelected==='0' ? 'block' : 'none'}">
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center daily-bible-verse-row">
             <ion-col size="12">
@@ -82,15 +82,15 @@
             <div class="card-item-header audio-header">
               <div class="audio-left-control">
                 <ion-icon name="play-circle" (click)="playAllAudiosDirect()" class="audio-control-button1"
-                  [ngStyle]="{'display': playAllText=='Play All' ? 'block' : 'none'}"
+                  [ngStyle]="{'display': playAllText==='Play All' ? 'block' : 'none'}"
                   aria-label="Play all audio"></ion-icon>
                 <ion-icon name="pause-circle" (click)="playAllAudiosDirect()" class="audio-control-button1"
-                  [ngStyle]="{'display': playAllText=='Stop Playing' ? 'block' : 'none'}"
+                  [ngStyle]="{'display': playAllText==='Stop Playing' ? 'block' : 'none'}"
                   aria-label="Stop playing audio"></ion-icon>
               </div>
 
               <div class="audio-heading">
-                <span class="audio-title-center">Daily Audio 491.8</span>
+                <span class="audio-title-center">Daily Audio 491.9</span>
                 <span class="audio-subtitle">Hear God Every Day</span>
               </div>
 
@@ -122,10 +122,10 @@
                       <tr>
                         <td>
                           <ion-icon name="play-circle" (click)="playAudioDirect(i)" class="audio-button"
-                            [ngStyle]="{'display': audioItem.state=='pause' ? 'block' : 'none'}"
+                            [ngStyle]="{'display': audioItem.state==='pause' ? 'block' : 'none'}"
                             aria-label="Play audio"></ion-icon>
                           <ion-icon name="pause-circle" (click)="stopAudioDirect(i)" class="audio-button"
-                            [ngStyle]="{'display': audioItem.state=='play' ? 'block' : 'none'}"
+                            [ngStyle]="{'display': audioItem.state==='play' ? 'block' : 'none'}"
                             aria-label="Pause audio"></ion-icon>
                         </td>
                         <td class="audio-track-details">
@@ -247,7 +247,7 @@
       </div>
 
       <!-- Misc Tab Content -->
-      <div [ngStyle]="{'display': tabRowitemSelected=='1' ? 'block' : 'none'}">
+      <div [ngStyle]="{'display': tabRowitemSelected==='1' ? 'block' : 'none'}">
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">
@@ -317,7 +317,7 @@
       </div>
 
       <!-- Events Tab Content -->
-      <div [ngStyle]="{'display': tabRowitemSelected=='2' ? 'block' : 'none'}">
+      <div [ngStyle]="{'display': tabRowitemSelected==='2' ? 'block' : 'none'}">
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center ion-justify-content-center">
             <ion-col size="12">

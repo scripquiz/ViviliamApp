@@ -83,11 +83,11 @@
           <img
             [class]="'versionimg'"
             [src]="'../../assets/images/' + verseItem.title + '.png'"
-            [ngStyle]="{'display': authservice.CompareShowLabel=='1' ? 'inline-block' : 'none'}"
+            [ngStyle]="{'display': authservice.CompareShowLabel==='1' ? 'inline-block' : 'none'}"
           />
           <span
             [class]="'versnocompare '+ authservice.verseNumberSize"
-            [ngStyle]="{'display':(authservice.versenumberShow=='1' && verseItem.vnumber!='0') ?'inline-block':'none'}"
+            [ngStyle]="{'display':(authservice.versenumberShow==='1' && (verseItem.vnumber!==0 && verseItem.vnumber!=='0')) ?'inline-block':'none'}"
             >{{verseItem.vnumber}}</span
           >
           <span

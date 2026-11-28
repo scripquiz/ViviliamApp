@@ -46,18 +46,18 @@
   <img
     src="../../assets/images/maximize.png"
     class="{{'fullscreen' + maximize_screen}}"
-    [ngStyle]="{'display': maximize_screen=='0' && authservice.readMode=='VERSE' && orientation=='landscape'  ? 'inline-block' : 'none'}"
+    [ngStyle]="{'display': maximize_screen===0 && authservice.readMode==='VERSE' && orientation==='landscape'  ? 'inline-block' : 'none'}"
     (click)="maximizeScreen()"
   />
   <img
     src="../../assets/images/minimize.png"
     class="{{'fullscreen' + maximize_screen}}"
-    [ngStyle]="{'display': maximize_screen=='1' && authservice.readMode=='VERSE' && orientation=='landscape' ? 'inline-block' : 'none'}"
+    [ngStyle]="{'display': maximize_screen===1 && authservice.readMode==='VERSE' && orientation==='landscape' ? 'inline-block' : 'none'}"
     (click)="minimizeScreen()"
   />
   <div
     class="book-title-on-maximize"
-    [ngStyle]="{'display': maximize_screen=='1' && authservice.readMode=='VERSE' && orientation=='landscape'  ? 'inline-block' : 'none'}"
+    [ngStyle]="{'display': maximize_screen===1 && authservice.readMode==='VERSE' && orientation==='landscape'  ? 'inline-block' : 'none'}"
   >
     <span class="bookTitle" (click)="openBookSelector()">{{selectedBook}}</span>
 
@@ -69,17 +69,17 @@
   <div
     class="{{'left-nav-chapter'  + ' ' + showBottomNav + ' ' +  showPrevNav}}"
     (click)="gotoPrevVers()"
-    [ngStyle]="{'display': authservice.readMode.toUpperCase()!='VERSE' ? 'inline-block' : 'none'}"
+    [ngStyle]="{'display': authservice.readMode.toUpperCase()!=='VERSE' ? 'inline-block' : 'none'}"
   >
     <img src="../../assets/images/nav-left-dotted.png" class="nav-icons" />
   </div>
 
   <div
-    [ngStyle]="{'display': authservice.readMode=='VERSE' &&  orientation=='portrait' ? 'inline-block' : 'none'}"
+    [ngStyle]="{'display': authservice.readMode==='VERSE' &&  orientation==='portrait' ? 'inline-block' : 'none'}"
   >
     <div
       class="{{'left-nav-verse-portrait'+ ' ' + showBottomNav + ' '  }}"
-      [ngStyle]="{'display': maximize_screen=='0' ? 'inline-block' : 'none'}"
+      [ngStyle]="{'display': maximize_screen===0 ? 'inline-block' : 'none'}"
     >
       <img
         src="../../assets/images/prev1.png"
@@ -94,7 +94,7 @@
     </div>
     <div
       class="{{'right-nav-verse-portrait'+ ' ' + showBottomNav + ' '  }}"
-      [ngStyle]="{'display': maximize_screen=='0' ? 'inline-block' : 'none'}"
+      [ngStyle]="{'display': maximize_screen===0 ? 'inline-block' : 'none'}"
     >
       <img
         src="../../assets/images/next1.png"
@@ -111,13 +111,13 @@
     <img
       src="../../assets/images/speaker-solid-dotted.png"
       class="nav-icons-play"
-      [ngStyle]="{'display': appComponent.audioState!='PLAYING' && is_audio_available==1 && authservice.readMode.toUpperCase()=='CHAPTER' ? 'inline-block' : 'none'}"
+      [ngStyle]="{'display': appComponent.audioState!=='PLAYING' && is_audio_available===1 && authservice.readMode.toUpperCase()==='CHAPTER' ? 'inline-block' : 'none'}"
       (click)="showAudioPanel()"
     />
     <img
       src="../../assets/images/verse-audio-playing.png"
       class="nav-icons-play"
-      [ngStyle]="{'display': appComponent.audioState=='PLAYING' && is_audio_available==1  && authservice.readMode.toUpperCase()=='CHAPTER'? 'inline-block' : 'none'}"
+      [ngStyle]="{'display': appComponent.audioState==='PLAYING' && is_audio_available===1  && authservice.readMode.toUpperCase()==='CHAPTER'? 'inline-block' : 'none'}"
       (click)="showAudioPanel()"
     />
   </div>
@@ -127,7 +127,7 @@
   <div
     class="{{'right-nav-chapter' + ' ' + showBottomNav + ' ' +  showNextNav}}"
     (click)="gotoNextVers()"
-    [ngStyle]="{'display':authservice.readMode.toUpperCase()!='VERSE' ? 'inline-block' : 'none'}"
+    [ngStyle]="{'display':authservice.readMode.toUpperCase()!=='VERSE' ? 'inline-block' : 'none'}"
   >
     <img src="../../assets/images/nav-right-dotted.png" class="nav-icons" />
   </div>
@@ -149,14 +149,14 @@
         <ion-icon
           name="bookmark"
           style="color: red; position: relative; top: 3px"
-          [ngStyle]="{'display': verseItem.bookMark=='1' && authservice.paragraphMode!='1' ? 'inline-block' : 'none'}"
+          [ngStyle]="{'display': verseItem.bookMark==='1' && authservice.paragraphMode!=='1' ? 'inline-block' : 'none'}"
         ></ion-icon>
         <span
           [class]="'verse ' + authservice.lineSpacing + ' ' + font + ' ' + ' ' + ' vers_' + (verseItem.index + 1)"
         >
           <span
             [class]="'versno '+ authservice.verseNumberSize"
-            [ngStyle]="{'display':(authservice.versenumberShow=='1' && verseItem.vnumber!='0' && verseItem.vnumber) ?'inline-block':'none'}"
+            [ngStyle]="{'display':(authservice.versenumberShow==='1' && (verseItem.vnumber!==0 && verseItem.vnumber!=='0') && verseItem.vnumber) ?'inline-block':'none'}"
             >{{verseItem.vnumber}}</span
           >
           <span
@@ -176,7 +176,7 @@
               font-size: 18px;
               margin-left: 5px;
             "
-            [ngStyle]="{'display': verseItem.notes!='' ? 'inline-block' : 'none'}"
+            [ngStyle]="{'display': verseItem.notes!=='' ? 'inline-block' : 'none'}"
             (click)="showNotes(verseItem.vid, verseItem.vnumber)"
           ></ion-icon>
         </span>
@@ -184,7 +184,7 @@
       <div
         id="notes_pop"
         class="notes-pop"
-        [ngStyle]="{'display': show_notes_pop==1 && verseItem.vid == selected_verse_notes_id ? 'block' : 'none'}"
+        [ngStyle]="{'display': show_notes_pop==='1' && verseItem.vid === selected_verse_notes_id ? 'block' : 'none'}"
       >
         <ion-row>
           <ion-col class="notes-pop-title">Notes</ion-col>
@@ -203,7 +203,7 @@
         <ion-row>
           <ion-col>
             <div class="notes-pop-content verse">
-              {{(verseItem.vid == selected_verse_notes_id) ?
+              {{(verseItem.vid === selected_verse_notes_id) ?
               selected_verse_notes : "" }}
             </div>
           </ion-col>
@@ -225,7 +225,7 @@
               </tr>
             </table> -->
     <div
-      [ngStyle]="{'display':  authservice.readMode=='VERSE' &&  orientation=='landscape' ? 'inline-block' : 'none'}"
+      [ngStyle]="{'display':  authservice.readMode==='VERSE' &&  orientation==='landscape' ? 'inline-block' : 'none'}"
     >
       <!-- <img src="../../assets/images/nav-left-dotted.png" class="left-nav-chapter" (click)="gotoPrevVers()"> -->
       <img

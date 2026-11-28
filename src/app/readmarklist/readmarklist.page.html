@@ -12,7 +12,7 @@
         icon-only=""
         class="button-normal-readmarklist"
         style="background-color: #fff"
-        [ngStyle]="{'display': readMarkList.length!=0? 'block' : 'none'}"
+        [ngStyle]="{'display': readMarkList.length!==0? 'block' : 'none'}"
         (click)="deleteAll()"
       >
         Delete All
@@ -203,7 +203,7 @@
           margin-bottom: 15px;
           position: relative;
         "
-        [ngStyle]="{'display': readMarkItem.deleted=='0'? 'block' : 'none'}"
+        [ngStyle]="{'display': readMarkItem.deleted==='0'? 'block' : 'none'}"
         text-wrap
       >
         <div style="width: 100%">
@@ -213,20 +213,20 @@
             {{readMarkItem.bible}} )</span
           >
           <span
-            [ngStyle]="{'display': authservice.pageName=='Highlights'? 'inline-flex' : 'none'}"
+            [ngStyle]="{'display': authservice.pageName==='Highlights'? 'inline-flex' : 'none'}"
             style="margin-left: 10px"
             class="circle-highlight-list {{ readMarkItem.textHighlight }}"
           ></span>
           <div
             class="audio-icon-read-marklist"
-            [ngStyle]="{'display': (readMarkItem.bible =='BSI' || readMarkItem.bible =='KJV') && (readMarkItem.audioState=='STOPPED' || readMarkItem.audioState =='PAUSE')  ? 'inline-block' : 'none'}"
+            [ngStyle]="{'display': (readMarkItem.bible ==='BSI' || readMarkItem.bible ==='KJV') && (readMarkItem.audioState==='STOPPED' || readMarkItem.audioState ==='PAUSE')  ? 'inline-block' : 'none'}"
             (click)="StartAudio(i, readMarkItem.bibleid, readMarkItem.bible, readMarkItem.booknumber, readMarkItem.cnumber, readMarkItem.vnumber)"
           >
             <img src="../assets/images/play-green.png" />
           </div>
           <div
             class="audio-icon-read-marklist"
-            [ngStyle]="{'display':  (readMarkItem.bible =='BSI' || readMarkItem.bible =='KJV') && readMarkItem.audioState=='PLAYING' ? 'inline-block' : 'none'}"
+            [ngStyle]="{'display':  (readMarkItem.bible ==='BSI' || readMarkItem.bible ==='KJV') && readMarkItem.audioState==='PLAYING' ? 'inline-block' : 'none'}"
             (click)="PauseAudio();"
           >
             <img src="../assets/images/pause-green.png" class="audio-play" />
@@ -247,7 +247,7 @@
             [innerHTML]="readMarkItem.versData"
           ></div>
           <div
-            [ngStyle]="{'display': authservice.pageName=='Notes'? 'inline-flex' : 'none'}"
+            [ngStyle]="{'display': authservice.pageName==='Notes'? 'inline-flex' : 'none'}"
             class="notes"
             [innerHTML]="readMarkItem.notes"
           ></div>
@@ -280,7 +280,7 @@
               </div>
             </div>
             <div
-              [ngStyle]="{'display': authservice.pageName!='Bookmarks'? 'block' : 'none'}"
+              [ngStyle]="{'display': authservice.pageName!=='Bookmarks'? 'block' : 'none'}"
             >
               <div class="popovermenu-seperator">&nbsp;</div>
               <div class="popovermenu-space">&nbsp;</div>

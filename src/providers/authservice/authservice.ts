@@ -47,13 +47,13 @@ export class AuthserviceProvider {
   public fontFamilyEnglish: any = 'Besley';
 
   public selectedTheme: any = '';
-  public paragraphMode: any = false;
+  public paragraphMode: any = '0';
   public fullscreenMode: any = true;
-  public versenumberShow: any = true;
+  public versenumberShow: any = '1';
   public BSINumberShow: any = false;
   public BSIRedLettersShow: any = false;
   public TextHighlightShow: any = false;
-  public CompareShowLabel: any = true;
+  public CompareShowLabel: any = '1';
   public verseNumberSize: any = 'versenosmall';
   public lineSpacing: any = 'linespacing_1';
   public lineSpacingText = '1x';

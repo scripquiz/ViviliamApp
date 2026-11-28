@@ -13,9 +13,9 @@
           class="audio-control-ion-icon"
           [ngStyle]="{
             display:
-              isTextSpanAvailable == '1' &&
-              readaloud_selected == 'Voice Only' &&
-              authservice.paragraphMode == 0
+              isTextSpanAvailable === 1 &&
+              readaloud_selected === 'Voice Only' &&
+              authservice.paragraphMode === '0'
                 ? 'inline-block'
                 : 'none'
           }"
@@ -26,7 +26,7 @@
           class="audio-control-ion-icon audio-disabled-icon"
           [ngStyle]="{
             display:
-              isTextSpanAvailable == '0' || authservice.paragraphMode == 1
+              isTextSpanAvailable === 0 || authservice.paragraphMode === '1'
                 ? 'inline-block'
                 : 'none'
           }"
@@ -36,7 +36,7 @@
           class="audio-control-ion-icon"
           [ngStyle]="{
             display:
-              isTextSpanAvailable == '1' && readaloud_selected == 'Highlight'
+              isTextSpanAvailable === 1 && readaloud_selected === 'Highlight'
                 ? 'inline-block'
                 : 'none'
           }"
@@ -94,13 +94,13 @@
     <div class="audio-top-controls" style="z-index: 999; margin-top: 0px">
       <div
         class="top-controls-icon top-controls-icon-label {{
-          isTextSpanAvailable != '1' ? 'text-disabled' : ''
+          isTextSpanAvailable !== 1 ? 'text-disabled' : ''
         }}"
       >
         {{ readaloud_selected }}
       </div>
       <div class="top-controls-icon top-controls-icon-label">
-        {{ repeat_state == 0 ? "Off" : "Repeat " + repeat_state }}
+        {{ repeat_state === 0 ? "Off" : "Repeat " + repeat_state }}
       </div>
       <div class="top-controls-icon top-controls-icon-label">
         {{ timer_selected }}
@@ -144,9 +144,9 @@
         class="top-controls-icon-player"
         [ngStyle]="{
           display:
-            audioState == 'NOTSTARTED' ||
-            audioState == 'PAUSE' ||
-            audioState == 'STARTED'
+            audioState === 'NOTSTARTED' ||
+            audioState === 'PAUSE' ||
+            audioState === 'STARTED'
               ? 'inline-block'
               : 'none'
         }"
@@ -160,7 +160,7 @@
       <div
         class="top-controls-icon-player"
         [ngStyle]="{
-          display: audioState == 'PLAYING' ? 'inline-block' : 'none'
+          display: audioState === 'PLAYING' ? 'inline-block' : 'none'
         }"
         (click)="PauseAudio()"
       >
@@ -244,7 +244,7 @@
   <div class="{{ compare_popovermenu }} pop-over-shadow">
     <div
       [ngStyle]="{
-        display: authservice.pageName == 'Notes' ? 'none' : 'block'
+        display: authservice.pageName === 'Notes' ? 'none' : 'block'
       }"
     >
       <div
@@ -261,7 +261,7 @@
     </div>
     <div
       [ngStyle]="{
-        display: authservice.pageName == 'Bookmarks' ? 'none' : 'block'
+        display: authservice.pageName === 'Bookmarks' ? 'none' : 'block'
       }"
     >
       <div
@@ -278,7 +278,7 @@
     </div>
     <div
       [ngStyle]="{
-        display: authservice.pageName == 'Highlights' ? 'none' : 'block'
+        display: authservice.pageName === 'Highlights' ? 'none' : 'block'
       }"
     >
       <div
@@ -319,9 +319,9 @@
             label="Line Spacing"
             interface="action-sheet"
             placeholder="{{
-              authservice.lineSpacing == 'linespacing_1'
+              authservice.lineSpacing === 'linespacing_1'
                 ? '1x'
-                : authservice.lineSpacing == 'linespacing_2'
+                : authservice.lineSpacing === 'linespacing_2'
                 ? '1.5x'
                 : '2x'
             }}"
@@ -367,13 +367,13 @@
             label="Verse Spacing"
             interface="action-sheet"
             placeholder="{{
-              authservice.verseSpacing == 'versespacing_1'
+              authservice.verseSpacing === 'versespacing_1'
                 ? '1x'
-                : authservice.verseSpacing == 'versespacing_2'
+                : authservice.verseSpacing === 'versespacing_2'
                 ? '1.5x'
                 : '2x'
             }}"
-            [disabled]="authservice.paragraphMode == 1 ? true : false"
+            [disabled]="authservice.paragraphMode === '1' ? true : false"
             [(ngModel)]="authservice.verseSpacing"
             style="position: relative; top: 5px; background-color: #fff"
             class="select"
@@ -407,9 +407,9 @@
             label="Verse Number Size"
             interface="action-sheet"
             placeholder="{{
-              authservice.verseNumberSize == 'versenosmall'
+              authservice.verseNumberSize === 'versenosmall'
                 ? 'Small'
-                : authservice.verseNumberSize == 'versenomedium'
+                : authservice.verseNumberSize === 'versenomedium'
                 ? 'Medium'
                 : 'Large'
             }}"
@@ -490,7 +490,7 @@
   </div>
   <div
     class="{{ drawer }}"
-    [style.height]="authservice.currentPage == 'COMPARE' ? '140px' : ''"
+    [style.height]="authservice.currentPage === 'COMPARE' ? '140px' : ''"
   >
     <!-- <div class="drawershow"> -->
     <div class="drawermenu-options">
@@ -498,7 +498,7 @@
         class="drawermenu {{ drawermenu_options_enabledstate }}"
         [ngStyle]="{
           display:
-            authservice.currentPage != 'COMPARE' ? 'inline-block' : 'none'
+            authservice.currentPage !== 'COMPARE' ? 'inline-block' : 'none'
         }"
         (click)="openNotesEditPage()"
       >
@@ -509,7 +509,7 @@
         class="drawermenu {{ drawermenu_options_enabledstate }}"
         [ngStyle]="{
           display:
-            authservice.currentPage != 'COMPARE' ? 'inline-block' : 'none'
+            authservice.currentPage !== 'COMPARE' ? 'inline-block' : 'none'
         }"
         (click)="setBookMark()"
       >
@@ -530,7 +530,7 @@
       class="drawermenu-highlight"
       style="overflow: auto"
       [ngStyle]="{
-        display: authservice.currentPage == 'COMPARE' ? 'none' : 'block'
+        display: authservice.currentPage === 'COMPARE' ? 'none' : 'block'
       }"
     >
       <div
@@ -729,7 +729,7 @@
             >
               @for (item of booksFrom; track item) {
               <ion-select-option [value]="item.bnumber">{{
-                selectedLanguage == "T"
+                selectedLanguage === "T"
                   ? item.fullname_tamil
                   : item.fullname_english
               }}</ion-select-option>
@@ -752,7 +752,7 @@
             >
               @for (item of booksTo; track item) {
               <ion-select-option [value]="item.bnumber">{{
-                selectedLanguage == "T"
+                selectedLanguage === "T"
                   ? item.fullname_tamil
                   : item.fullname_english
               }}</ion-select-option>

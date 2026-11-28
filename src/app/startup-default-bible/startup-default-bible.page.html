@@ -15,7 +15,7 @@
     <div (click)="setBible(item.id)">
       <div
         style="padding-top: 20px; padding-bottom: 10px"
-        [ngStyle]="{'display': item.language==default_language ? 'block' : 'none','background-color': item.isselected=='1' ? '#ddffd4' : 'inherit', 'color' : item.isselected ? '#000' : 'inherit'}"
+        [ngStyle]="{'display': item.language===default_language ? 'block' : 'none','background-color': item.isselected==='1' ? '#ddffd4' : 'inherit', 'color' : item.isselected ? '#000' : 'inherit'}"
       >
         <span class="setbible-title">{{item.title}} - {{item.language}}</span
         ><br /><span class="setbible-description">{{item.description}}</span>
@@ -25,7 +25,7 @@
   </div>
   <div class="text-center padding10 margin50">
     <span [innerHTML]="sampleVerse"></span>
-    <div [ngStyle]="{'display': sampleVerse=='' ? 'none' : 'block'}">
+    <div [ngStyle]="{'display': sampleVerse==='' ? 'none' : 'block'}">
       <p class="margin50" style="color: #666666">
         {{selected_versiontext}} - {{default_language}} <br />will be your
         default Bible. <br />You can change this in settings later.
@@ -34,7 +34,7 @@
     <button
       class="enabled margin20 margincenter"
       (click)="navigateto_defaultbible()"
-      [ngStyle]="{'display': sampleVerse=='' ? 'none' : 'block'}"
+      [ngStyle]="{'display': sampleVerse==='' ? 'none' : 'block'}"
     >
       Next
     </button>
