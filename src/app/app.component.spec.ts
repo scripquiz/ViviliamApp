@@ -1,16 +1,15 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
-import { PageTestingModule } from '../testing/page-testing.module';
+import { providePageTesting } from '../testing/page-testing.providers';
 
 describe('AppComponent', () => {
 
   beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
-      imports: [PageTestingModule, AppComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [AppComponent],
+      providers: [providePageTesting()],
     });
     spyOn(AppComponent.prototype, 'initializeCapacitor').and.resolveTo();
     spyOn(AppComponent.prototype, 'connectDB');

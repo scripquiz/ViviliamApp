@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { TabsPage } from './tabs.page';
 
@@ -9,7 +9,8 @@ describe('TabsPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TabsPage, PageTestingModule],
+      imports: [TabsPage],
+      providers: [providePageTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TabsPage);

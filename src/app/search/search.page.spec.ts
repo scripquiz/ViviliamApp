@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 import { AppComponent } from '../app.component';
 
 import { SearchPage } from './search.page';
@@ -10,8 +10,8 @@ describe('SearchPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [SearchPage, PageTestingModule],
-      providers: [{ provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['initializeData']) }]
+      imports: [SearchPage],
+      providers: [providePageTesting(), { provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['initializeData']) }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchPage);

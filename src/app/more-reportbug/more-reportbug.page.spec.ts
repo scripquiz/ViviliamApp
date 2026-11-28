@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { MoreReportbugPage } from './more-reportbug.page';
 
@@ -9,7 +9,8 @@ describe('MoreReportbugPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [MoreReportbugPage, PageTestingModule]
+      imports: [MoreReportbugPage],
+      providers: [providePageTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MoreReportbugPage);

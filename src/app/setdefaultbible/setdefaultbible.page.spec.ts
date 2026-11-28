@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { SetdefaultbiblePage } from './setdefaultbible.page';
 
@@ -9,7 +9,8 @@ describe('SetdefaultbiblePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [SetdefaultbiblePage, PageTestingModule]
+      imports: [SetdefaultbiblePage],
+      providers: [providePageTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SetdefaultbiblePage);

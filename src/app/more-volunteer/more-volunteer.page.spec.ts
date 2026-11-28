@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { MoreVolunteerPage } from './more-volunteer.page';
 
@@ -9,7 +9,8 @@ describe('MoreVolunteerPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [MoreVolunteerPage, PageTestingModule]
+      imports: [MoreVolunteerPage],
+      providers: [providePageTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MoreVolunteerPage);

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { MoreAboutPage } from './more-about.page';
 
@@ -10,7 +10,8 @@ describe('MoreAboutPage', () => {
   beforeEach(waitForAsync(() => {
     spyOn(MoreAboutPage.prototype, 'getAppVersion').and.resolveTo();
     TestBed.configureTestingModule({
-      imports: [MoreAboutPage, IonicModule.forRoot()]
+      imports: [MoreAboutPage],
+      providers: [providePageTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MoreAboutPage);

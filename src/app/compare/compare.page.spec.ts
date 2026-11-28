@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 import { AppComponent } from '../app.component';
 
 import { ComparePage } from './compare.page';
@@ -10,8 +10,8 @@ describe('ComparePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ComparePage, PageTestingModule],
-      providers: [{ provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['hidedrawermenu']) }]
+      imports: [ComparePage],
+      providers: [providePageTesting(), { provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['hidedrawermenu']) }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ComparePage);

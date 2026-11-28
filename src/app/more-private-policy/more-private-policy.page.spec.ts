@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { MorePrivatePolicyPage } from './more-private-policy.page';
 
@@ -9,7 +9,8 @@ describe('MorePrivatePolicyPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [MorePrivatePolicyPage, PageTestingModule]
+      imports: [MorePrivatePolicyPage],
+      providers: [providePageTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MorePrivatePolicyPage);

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { HomePage } from './home.page';
 
@@ -11,7 +11,8 @@ describe('HomePage', () => {
     spyOn(HomePage.prototype, 'getAppVersionInfo').and.resolveTo();
     spyOn(window, 'fetch').and.resolveTo(new Response(JSON.stringify([{ bibleids: '2,3,5' }])));
     TestBed.configureTestingModule({
-      imports: [HomePage, PageTestingModule],
+      imports: [HomePage],
+      providers: [providePageTesting()],
       errorOnUnknownElements: true,
       errorOnUnknownProperties: true
     }).compileComponents();

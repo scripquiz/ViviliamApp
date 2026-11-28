@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../../testing/page-testing.module';
+import { providePageTesting } from '../../../testing/page-testing.providers';
 
 import { DailyBibleVerseComponent } from './daily-bible-verse.component';
 
@@ -9,7 +9,8 @@ describe('DailyBibleVerseComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [PageTestingModule, DailyBibleVerseComponent]
+      imports: [DailyBibleVerseComponent],
+      providers: [providePageTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DailyBibleVerseComponent);

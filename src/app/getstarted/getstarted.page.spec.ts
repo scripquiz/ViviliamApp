@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 import { AppComponent } from '../app.component';
 
 import { GetstartedPage } from './getstarted.page';
@@ -10,8 +10,8 @@ describe('GetstartedPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [GetstartedPage, PageTestingModule],
-      providers: [{ provide: AppComponent, useFactory: () => ({ play_speed: '1' }) }]
+      imports: [GetstartedPage],
+      providers: [providePageTesting(), { provide: AppComponent, useFactory: () => ({ play_speed: '1' }) }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(GetstartedPage);

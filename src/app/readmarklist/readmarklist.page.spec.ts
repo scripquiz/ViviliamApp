@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 import { AppComponent } from '../app.component';
 
 import { ReadmarklistPage } from './readmarklist.page';
@@ -10,8 +10,8 @@ describe('ReadmarklistPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReadmarklistPage, PageTestingModule],
-      providers: [{ provide: AppComponent, useFactory: () => ({ drawer: 'drawerhide' }) }]
+      imports: [ReadmarklistPage],
+      providers: [providePageTesting(), { provide: AppComponent, useFactory: () => ({ drawer: 'drawerhide' }) }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ReadmarklistPage);

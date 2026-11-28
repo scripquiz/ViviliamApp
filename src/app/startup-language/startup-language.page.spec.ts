@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { StartupLanguagePage } from './startup-language.page';
 
@@ -9,7 +9,8 @@ describe('StartupLanguagePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [StartupLanguagePage, PageTestingModule]
+      imports: [StartupLanguagePage],
+      providers: [providePageTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(StartupLanguagePage);

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 import { NavController } from '@ionic/angular';
 
 import { StartupPage } from './startup.page';
@@ -10,8 +10,8 @@ describe('StartupPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [StartupPage, PageTestingModule],
-      providers: [{
+      imports: [StartupPage],
+      providers: [providePageTesting(), {
         provide: NavController,
         useFactory: () => {
           const nav = jasmine.createSpyObj<NavController>('NavController', ['navigateRoot']);

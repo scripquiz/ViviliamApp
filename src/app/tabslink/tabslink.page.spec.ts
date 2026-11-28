@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
-import { provideRouter } from '@angular/router';
+import { providePageTesting } from '../../testing/page-testing.providers';
 
 import { TabslinkPage } from './tabslink.page';
 
@@ -10,8 +9,8 @@ describe('TabslinkPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TabslinkPage, IonicModule.forRoot()],
-      providers: [provideRouter([])]
+      imports: [TabslinkPage],
+      providers: [providePageTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TabslinkPage);

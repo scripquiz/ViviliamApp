@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PageTestingModule } from '../../testing/page-testing.module';
+import { providePageTesting } from '../../testing/page-testing.providers';
 import { AppComponent } from '../app.component';
 
 import { ReadPage } from './read.page';
@@ -10,8 +10,8 @@ describe('ReadPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReadPage, PageTestingModule],
-      providers: [{ provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['hidedrawermenu', 'closeAudio', 'hideAudioPanel']) }]
+      imports: [ReadPage],
+      providers: [providePageTesting(), { provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['hidedrawermenu', 'closeAudio', 'hideAudioPanel']) }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ReadPage);
