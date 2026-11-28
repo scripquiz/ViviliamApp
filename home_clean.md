@@ -40,14 +40,14 @@ Line numbers refer to the files as they were **before** cleanup started.
 This file is global (`ViewEncapsulation.None`). Keep `.title`, `.card`, `.card-item-daiy-header`.
 `.subtitle` is uncertain. Names built at runtime would not show in a search.
 
-- [ ] 4.1 `QUIZ`, `POLL`, `SURVEY`, `SPIN`, `LEADERBOARD`, `CROSSWORD`, `PUZZLE`, `GAME`, `WORD` (+ `-colorTemp`, `-transparent`), `EVENT_*`
-- [ ] 4.2 `event-*`, `modern-event-card`, `schedule-*`, `countdown-*`, `time-container`
-- [ ] 4.3 `card-avatar`, `card-content-base`, `card-footer*`, `card-item`, `button-card`, `button-container`, `home-card*`, `home-banner-image-*`, `home-video-*`, `home-dynamic-content`
-- [ ] 4.4 `no-internet*`, `server-*`, `connection-message`, `pulse-dot`, `refresh-button*`
-- [ ] 4.5 `notification-*`, `audio-control-icon`, `audio-controls`, `audio-title`, `repeat-all`, `daily-audio-header`, `active-button`, `inactive-button`, `announcement-notes`, `grey-text`, `no-comments`, `setbottom`, `smaller-text`
-- [ ] 4.6 Dark-mode counterparts of the above (1205-1339) and the 360px media query (1132-1143)
-- [ ] 4.7 `.card-item-header ion-button.play/.stop` (80-85, 556-559); segment `ion-badge` (1187-1200)
-- [ ] 4.8 `$midnight`, `$clouds`; `@keyframes server-pulse` and `pulse`; `ion-refresher` (768-770)
+- [x] 4.1 `QUIZ`, `POLL`, `SURVEY`, `SPIN`, `LEADERBOARD`, `CROSSWORD`, `PUZZLE`, `GAME`, `WORD` (+ `-colorTemp`, `-transparent`), `EVENT_*`
+- [x] 4.2 `event-*`, `modern-event-card`, `schedule-*`, `countdown-*`, `time-container`
+- [x] 4.3 `card-avatar`, `card-content-base`, `card-footer*`, `card-item`, `button-card`, `button-container`, `home-card*`, `home-banner-image-*`, `home-video-*`, `home-dynamic-content`
+- [x] 4.4 `no-internet*`, `server-*`, `connection-message`, `pulse-dot`, `refresh-button*`
+- [x] 4.5 `notification-*`, `audio-control-icon`, `audio-controls`, `audio-title`, `repeat-all`, `daily-audio-header`, `active-button`, `inactive-button`, `announcement-notes`, `grey-text`, `no-comments`, `setbottom`, `smaller-text`
+- [x] 4.6 Dark-mode counterparts of the above (1205-1339) and the 360px media query (1132-1143)
+- [x] 4.7 `.card-item-header ion-button.play/.stop` (80-85, 556-559); segment `ion-badge` (1187-1200)
+- [x] 4.8 `$midnight`, `$clouds`; `@keyframes server-pulse` and `pulse`; `ion-refresher` (768-770)
 
 ## 5. `home.page.scss`: duplicates and conflicts (needs a visual check)
 
