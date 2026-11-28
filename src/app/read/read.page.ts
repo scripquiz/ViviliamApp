@@ -9,7 +9,8 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonContent } from '@ionic/angular';
+import { Platform, NavController, IonContent, IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import { ShareService } from '../providers/share.service';
@@ -21,7 +22,7 @@ import { MenuController } from '@ionic/angular';
 // Replace Cordova ScreenOrientation with our Capacitor service
 // import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
-import { ViewportScroller } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 
 import { AppComponent } from '../../app/app.component';
 
@@ -41,7 +42,8 @@ import { AudioFocusService } from '../services/audio-focus.service';
   styleUrls: ['./read.page.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class ReadPage implements OnInit, OnDestroy {
   @ViewChild(IonContent, { static: false }) content: IonContent;

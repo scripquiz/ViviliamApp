@@ -10,8 +10,7 @@ describe('ReadPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReadPage ],
-      imports: [PageTestingModule],
+      imports: [ReadPage, PageTestingModule],
       providers: [{ provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['hidedrawermenu', 'closeAudio', 'hideAudioPanel']) }]
     }).compileComponents();
 

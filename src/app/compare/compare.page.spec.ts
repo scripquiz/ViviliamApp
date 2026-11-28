@@ -10,8 +10,7 @@ describe('ComparePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ComparePage ],
-      imports: [PageTestingModule],
+      imports: [ComparePage, PageTestingModule],
       providers: [{ provide: AppComponent, useFactory: () => jasmine.createSpyObj<AppComponent>('AppComponent', ['hidedrawermenu']) }]
     }).compileComponents();
 

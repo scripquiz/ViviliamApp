@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform, IonicModule } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import {
   DatabaseConnection,
@@ -48,7 +50,8 @@ interface BookRow {
   templateUrl: './life-event-detail.page.html',
   styleUrls: ['./life-event-detail.page.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class LifeEventDetailPage {
   private readonly BSI_BIBLE_ID = 3;

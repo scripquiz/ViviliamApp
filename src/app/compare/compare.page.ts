@@ -8,7 +8,9 @@ import {
   DatabaseService,
   DatabaseConnection,
 } from 'src/app/services/database.service';
-import { Platform, NavController, IonContent } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Platform, NavController, IonContent, IonicModule } from '@ionic/angular';
 import { AuthserviceProvider } from '../../providers/authservice/authservice';
 import { MenuController } from '@ionic/angular';
 // Replace Cordova ScreenOrientation with our Capacitor service
@@ -26,7 +28,8 @@ import { AppComponent } from '../../app/app.component';
   styleUrls: ['./compare.page.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class ComparePage implements OnInit, OnDestroy {
   @ViewChild(IonContent, { static: false }) content: IonContent;

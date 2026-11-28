@@ -7,8 +7,12 @@ import {
   DatabaseConnection,
 } from 'src/app/services/database.service';
 import { AuthserviceProvider } from 'src/providers/authservice/authservice';
-import { Platform } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Platform, IonicModule } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
+import { DailyBibleVerseComponent } from '../components/daily-bible-verse/daily-bible-verse.component';
+import { DailyBibleQuoteComponent } from '../components/daily-bible-quote/daily-bible-quote.component';
 import { IonLoaderService } from '../ion-loader.service';
 import { ScreenOrientationService } from '../services/screen-orientation.service';
 import { App } from '@capacitor/app';
@@ -23,7 +27,14 @@ import { AudioFocusService } from '../services/audio-focus.service';
   styleUrls: ['home.page.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    DailyBibleVerseComponent,
+    DailyBibleQuoteComponent,
+  ],
 })
 export class HomePage implements OnDestroy {
   @ViewChild('audioPlayer') audio: any;
