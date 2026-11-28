@@ -25,8 +25,8 @@ Line numbers refer to the files as they were **before** cleanup started.
 - [x] 2.3 `checkNetwork`: `showLoader` / `timeout` options are never passed (816-827, 861-863, 872, 927). The local `timeout` shadows the rxjs import
 - [x] 2.4 `selectedAudioSource` (51, 455) and `<source>` (html 122)
 - [x] 2.5 Repeated stop/start logic (201-203, 218, 222-225, 603-604)
-- [ ] 2.6 Second `currentPage = 'HOME'` (341)
-- [ ] 2.7 **Check first:** repeated `databaseService.create` (342-353) and segment sync (355)
+- [x] 2.6 Second `currentPage = 'HOME'` (341)
+- [x] 2.7 **Check first:** repeated `databaseService.create` (342-353) and segment sync (355)
 
 ## 3. HTML and module
 

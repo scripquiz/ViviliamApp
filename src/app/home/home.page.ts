@@ -294,21 +294,10 @@ export class HomePage {
       }
     });
     this.authservice.currentPage = 'HOME';
-    this.authservice.currentPage = 'HOME';
     this.platform.ready().then(() => {
       this.orientation = this.authservice.orientation;
-      this.databaseService
-        .create({
-          name: 'viviliam.db',
-          location: 'default',
-        })
-        .then((db: DatabaseConnection) => {
-          this.logger.log('DB created');
-          this.database = db;
-        });
     });
     this.logger.log('View did enter');
-    this.segmentSelected = this.tabRowitemSelected.toString();
   }
   segmentChanged(event) {
     this.segmentSelected = event.detail.value;
