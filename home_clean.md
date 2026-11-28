@@ -20,8 +20,8 @@ Line numbers refer to the files as they were **before** cleanup started.
 
 ## 2. `home.page.ts`: parameters, no-ops, repeats
 
-- [ ] 2.1 Unused params: `repeat_state` (265, html 240); `title`, `urlplace` (670)
-- [ ] 2.2 No-ops: `minutes = minutes` (390-392); log-only `if` (373-375); `tempdta` (428-432)
+- [x] 2.1 Unused params: `repeat_state` (265, html 240); `title`, `urlplace` (670)
+- [x] 2.2 No-ops: `minutes = minutes` (390-392); log-only `if` (373-375); `tempdta` (428-432)
 - [ ] 2.3 `checkNetwork`: `showLoader` / `timeout` options are never passed (816-827, 861-863, 872, 927). The local `timeout` shadows the rxjs import
 - [ ] 2.4 `selectedAudioSource` (51, 455) and `<source>` (html 122)
 - [ ] 2.5 Repeated stop/start logic (201-203, 218, 222-225, 603-604)

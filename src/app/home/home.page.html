@@ -237,7 +237,7 @@
                             <ion-icon
                               class="repeat-icon"
                               name="sync-outline"
-                              (click)="setRepeatStateDirect(i, audioItem.repeat_state)"
+                              (click)="setRepeatStateDirect(i)"
                             ></ion-icon>
                             @if (audioItem.repeat_state > 0) {
                             <span class="repeat-badge audio-repeat-badge">
@@ -263,7 +263,7 @@
               <ion-col size="12">
                 <ion-card
                   class="card simple-card"
-                  (click)="openExternalURLDirectly('https://viviliam.in/dmverse', 'Daily Memory Verse', 'NEW')"
+                  (click)="openExternalURLDirectly('https://viviliam.in/dmverse')"
                 >
                   <h4 class="title card-item-daiy-header">
                     <ion-icon name="book-outline"></ion-icon>&nbsp;&nbsp;Daily
@@ -282,7 +282,7 @@
               <ion-col size="12">
                 <ion-card
                   class="card simple-card"
-                  (click)="openExternalURLDirectly('https://vvlm.in/bible-plan', 'Daily Bible Plan')"
+                  (click)="openExternalURLDirectly('https://vvlm.in/bible-plan')"
                 >
                   <h4 class="title card-item-daiy-header">
                     <ion-icon name="radio-button-off"></ion-icon
@@ -301,7 +301,7 @@
               <ion-col size="12">
                 <ion-card
                   class="card simple-card"
-                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/daily-quiz', 'Daily Bible Quiz')"
+                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/daily-quiz')"
                 >
                   <h4 class="title card-item-daiy-header">
                     <ion-icon name="radio-button-on"></ion-icon
@@ -320,7 +320,7 @@
               <ion-col size="12">
                 <ion-card
                   class="card simple-card"
-                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/prayer-request', 'Prayer Request')"
+                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/prayer-request')"
                 >
                   <h4 class="title card-item-daiy-header">
                     <ion-icon name="medical"></ion-icon>&nbsp;&nbsp;Prayer
@@ -336,7 +336,7 @@
               <ion-col size="12">
                 <ion-card
                   class="card simple-card"
-                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/word-search', 'Word Search', 'NEW')"
+                  (click)="openExternalURLDirectly('https://viviliam.in/today/new/word-search')"
                 >
                   <h4 class="title card-item-daiy-header">
                     <ion-icon name="add-circle-outline"></ion-icon
@@ -362,7 +362,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/year-plan', 'One Year Plan', 'NEW')"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/year-plan')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon
@@ -381,7 +381,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/announcements', 'Announcements')"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/announcements')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon name="mic" style="font-size: 30px"></ion-icon
@@ -397,7 +397,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/sample', 'Sample Games', 'NEW')"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/sample')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon
@@ -416,7 +416,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/scripquiz', 'ScripQuiz', 'NEW')"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/scripquiz')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon
@@ -435,7 +435,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/competition', 'Competition', 'NEW')"
+                (click)="openExternalURLDirectly('https://viviliam.in/misc/new/competition')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon
@@ -465,7 +465,7 @@
 <ion-row class="ion-align-items-center ion-justify-content-center">
   <ion-col size="12">
     <ion-card class="card simple-card"
-      (click)="openExternalURLDirectly('https://viviliam.in/misc/youtube', 'YouTube', 'NEW')">
+      (click)="openExternalURLDirectly('https://viviliam.in/misc/youtube')">
       <h4 class="title card-item-daiy-header">
         <ion-icon name="logo-youtube" style="font-size: 30px;"></ion-icon>&nbsp;&nbsp;Viviliam YouTube
       </h4>
@@ -496,7 +496,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/events/new/instructions', 'Events Instructions', 'NEW')"
+                (click)="openExternalURLDirectly('https://viviliam.in/events/new/instructions')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon
@@ -515,7 +515,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/events/new/leaderboard', 'Leaderboard', 'NEW')"
+                (click)="openExternalURLDirectly('https://viviliam.in/events/new/leaderboard')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon
@@ -534,7 +534,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/events/new/memory-game', 'Memory Game', 'NEW')"
+                (click)="openExternalURLDirectly('https://viviliam.in/events/new/memory-game')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon
@@ -553,7 +553,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://viviliam.in/events/new/puzzle', 'Puzzle', 'NEW')"
+                (click)="openExternalURLDirectly('https://viviliam.in/events/new/puzzle')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon
@@ -572,7 +572,7 @@
             <ion-col size="12">
               <ion-card
                 class="card simple-card"
-                (click)="openExternalURLDirectly('https://quiz.viviliam.in', 'Quiz', 'NEW')"
+                (click)="openExternalURLDirectly('https://quiz.viviliam.in')"
               >
                 <h4 class="title card-item-daiy-header">
                   <ion-icon

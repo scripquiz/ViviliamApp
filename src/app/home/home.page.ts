@@ -232,7 +232,7 @@ export class HomePage {
     }
   }
 
-  setRepeatStateDirect(i, repeat_state) {
+  setRepeatStateDirect(i) {
     // A track repeat replaces Play All; a single track keeps playing.
     if (this.playAll) {
       this.stopAudioDirect(this.currentAudioIndex);
@@ -329,10 +329,6 @@ export class HomePage {
     this.segmentSelected = tabitem.toString();
     if (tabitem.toString() === '0') {
       this.checkNetworkForAudio();
-    } else if (tabitem.toString() === '1') {
-      if (this.network && this.network.hasInternetConnectivity) {
-        this.logger.log('Misc tab selected - ensuring content visibility');
-      }
     }
   }
   convertHMS(value) {
@@ -342,9 +338,6 @@ export class HomePage {
     var seconds: any = sec - hours * 3600 - minutes * 60;
     if (hours < 10) {
       hours = '0' + hours;
-    }
-    if (minutes < 10) {
-      minutes = minutes;
     }
     if (seconds < 10) {
       seconds = '0' + seconds;
@@ -375,11 +368,6 @@ export class HomePage {
     this.logger.log(`Repeat all set to ${this.repeat_state_all}`);
   }
   playAudioDirect(idx) {
-    var tempdta;
-    this.wakeLockService.keepAwake().then(
-      () => (tempdta = ''),
-      () => this.logger.error('error')
-    );
     this.playAll = false;
     this.playAllText = 'Play All';
     this.startAudioDirect(idx);
@@ -617,7 +605,7 @@ export class HomePage {
       Math.max(0, Math.floor(track.duration) - Math.floor(position))
     );
   }
-  async openExternalURLDirectly(url: string, title: string, urlplace?: string) {
+  async openExternalURLDirectly(url: string) {
     if (url != '') {
       if (!this.network.isConnected) {
         this.authservice.showAlert('', '', this.authservice.noNetWorkMessage);
